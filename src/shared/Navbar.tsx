@@ -93,7 +93,7 @@ const Navbar = () => {
         {display && (
           <div
             id="profile-container"
-            className="absolute top-[82px] right-16 w-96 py-6 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
+            className="absolute top-[82px] right-16 w-96 py-6 border-x border-gray-400 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
           >
             <h1 className="text-2xl font-inter font-bold text-center">
               My Lambo Car
@@ -123,7 +123,7 @@ const Navbar = () => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="w-full flex justify-between items-center px-4 py-3 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
               >
-                <span className="font-semibold">Display & Accessibility</span>
+                <span className="font-semibold">Display & Theme</span>
                 <IoIosArrowForward
                   className={`transform transition-transform ${
                     dropdownOpen ? "rotate-90" : ""
@@ -133,7 +133,7 @@ const Navbar = () => {
 
               {/* Dropdown Content */}
               {dropdownOpen && (
-                <div className="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
+                <div className=" p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-x border-gray-300 shadow-md">
                   <h3 className="font-semibold mb-2">Theme</h3>
                   <div className="space-y-2">
                     <label className="flex items-center gap-2 cursor-pointer">
