@@ -23,7 +23,7 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
-    const toastId = toast.loading("logging in");
+    const toastId = toast.loading("regestering");
     setErrorMessage("");
     const {
       firstName,
@@ -37,11 +37,9 @@ const SignUp = () => {
       password,
       confirmPass,
     } = data;
-
     if (password !== confirmPass) {
       return setErrorMessage("Password and confirm Passowrd doesn`t match");
     }
-
     try {
       const userInfo: TUserInfo = {
         name: {
