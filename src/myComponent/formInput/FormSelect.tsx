@@ -1,3 +1,4 @@
+import { useFormContext } from "react-hook-form";
 import { TFormSelectProps } from "./formInput.type";
 
 const FormSelect = ({
@@ -5,9 +6,11 @@ const FormSelect = ({
   name,
   options,
   register,
-  error,
   required,
 }: TFormSelectProps) => {
+  const {
+    formState: { errors },
+  } = useFormContext();
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -25,7 +28,9 @@ const FormSelect = ({
           </option>
         ))}
       </select>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {errors[name] && (
+        <p className="text-red-500 text-sm">{errors[name].message as string}</p>
+      )}
     </div>
   );
 };

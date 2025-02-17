@@ -8,13 +8,23 @@ import FormSelect from "@/myComponent/formInput/FormSelect";
 import { genders } from "@/myComponent/formInput/formInput.const";
 import { imageUpload } from "@/utills/uploadImage";
 import { TUserInfo } from "@/interface/userInfo";
+import { useRegisterMutation } from "@/redux/features/user/userApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { decodeToken } from "@/utills/decodeToken";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const SignUp = () => {
+  const dispatch = useAppDispatch();
   const methods = useForm();
-  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [register] = useRegisterMutation();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
-    setError("");
+    const toastId = toast.loading("logging in");
+    setErrorMessage("");
     const {
       firstName,
       middleName,
@@ -29,27 +39,36 @@ const SignUp = () => {
     } = data;
 
     if (password !== confirmPass) {
-      return setError("Password and confirm Passowrd doesn`t match");
+      return setErrorMessage("Password and confirm Passowrd doesn`t match");
     }
 
-    const userInfo: TUserInfo = {
-      name: {
-        firstName,
-        middleName,
-        lastName,
-      },
-      email,
-      phoneNumber,
-      gender,
-      dateOfBirth,
-      password,
-    };
-    const profileImage = image ? await imageUpload(image) : undefined;
-    if (!profileImage) {
-      throw new Error("faild to create account");
+    try {
+      const userInfo: TUserInfo = {
+        name: {
+          firstName,
+          middleName,
+          lastName,
+        },
+        email,
+        phoneNumber,
+        gender,
+        dateOfBirth,
+        password,
+      };
+      const profileImage = image ? await imageUpload(image) : undefined;
+      if (profileImage) {
+        userInfo.profileImage = profileImage;
+      }
+      const res = await register(userInfo).unwrap();
+      const user = decodeToken(res.data.access);
+      dispatch(setUser({ user, token: res.data.access }));
+      toast.success("successfully registered", { id: toastId, duration: 3000 });
+      navigate("/");
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
-    userInfo.profileImage = profileImage;
-    console.log(userInfo);
   };
 
   return (
@@ -69,7 +88,6 @@ const SignUp = () => {
                 maxLength={30}
                 register={methods.register}
                 required={true}
-                error={methods.formState.errors.firstName?.message as string}
               />
               <FormInput
                 label="Middle name"
@@ -79,7 +97,6 @@ const SignUp = () => {
                 maxLength={30}
                 register={methods.register}
                 required={false}
-                error={methods.formState.errors.middleName?.message as string}
               />
               <FormInput
                 label="Last name"
@@ -89,7 +106,6 @@ const SignUp = () => {
                 maxLength={30}
                 register={methods.register}
                 required={true}
-                error={methods.formState.errors.lastName?.message as string}
               />
             </div>
 
@@ -101,7 +117,6 @@ const SignUp = () => {
                 type="email"
                 register={methods.register}
                 required={true}
-                error={methods.formState.errors.email?.message as string}
               />
               <FormPhoneInput
                 label="Phone Number"
@@ -116,7 +131,6 @@ const SignUp = () => {
                 name="gender"
                 options={genders}
                 register={methods.register}
-                error={methods.formState.errors.gender?.message as string}
                 required
               />
               <FormInput
@@ -125,14 +139,12 @@ const SignUp = () => {
                 type="date"
                 register={methods.register}
                 required={true}
-                error={methods.formState.errors.dateOfBirth?.message as string}
               />
               <FormInput
                 label="Profile Image"
                 name="image"
                 type="file"
                 register={methods.register}
-                error={methods.formState.errors.image?.message as string}
                 setValue={methods.setValue}
               />
             </div>
@@ -145,7 +157,6 @@ const SignUp = () => {
                 placeholder="Enter your password"
                 register={methods.register}
                 required={true}
-                error={methods.formState.errors.password?.message as string}
               />
 
               <FormInput
@@ -155,7 +166,6 @@ const SignUp = () => {
                 placeholder="Confirm your password"
                 register={methods.register}
                 required={true}
-                error={methods.formState.errors.confirmPass?.message as string}
               />
             </div>
 
@@ -176,7 +186,9 @@ const SignUp = () => {
                 </span>
               )}
             </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {errorMessage && (
+              <p className="text-sm text-red-500">{errorMessage}</p>
+            )}
             <button
               type="submit"
               className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition"

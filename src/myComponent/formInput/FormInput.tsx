@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { TFormInputProps } from "./formInput.type";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { useFormContext } from "react-hook-form";
 
 const FormInput = ({
   label,
@@ -9,7 +10,6 @@ const FormInput = ({
   type,
   placeholder,
   register,
-  error,
   maxLength,
   required,
   setValue,
@@ -18,6 +18,9 @@ const FormInput = ({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageText, setImageText] = useState<string | null>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const {
+    formState: { errors },
+  } = useFormContext();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -90,6 +93,12 @@ const FormInput = ({
                   "pass needs at least 8 chars with include one uppercase, lowercase, number & special char.",
               },
             }),
+            ...(type === "email" && {
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "enter a valid email address",
+              },
+            }),
             ...(type === "date" && {
               validate: (value) => {
                 const birthDate = new Date(value);
@@ -105,7 +114,7 @@ const FormInput = ({
             }),
           })}
           className={`mt-1 w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white outline-none ${
-            error ? "border-red-500" : "border-gray-300"
+            errors[name] ? "border-red-500" : "border-gray-300"
           }`}
           placeholder={placeholder}
         />
@@ -122,7 +131,9 @@ const FormInput = ({
           )}
         </span>
       )}
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {errors[name] && (
+        <p className="text-red-500 text-sm">{errors[name].message as string}</p>
+      )}
     </div>
   );
 };

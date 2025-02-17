@@ -8,7 +8,6 @@ export type TFormInputProps = {
   type: string;
   placeholder?: string;
   register: UseFormRegister<FieldValues>;
-  error?: string | undefined;
   maxLength?: number;
   required?: boolean;
   setValue?: any;
@@ -26,6 +25,5 @@ export type TFormSelectProps = {
   name: string;
   options: TGender[];
   register: UseFormRegister<FieldValues>;
-  error?: string | undefined;
   required?: boolean;
 };
