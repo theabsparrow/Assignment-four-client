@@ -76,24 +76,16 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex space-x-6">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.name}
-              to={link.path}
-              className={({ isActive }) =>
-                `transition-colors font-inter ${
-                  (link.name === "Sign In" || link.name === "Sign Up") &&
-                  "hidden"
-                } ${
-                  isActive
-                    ? "font-semibold text-deepRed"
-                    : "hover:text-secondary"
-                }`
-              }
-            >
-              {link.name}
-            </NavLink>
-          ))}
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `transition-colors font-inter ${
+                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
+              }`
+            }
+          >
+            Home
+          </NavLink>
         </div>
 
         <div className="hidden md:flex">

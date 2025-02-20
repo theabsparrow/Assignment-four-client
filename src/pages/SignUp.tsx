@@ -123,6 +123,7 @@ const SignUp = () => {
                 label="Phone Number"
                 name="phoneNumber"
                 control={methods.control}
+                required={true}
               />
             </div>
 

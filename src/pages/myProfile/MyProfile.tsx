@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const MyProfile = () => {
-  const methods = useForm();
   const myprofile = useMyProfile();
   const [profileImage, setProfileImage] = useState<string | "">(
     myprofile.myProfile?.profileImage
@@ -25,6 +24,13 @@ const MyProfile = () => {
   const [currentAddress, setCurrentAddress] = useState<string | " ">(
     myprofile.myProfile?.currentAddress
   );
+
+  const methods = useForm({
+    defaultValues: {
+      homeTown: homeTown || "",
+      currentAddress: currentAddress || "",
+    },
+  });
   const [editing, setEditing] = useState(false);
   const [updateImage] = useUpdateImageMutation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);

@@ -7,6 +7,7 @@ const userApi = baseApi.injectEndpoints({
         url: "/user/my-profile",
         method: "GET",
       }),
+      providesTags: ["user"],
     }),
     updateImage: builder.mutation({
       query: (image) => ({
@@ -14,6 +15,7 @@ const userApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: image,
       }),
+      invalidatesTags: ["user"],
     }),
     updateAddress: builder.mutation({
       query: (address) => ({
@@ -21,6 +23,7 @@ const userApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: address,
       }),
+      invalidatesTags: ["user"],
     }),
   }),
 });

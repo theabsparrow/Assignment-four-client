@@ -18,6 +18,7 @@ export type TFormPhoneInputProps = {
   name: string;
   control: any;
   error?: string | undefined;
+  required?: boolean;
 };
 
 export type TFormSelectProps = {
