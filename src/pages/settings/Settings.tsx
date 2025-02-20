@@ -5,19 +5,28 @@ import { genders } from "@/myComponent/formInput/formInput.const";
 import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
 import FormSelect from "@/myComponent/formInput/FormSelect";
 import SignInFormInput from "@/myComponent/formInput/SignInFormInput";
+import { useChnagePassowrdMutation } from "@/redux/features/auth/authApi";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { useUpdateUserInfoMutation } from "@/redux/features/user/userApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { decodeToken } from "@/utills/decodeToken";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const Settings = () => {
   const myprofile = useMyProfile();
-
+  const [updatedInfo] = useUpdateUserInfoMutation();
+  const [changePasswordInfo] = useChnagePassowrdMutation();
+  const dispatch = useAppDispatch();
   const methods = useForm();
   const [editing, setEditing] = useState(false);
   const [contactEdit, setContactEdit] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
 
-  const onInfoSubmit = (data: any) => {
+  const onInfoSubmit = async (data: any) => {
+    const toastId = toast.loading(`personal info updating....`);
     setErrorMessage("");
     const updatedFields = Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== "")
@@ -26,7 +35,31 @@ const Settings = () => {
       setEditing(true);
       return setErrorMessage("Nothing to update");
     }
-    console.log("Updated Data:", updatedFields);
+    const nameFields = ["firstName", "middleName", "lastName"];
+    const name: Record<string, string> = {};
+    nameFields.forEach((key) => {
+      if (updatedFields[key]) {
+        name[key] = updatedFields[key] as string;
+        delete updatedFields[key];
+      }
+    });
+    if (Object.keys(name).length > 0) {
+      updatedFields.name = name;
+    }
+    try {
+      const res = await updatedInfo(updatedFields).unwrap();
+      if (res.data.result) {
+        setEditing(false);
+        toast.success(res.message, {
+          id: toastId,
+          duration: 3000,
+        });
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
   };
 
   const onContactSubmit = (data: any) => {
@@ -41,8 +74,37 @@ const Settings = () => {
     console.log("Updated Data:", updatedFields);
   };
 
-  const onPassChangeSubmit = (data: any) => {
-    console.log(data);
+  const onPassChangeSubmit = async (data: any) => {
+    const toastId = toast.loading("spassword is changing....");
+    setErrorMessage("");
+    const { confirmNewPass, newPassword, oldPassword } = data;
+
+    if (newPassword !== confirmNewPass) {
+      return setErrorMessage(
+        "new password and confirm new password doesn`t match"
+      );
+    }
+    const changePassword = {
+      oldPassword,
+      newPassword,
+    };
+
+    try {
+      const res = await changePasswordInfo(changePassword).unwrap();
+      if (res.data) {
+        const user = decodeToken(res.data);
+        dispatch(setUser({ user, token: res.data }));
+        toast.success("password changed successfully", {
+          id: toastId,
+          duration: 3000,
+        });
+        setChangingPassword(false);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
   };
 
   return (
@@ -286,7 +348,7 @@ const Settings = () => {
                 <div className="mb-3">
                   <SignInFormInput
                     label=" Old Password"
-                    name="OldPassword"
+                    name="oldPassword"
                     type="password"
                     placeholder="Enter your old password"
                     register={methods.register}
@@ -297,7 +359,7 @@ const Settings = () => {
                 <div className="mb-3">
                   <FormInput
                     label="New Password"
-                    name="NewPassword"
+                    name="newPassword"
                     type="password"
                     placeholder="Enter your new password"
                     register={methods.register}
@@ -308,14 +370,16 @@ const Settings = () => {
                 <div className="mb-3">
                   <FormInput
                     label="Confirm New Password"
-                    name="confirmPass"
+                    name="confirmNewPass"
                     type="password"
                     placeholder="Confirm your new password"
                     register={methods.register}
                     required={true}
                   />
                 </div>
-
+                {errorMessage && changingPassword && (
+                  <h1 className="text-red-600 text-sm mb-3">{errorMessage}</h1>
+                )}
                 <button
                   type="submit"
                   className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"

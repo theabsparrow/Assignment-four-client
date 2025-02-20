@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import useMyProfile from "@/hook/useMyProfile";
-import {
-  useUpdateAddressMutation,
-  useUpdateImageMutation,
-} from "@/redux/features/user/userApi";
+import { useUpdateUserInfoMutation } from "@/redux/features/user/userApi";
+
 import { imageUpload } from "@/utills/uploadImage";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -32,9 +30,8 @@ const MyProfile = () => {
     },
   });
   const [editing, setEditing] = useState(false);
-  const [updateImage] = useUpdateImageMutation();
+  const [updatedInfo] = useUpdateUserInfoMutation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [updateAddress] = useUpdateAddressMutation();
 
   useEffect(() => {
     if (myprofile?.myProfile) {
@@ -60,7 +57,7 @@ const MyProfile = () => {
       }
       let res;
       if (image) {
-        res = await updateImage(image).unwrap();
+        res = await updatedInfo(image).unwrap();
       }
       if (res.data.result?.coverImage) {
         setCoverImage(res.data.result?.coverImage);
@@ -77,7 +74,7 @@ const MyProfile = () => {
   };
 
   const onSubmit = async (data: any) => {
-    const res = await updateAddress(data);
+    const res = await updatedInfo(data);
     if (res.data.result?.homeTown) {
       setHomeTown(res.data.result?.homeTown);
     }
