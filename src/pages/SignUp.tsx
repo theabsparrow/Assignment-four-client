@@ -8,12 +8,13 @@ import FormSelect from "@/myComponent/formInput/FormSelect";
 import { genders } from "@/myComponent/formInput/formInput.const";
 import { imageUpload } from "@/utills/uploadImage";
 import { TUserInfo } from "@/interface/userInfo";
-import { useRegisterMutation } from "@/redux/features/user/userApi";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { decodeToken } from "@/utills/decodeToken";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useRegisterMutation } from "@/redux/features/auth/authApi";
+import useMyProfile from "@/hook/useMyProfile";
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +22,7 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [register] = useRegisterMutation();
   const navigate = useNavigate();
+  const { refetch } = useMyProfile();
 
   const onSubmit = async (data: any) => {
     const toastId = toast.loading("regestering");
@@ -61,6 +63,7 @@ const SignUp = () => {
       const user = decodeToken(res.data.access);
       dispatch(setUser({ user, token: res.data.access }));
       toast.success("successfully registered", { id: toastId, duration: 3000 });
+      await refetch();
       navigate("/");
     } catch (error: any) {
       const errorInfo =
@@ -70,14 +73,14 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 font-inter">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4 font-inter">
       <div className=" p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
           Create a Free <br /> Account
         </h2>
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="flex justify-between items-start gap-3 pb-4">
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-2">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 pb-2 space-y-2 md:space-y-0">
               <FormInput
                 label="First name"
                 name="firstName"
@@ -107,7 +110,7 @@ const SignUp = () => {
               />
             </div>
 
-            <div className="flex items-start justify-start gap-3 pb-4">
+            <div className="flex flex-col md:flex-row md:justify-start md:items-start gap-3 pb-4 space-y-2 md:space-y-0">
               <FormInput
                 label="Email"
                 name="email"
@@ -123,7 +126,7 @@ const SignUp = () => {
               />
             </div>
 
-            <div className="flex items-start justify-between gap-3 pb-4">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 space-y-2 md:space-y-0">
               <FormSelect
                 label="Gender"
                 name="gender"
@@ -167,8 +170,8 @@ const SignUp = () => {
               />
             </div>
 
-            <div className="flex flex-col justify-center mt-2">
-              <div className="flex items-center">
+            <div className="flex flex-col justify-center mt-4">
+              <div className="flex items-center gap-1">
                 <input
                   type="checkbox"
                   {...methods.register("checked", {
@@ -189,12 +192,23 @@ const SignUp = () => {
             )}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition"
+              className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
             >
               Sign Up
             </button>
           </form>
         </FormProvider>
+        <div className="mt-2">
+          <p>
+            Already have an account?{" "}
+            <Link
+              className="text-primary font-bold hover:scale-125 duration-500"
+              to="/sign-in"
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

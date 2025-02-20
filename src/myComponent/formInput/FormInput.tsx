@@ -3,6 +3,7 @@ import { TFormInputProps } from "./formInput.type";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useFormContext } from "react-hook-form";
+import { AiFillWarning } from "react-icons/ai";
 
 const FormInput = ({
   label,
@@ -132,7 +133,10 @@ const FormInput = ({
         </span>
       )}
       {errors[name] && (
-        <p className="text-red-500 text-sm">{errors[name].message as string}</p>
+        <p className="text-red-500 text-sm flex items-center gap-1">
+          {" "}
+          <AiFillWarning /> {errors[name].message as string}
+        </p>
       )}
     </div>
   );

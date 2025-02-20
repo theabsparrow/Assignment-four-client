@@ -1,19 +1,27 @@
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
 import logo from "../assets/logo.png";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { IoIosArrowForward } from "react-icons/io";
+import useMyProfile from "@/hook/useMyProfile";
+import { MdDashboard, MdOutlineLogout } from "react-icons/md";
+import { useAppDispatch } from "@/redux/hooks";
+import { toast } from "sonner";
+import { useLogoutMutation } from "@/redux/features/auth/authApi";
+import { logOut } from "@/redux/features/auth/authSlice";
+import { baseApi } from "@/redux/api/baseApi";
+import MenuItem from "@/myComponent/menuItem/MenuItem";
+import { IoSettingsSharp } from "react-icons/io5";
+import Dropdown from "@/myComponent/darkmode/Dropdown";
+import MobileNavbar from "@/myComponent/mobileNavbar/MobileNavbar";
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
   const [display, setDisplay] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "enabled"
-  );
+  const [logout] = useLogoutMutation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const myprofile =
+    useMyProfile(["name", "profileImage", "email"]) || undefined;
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -25,33 +33,45 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [display]);
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+  const handleLogout = async (e: React.MouseEvent<HTMLElement>) => {
+    const toastId = toast.loading("signing out....");
+    e.stopPropagation();
+    setDisplay(!display);
+    try {
+      const res = await logout(myprofile?.myProfile?.email);
+      if (res.data.success) {
+        dispatch(logOut());
+        toast.success("successfully signed out", {
+          id: toastId,
+          duration: 3000,
+        });
+        dispatch(baseApi.util.resetApiState());
+        navigate("/sign-in");
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }, [darkMode]);
-  const toggleDarkMode = (enabled: boolean) => {
-    setDarkMode(enabled);
-    localStorage.setItem("darkMode", enabled ? "enabled" : "disabled");
-    document.documentElement.classList.toggle("dark", enabled);
   };
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Services", path: "/services" },
-    { name: "Contact", path: "/contact" },
-    { name: "Sign In", path: "/sign-in" },
-    { name: "Sign Up", path: "/sign-up" },
+    {
+      name: myprofile.myProfile ? "My Profile" : "Sign In",
+      path: myprofile.myProfile ? "/my-profile" : "/ sign-in",
+    },
+    {
+      name: myprofile.myProfile ? "Dashboard" : "Sign Up",
+      path: myprofile.myProfile ? "/sadhboard" : "/sign-up",
+    },
+    ...(myprofile.myProfile ? [{ name: "Settings", path: "/settings" }] : []),
   ];
+
   return (
-    <nav className="w-full dark:bg-gray-800 bg-white shadow-md fixed top-0 z-50">
+    <nav className="w-full dark:bg-gray-800 bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4 md:px-16">
-        <div>
+        <div className="cursor-pointer">
           <Link to="/">
-            <img className="w-56" src={logo} alt=" Lambo car logo" />
+            <img className="w-36 lg:w-56" src={logo} alt=" Lambo car logo" />
           </Link>
         </div>
 
@@ -84,7 +104,14 @@ const Navbar = () => {
             }}
             className="text-5xl"
           >
-            <CgProfile className="hover:text-primary" />
+            {myprofile.myProfile?.profileImage ? (
+              <img
+                className="w-11 h-11 rounded-full border border-secondary"
+                src={myprofile.myProfile?.profileImage}
+              />
+            ) : (
+              <CgProfile className="hover:text-primary" />
+            )}
           </button>
         </div>
 
@@ -96,174 +123,80 @@ const Navbar = () => {
             className="absolute top-[82px] right-16 w-96 py-6 border-x border-gray-400 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
           >
             <h1 className="text-2xl font-inter font-bold text-center">
-              My Lambo Car
+              {myprofile.myProfile ? (
+                <span className="text-secondary">
+                  {myprofile.myProfile?.name?.firstName}{" "}
+                  {myprofile.myProfile?.name?.lastName}
+                </span>
+              ) : (
+                "My Lambo Car"
+              )}
             </h1>
-            <div className="mt-4 px-8 py-10 border border-gray-300 rounded-lg ">
+            <div className="mt-4 px-4 py-10 border border-gray-300 rounded-lg ">
               <p className="text-center font-inter">
                 Welcome. Here you'll have access to all your vehicles or view
                 your future saved vehicles.
               </p>
               <div className="mt-8 flex justify-between items-center">
-                <Link
-                  to="/sign-in"
-                  className="bg-secondary hover:bg-deepRed duration-500  text-white px-6 py-2 font-inter font-semibold rounded-lg"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to="/sign-up"
-                  className=" text-secondary hover:text-deepRed duration-500  font-inter font-bold flex items-center gap-1"
-                >
-                  Sign Up <IoIosArrowForward />
-                </Link>
+                {myprofile.myProfile ? (
+                  <MenuItem
+                    display={display}
+                    setDisplay={setDisplay}
+                    path={"/my-profile"}
+                    label={"My Profile"}
+                  ></MenuItem>
+                ) : (
+                  <MenuItem
+                    display={display}
+                    setDisplay={setDisplay}
+                    path={"/sign-in"}
+                    label={"Sign In"}
+                    icon={IoIosArrowForward}
+                  ></MenuItem>
+                )}
+                {myprofile.myProfile ? (
+                  <MenuItem
+                    display={display}
+                    setDisplay={setDisplay}
+                    path={"/dashboard"}
+                    label={"Dashboard"}
+                    icon={MdDashboard}
+                  ></MenuItem>
+                ) : (
+                  <MenuItem
+                    display={display}
+                    setDisplay={setDisplay}
+                    path={"/sign-up"}
+                    label={"Sign Up"}
+                    icon={IoIosArrowForward}
+                  ></MenuItem>
+                )}
               </div>
             </div>
             <div className="mt-4">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="w-full flex justify-between items-center px-4 py-3 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
-              >
-                <span className="font-semibold">Display & Theme</span>
-                <IoIosArrowForward
-                  className={`transform transition-transform ${
-                    dropdownOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </button>
-
-              {/* Dropdown Content */}
-              {dropdownOpen && (
-                <div className=" p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-x border-gray-300 shadow-md">
-                  <h3 className="font-semibold mb-2">Theme</h3>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="darkMode"
-                        className="hidden"
-                        checked={darkMode}
-                        onChange={() => toggleDarkMode(true)}
-                      />
-                      <div
-                        className={`w-5 h-5 border-2 rounded-full ${
-                          darkMode
-                            ? "border-blue-500 bg-blue-500"
-                            : "border-gray-400"
-                        }`}
-                      ></div>
-                      <span>On</span>
-                    </label>
-
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="darkMode"
-                        className="hidden"
-                        checked={!darkMode}
-                        onChange={() => toggleDarkMode(false)}
-                      />
-                      <div
-                        className={`w-5 h-5 border-2 rounded-full ${
-                          !darkMode
-                            ? "border-blue-500 bg-blue-500"
-                            : "border-gray-400"
-                        }`}
-                      ></div>
-                      <span>Off</span>
-                    </label>
-                  </div>
-                </div>
-              )}
+              <Dropdown></Dropdown>
             </div>
+
+            {myprofile.myProfile && (
+              <div className="mt-4 px-5 flex flex-col justify-center items-start space-y-2">
+                <MenuItem
+                  display={display}
+                  setDisplay={setDisplay}
+                  path={"/settings"}
+                  label={"Settings"}
+                  icon={IoSettingsSharp}
+                ></MenuItem>
+                <button
+                  onClick={handleLogout}
+                  className=" text-secondary px-3 hover:text-deepRed hover:scale-110 duration-500 font-inter font-bold flex items-center gap-1"
+                >
+                  Logout <MdOutlineLogout className="text-deepRed rotate-180" />
+                </button>
+              </div>
+            )}
           </div>
         )}
-
-        {/* Mobile Menu */}
-        <div className="md:hidden">
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="w-6 h-6 text-primary" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="p-4">
-              <div className="space-y-4">
-                {navLinks.map((link) => (
-                  <NavLink
-                    key={link.name}
-                    to={link.path}
-                    className={({ isActive }) =>
-                      `block text-lg transition-colors ${
-                        isActive
-                          ? "font-semibold text-deepRed"
-                          : "hover:text-secondary"
-                      }`
-                    }
-                  >
-                    {link.name}
-                  </NavLink>
-                ))}
-                <div>
-                  <button
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className=" w-full flex justify-between items-center px-4 py-3 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
-                  >
-                    <span className="font-semibold">
-                      Display & Accessibility
-                    </span>
-                    <IoIosArrowForward
-                      className={`transform transition-transform ${
-                        dropdownOpen ? "rotate-90" : ""
-                      }`}
-                    />
-                  </button>
-                  {dropdownOpen && (
-                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
-                      <h3 className="font-semibold mb-2">Theme</h3>
-                      <div className="space-y-2">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="darkMode"
-                            className="hidden"
-                            checked={darkMode}
-                            onChange={() => toggleDarkMode(true)}
-                          />
-                          <div
-                            className={`w-5 h-5 border-2 rounded-full ${
-                              darkMode
-                                ? "border-blue-500 bg-blue-500"
-                                : "border-gray-400"
-                            }`}
-                          ></div>
-                          <span>On</span>
-                        </label>
-
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="darkMode"
-                            className="hidden"
-                            checked={!darkMode}
-                            onChange={() => toggleDarkMode(false)}
-                          />
-                          <div
-                            className={`w-5 h-5 border-2 rounded-full ${
-                              !darkMode
-                                ? "border-blue-500 bg-blue-500"
-                                : "border-gray-400"
-                            }`}
-                          ></div>
-                          <span>Off</span>
-                        </label>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
+        <MobileNavbar navLinks={navLinks}></MobileNavbar>
       </div>
     </nav>
   );
