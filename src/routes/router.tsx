@@ -10,6 +10,8 @@ import DashboardLayout from "@/layout/DashboardLayout";
 import ForgotPassword from "@/pages/forgotPassword/ForgotPassword";
 import VerifyOTP from "@/pages/forgotPassword/VerifyOTP";
 import SetNewPassword from "@/pages/forgotPassword/SetNewPassword";
+import ProtectedRoute from "@/layout/ProtectedRoute";
+import { USER_ROLE } from "@/config/role.const";
 
 export const router = createBrowserRouter([
   {
@@ -22,11 +24,23 @@ export const router = createBrowserRouter([
       },
       {
         path: "my-profile",
-        element: <MyProfile></MyProfile>,
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <MyProfile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "settings",
-        element: <Settings></Settings>,
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <Settings />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "sign-in",
@@ -49,10 +63,22 @@ export const router = createBrowserRouter([
   },
   {
     path: "/verify-otp",
-    element: <VerifyOTP></VerifyOTP>,
+    element: (
+      <ProtectedRoute
+        roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+      >
+        <VerifyOTP />{" "}
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/set-newPassword",
-    element: <SetNewPassword></SetNewPassword>,
+    element: (
+      <ProtectedRoute
+        roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+      >
+        <SetNewPassword />
+      </ProtectedRoute>
+    ),
   },
 ]);
