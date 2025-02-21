@@ -26,6 +26,7 @@ const SignIn = () => {
     };
     try {
       const res = await login(loginInfo).unwrap();
+
       const user = decodeToken(res.data);
       dispatch(setUser({ user, token: res.data }));
       toast.success("successfully signed in", { id: toastId, duration: 3000 });

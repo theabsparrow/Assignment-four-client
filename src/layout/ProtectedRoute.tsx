@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children, roles }: TProtectedRouteProps) => {
     if (needLogout) {
       const handleLogout = async () => {
         try {
-          await logout(user?.userEmail);
+          await logout(user?.userEmail || "");
           dispatch(logOut());
           dispatch(baseApi.util.resetApiState());
           navigate("/sign-in");
