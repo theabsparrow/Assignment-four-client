@@ -5,13 +5,19 @@ import { genders } from "@/myComponent/formInput/formInput.const";
 import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
 import FormSelect from "@/myComponent/formInput/FormSelect";
 import SignInFormInput from "@/myComponent/formInput/SignInFormInput";
+import { baseApi } from "@/redux/api/baseApi";
 import { useChnagePassowrdMutation } from "@/redux/features/auth/authApi";
-import { setUser } from "@/redux/features/auth/authSlice";
-import { useUpdateUserInfoMutation } from "@/redux/features/user/userApi";
+import { logOut, setUser } from "@/redux/features/auth/authSlice";
+import {
+  useDeleteUserMutation,
+  useUpdateUserInfoMutation,
+} from "@/redux/features/user/userApi";
 import { useAppDispatch } from "@/redux/hooks";
 import { decodeToken } from "@/utills/decodeToken";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { AiFillWarning } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Settings = () => {
@@ -24,6 +30,9 @@ const Settings = () => {
   const [contactEdit, setContactEdit] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [onDelete, setOnDelete] = useState(false);
+  const [deleteAccount] = useDeleteUserMutation();
+  const navigate = useNavigate();
 
   const onInfoSubmit = async (data: any) => {
     const toastId = toast.loading(`personal info updating....`);
@@ -106,7 +115,29 @@ const Settings = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
-
+  const onDeleteSubmit = async (data: any) => {
+    const toastId = toast.loading("deleting account....");
+    const { password } = data;
+    console.log(password);
+    try {
+      const res = await deleteAccount({ password }).unwrap();
+      console.log(res);
+      if (res.success) {
+        dispatch(logOut());
+        toast.success("account deleted successfully", {
+          id: toastId,
+          duration: 3000,
+        });
+        dispatch(baseApi.util.resetApiState());
+        navigate("/sign-in");
+      }
+    } catch (error: any) {
+      console.log(error);
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
   return (
     <>
       <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md mt-6">
@@ -383,6 +414,70 @@ const Settings = () => {
                 <button
                   type="submit"
                   className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
+                >
+                  Update Password
+                </button>
+              </form>
+            </FormProvider>
+          )}
+        </div>
+
+        {/* delete account */}
+        <div className="py-2 px-4 bg-red-100 dark:bg-gray-800 rounded-lg mt-4">
+          <div className="flex justify-between items-center mb-3">
+            <button
+              onClick={() => setOnDelete(!onDelete)}
+              className="text-lg font-bold text-secondary dark:text-gray-100 hover:scale-110 duration-500"
+            >
+              Delete Account
+            </button>
+          </div>
+          {onDelete && (
+            <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(onDeleteSubmit)}>
+                <div className="mb-3">
+                  <SignInFormInput
+                    label="  password "
+                    name="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    register={methods.register}
+                    required={true}
+                  />
+                </div>
+                <div className=" font-medium text-lg text-secondary">
+                  <h1 className="flex items-center gap-1">
+                    {" "}
+                    <AiFillWarning />
+                    If you delete your account, all your information will be
+                    lost forever.{" "}
+                  </h1>
+                  <h1 className="flex items-center gap-1">
+                    {" "}
+                    <AiFillWarning /> Do you agree ?
+                  </h1>
+                </div>
+                <div className="flex flex-col justify-center mt-2">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="checkbox"
+                      {...methods.register("checked", {
+                        required: true,
+                      })}
+                      id="checked"
+                    />
+                    <p>Yes I agree to delete.</p>
+                  </div>
+                  {methods.formState.errors.checked?.type === "required" && (
+                    <span className="text-sm text-red-500 flex items-center gap-1">
+                      <AiFillWarning /> you have to be agree mate!!
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-secondary mt-2 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
                 >
                   Update Password
                 </button>

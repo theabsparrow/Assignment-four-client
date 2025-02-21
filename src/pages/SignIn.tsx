@@ -61,6 +61,9 @@ const SignIn = () => {
               register={methods.register}
               required={true}
             />
+            <p className="text-blue-600 font-medium duration-500">
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </p>
             <button
               type="submit"
               className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
@@ -73,7 +76,7 @@ const SignIn = () => {
           <p>
             New to this site?{" "}
             <Link
-              className="text-primary font-bold hover:scale-125 duration-500"
+              className="text-blue-600 font-bold hover:scale-125 duration-500"
               to="/sign-up"
             >
               Sign up

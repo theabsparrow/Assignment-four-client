@@ -7,6 +7,9 @@ import MyProfile from "@/pages/myProfile/MyProfile";
 import Settings from "@/pages/settings/Settings";
 
 import DashboardLayout from "@/layout/DashboardLayout";
+import ForgotPassword from "@/pages/forgotPassword/ForgotPassword";
+import VerifyOTP from "@/pages/forgotPassword/VerifyOTP";
+import SetNewPassword from "@/pages/forgotPassword/SetNewPassword";
 
 export const router = createBrowserRouter([
   {
@@ -39,5 +42,17 @@ export const router = createBrowserRouter([
     path: "/dashboard",
     element: <DashboardLayout></DashboardLayout>,
     children: [{}],
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword></ForgotPassword>,
+  },
+  {
+    path: "/verify-otp",
+    element: <VerifyOTP></VerifyOTP>,
+  },
+  {
+    path: "/set-newPassword",
+    element: <SetNewPassword></SetNewPassword>,
   },
 ]);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import logo from "../assets/logo.png";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -48,8 +49,10 @@ const Navbar = () => {
         dispatch(baseApi.util.resetApiState());
         navigate("/sign-in");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
 
