@@ -12,6 +12,12 @@ import VerifyOTP from "@/pages/forgotPassword/VerifyOTP";
 import SetNewPassword from "@/pages/forgotPassword/SetNewPassword";
 import ProtectedRoute from "@/layout/ProtectedRoute";
 import { USER_ROLE } from "@/config/role.const";
+import Dashboard from "@/pages/dashboard/Dashboard";
+import ManageListing from "@/pages/dashboard/admin/ManageListing";
+import UserManagement from "@/pages/dashboard/admin/UserManagement";
+import AddCar from "@/pages/dashboard/admin/AddCar";
+import OrderHistory from "@/pages/dashboard/admin/OrderHistory";
+import SalesReport from "@/pages/dashboard/admin/SalesReport";
 
 export const router = createBrowserRouter([
   {
@@ -55,7 +61,34 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardLayout></DashboardLayout>,
-    children: [{}],
+    children: [
+      {
+        path: "/dashboard",
+        element: <Dashboard></Dashboard>,
+      },
+      // admin route
+      {
+        path: "/dashboard/car-listing",
+        element: <ManageListing></ManageListing>,
+      },
+      {
+        path: "/dashboard/manage-users",
+        element: <UserManagement></UserManagement>,
+      },
+      {
+        path: "/dashboard/add-car",
+        element: <AddCar></AddCar>,
+      },
+      {
+        path: "/dashboard/admin/order-history",
+        element: <OrderHistory></OrderHistory>,
+      },
+      {
+        path: "/dashboard/sales-report",
+        element: <SalesReport></SalesReport>,
+      },
+      // user dashboard
+    ],
   },
   {
     path: "/forgot-password",

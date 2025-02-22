@@ -1,21 +1,29 @@
-import { Home } from "lucide-react";
-import DashboardMenuItems from "../menuItem/DashboardMenuItems";
 import logo from "../../../assets/logo.png";
 import { Link } from "react-router-dom";
 import useMyProfile from "@/hook/useMyProfile";
 import MobileNavbar from "@/myComponent/mobileNavbar/MobileNavbar";
+import AdminItems from "./AdminItems";
+import { USER_ROLE } from "@/config/role.const";
 
 const Sidebar = () => {
-  const myprofile = useMyProfile(["name", "profileImage"]) || undefined;
+  const myprofile = useMyProfile(["name", "profileImage", "role"]) || undefined;
   const navLinks = [
-    { name: "User Management", path: "/" },
+    { name: "User Management", path: "/dashboard/manage-users" },
     {
       name: "Order History",
-      path: "/order-history",
+      path: "/dashboard/admin/order-history",
     },
     {
       name: "Add Car",
-      path: "/add-car",
+      path: "/dashboard/add-car",
+    },
+    {
+      name: "Car Listing",
+      path: "/dashboard/car-listing",
+    },
+    {
+      name: "Sales Report",
+      path: "/dashboard/sales-report",
     },
   ];
 
@@ -46,12 +54,11 @@ const Sidebar = () => {
             src={myprofile?.myProfile?.profileImage}
           />
         </div>
-        <nav className="mt-6 ">
-          <DashboardMenuItems
-            path={"/homcvbge"}
-            label={"Home"}
-            icon={Home}
-          ></DashboardMenuItems>
+        <nav className="mt-6">
+          {(myprofile.myProfile?.role === USER_ROLE.admin ||
+            myprofile.myProfile?.role === USER_ROLE.superAdmin) && (
+            <AdminItems></AdminItems>
+          )}
         </nav>
       </div>
     </>
