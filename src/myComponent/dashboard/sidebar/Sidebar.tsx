@@ -8,16 +8,15 @@ import MobileNavbar from "@/myComponent/mobileNavbar/MobileNavbar";
 const Sidebar = () => {
   const myprofile = useMyProfile(["name", "profileImage"]) || undefined;
   const navLinks = [
-    { name: "Home", path: "/" },
+    { name: "User Management", path: "/" },
     {
-      name: myprofile.myProfile ? "My Profile" : "Sign In",
-      path: myprofile.myProfile ? "/my-profile" : "/ sign-in",
+      name: "Order History",
+      path: "/order-history",
     },
     {
-      name: myprofile.myProfile ? "Dashboard" : "Sign Up",
-      path: myprofile.myProfile ? "/sadhboard" : "/sign-up",
+      name: "Add Car",
+      path: "/add-car",
     },
-    ...(myprofile.myProfile ? [{ name: "Settings", path: "/settings" }] : []),
   ];
 
   return (
@@ -28,7 +27,12 @@ const Sidebar = () => {
             <img className="w-36" src={logo} alt=" Lambo car logo" />
           </Link>
         </div>
-        <MobileNavbar navLinks={navLinks}></MobileNavbar>
+        <MobileNavbar
+          navLinks={navLinks}
+          userInfo={myprofile.myProfile}
+          name={myprofile.myProfile?.name}
+          profile={myprofile.myProfile?.profileImage}
+        ></MobileNavbar>
       </nav>
       <div className="dark:bg-gray-900 bg-white dark:text-gray-200 hidden md:block  transition-all duration-500 w-64 shadow-lg min-h-screen sticky top-0 z-50">
         <div className="cursor-pointer flex justify-center mt-6">

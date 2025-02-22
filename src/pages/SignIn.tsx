@@ -39,7 +39,7 @@ const SignIn = () => {
     }
   };
   return (
-    <div className="flex justify-center pt-20 min-h-[calc(100vh-80px)] bg-gray-100 dark:bg-gray-900 px-4 font-inter ">
+    <div className="flex justify-center pt-10 lg:pt-20 min-h-[calc(100vh-80px)] bg-gray-100 dark:bg-gray-900 px-4 font-inter ">
       <div className=" p-6 dark:bg-gray-800 rounded-lg shadow-md h-[50%]">
         <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
           Sign in With <br /> Email and Password

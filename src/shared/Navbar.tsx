@@ -7,14 +7,12 @@ import { IoIosArrowForward } from "react-icons/io";
 import useMyProfile from "@/hook/useMyProfile";
 import { MdDashboard, MdOutlineLogout } from "react-icons/md";
 import { useAppDispatch } from "@/redux/hooks";
-import { toast } from "sonner";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
-import { logOut } from "@/redux/features/auth/authSlice";
-import { baseApi } from "@/redux/api/baseApi";
 import MenuItem from "@/myComponent/menuItem/MenuItem";
 import { IoSettingsSharp } from "react-icons/io5";
 import Dropdown from "@/myComponent/darkmode/Dropdown";
 import MobileNavbar from "@/myComponent/mobileNavbar/MobileNavbar";
+import { LogoutFunc } from "@/utills/logout";
 
 const Navbar = () => {
   const [display, setDisplay] = useState(false);
@@ -34,38 +32,30 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [display]);
 
-  const handleLogout = async (e: React.MouseEvent<HTMLElement>) => {
-    const toastId = toast.loading("signing out....");
-    e.stopPropagation();
-    setDisplay(!display);
-    try {
-      const res = await logout(myprofile?.myProfile?.email);
-      if (res.data.success) {
-        dispatch(logOut());
-        toast.success("successfully signed out", {
-          id: toastId,
-          duration: 3000,
-        });
-        dispatch(baseApi.util.resetApiState());
-        navigate("/sign-in");
-      }
-    } catch (error: any) {
-      const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
-    }
+  const handleLogout = (e: React.MouseEvent<HTMLElement>) => {
+    const email = myprofile?.myProfile?.email;
+    return LogoutFunc({
+      e,
+      dispatch,
+      navigate,
+      email,
+      setDisplay,
+      logout,
+      display,
+    });
   };
 
   const navLinks = [
     { name: "Home", path: "/" },
     {
       name: myprofile.myProfile ? "My Profile" : "Sign In",
-      path: myprofile.myProfile ? "/my-profile" : "/ sign-in",
+      path: myprofile.myProfile ? "/my-profile" : "/sign-in",
     },
     {
-      name: myprofile.myProfile ? "Dashboard" : "Sign Up",
-      path: myprofile.myProfile ? "/sadhboard" : "/sign-up",
+      name: myprofile.myProfile ? "Dashboard" : "Sign up",
+      path: myprofile.myProfile ? "/dashboard" : "/sign-up",
     },
+
     ...(myprofile.myProfile ? [{ name: "Settings", path: "/settings" }] : []),
   ];
 
@@ -115,7 +105,7 @@ const Navbar = () => {
         {display && (
           <div
             id="profile-container"
-            className="absolute top-[82px] right-16 w-96 py-6 border-x border-gray-400 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
+            className="absolute top-[82px] hidden md:flex flex-col right-16 w-96 py-6 border-x border-gray-400 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
           >
             <h1 className="text-2xl font-inter font-bold text-center">
               {myprofile.myProfile ? (
@@ -191,7 +181,12 @@ const Navbar = () => {
             )}
           </div>
         )}
-        <MobileNavbar navLinks={navLinks}></MobileNavbar>
+        <MobileNavbar
+          navLinks={navLinks}
+          userInfo={myprofile.myProfile}
+          name={myprofile.myProfile?.name}
+          profile={myprofile.myProfile?.profileImage}
+        ></MobileNavbar>
       </div>
     </nav>
   );
