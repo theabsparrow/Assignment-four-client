@@ -23,7 +23,7 @@ const AdminItems = () => {
         icon={BsDatabaseFillAdd}
       ></DashboardMenuItems>
       <DashboardMenuItems
-        path={"/dashboard/admin/order-history"}
+        path={"/dashboard/order-history"}
         label={"Order History"}
         icon={RiChatHistoryFill}
       ></DashboardMenuItems>

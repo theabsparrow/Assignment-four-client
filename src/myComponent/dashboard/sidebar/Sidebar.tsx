@@ -1,35 +1,41 @@
 import logo from "../../../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useMyProfile from "@/hook/useMyProfile";
 import MobileNavbar from "@/myComponent/mobileNavbar/MobileNavbar";
 import AdminItems from "./AdminItems";
 import { USER_ROLE } from "@/config/role.const";
+import { MdOutlineLogout } from "react-icons/md";
+import { LogoutFunc } from "@/utills/logout";
+import { useLogoutMutation } from "@/redux/features/auth/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import UserItems from "./UserItems";
+import SharedItems from "./SharedItems";
+import { getDashboardNavlinks } from "@/utills/getDashboardNavLinks";
 
 const Sidebar = () => {
-  const myprofile = useMyProfile(["name", "profileImage", "role"]) || undefined;
-  const navLinks = [
-    { name: "User Management", path: "/dashboard/manage-users" },
-    {
-      name: "Order History",
-      path: "/dashboard/admin/order-history",
-    },
-    {
-      name: "Add Car",
-      path: "/dashboard/add-car",
-    },
-    {
-      name: "Car Listing",
-      path: "/dashboard/car-listing",
-    },
-    {
-      name: "Sales Report",
-      path: "/dashboard/sales-report",
-    },
-  ];
+  const myprofile =
+    useMyProfile(["name", "profileImage", "role", "email"]) || undefined;
+  const [logout] = useLogoutMutation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const handleLogout = (e: React.MouseEvent<HTMLElement>) => {
+    const email = myprofile?.myProfile?.email;
+    return LogoutFunc({
+      e,
+      dispatch,
+      navigate,
+      email,
+      logout,
+    });
+  };
+
+  const role = myprofile?.myProfile?.role;
+  const navLinks = getDashboardNavlinks(role);
 
   return (
     <>
-      <nav className="w-full dark:bg-gray-800 bg-white shadow-md sticky top-0 z-50 md:hidden py-4 px-4 flex justify-between items-center">
+      <nav className="w-full dark:bg-gray-800 bg-white shadow-md sticky top-0 z-50 md:hidden py-4 px-4 flex justify-between items-center font-inter">
         <div className="cursor-pointer">
           <Link to="/">
             <img className="w-36" src={logo} alt=" Lambo car logo" />
@@ -55,10 +61,20 @@ const Sidebar = () => {
           />
         </div>
         <nav className="mt-6">
+          {/* admin */}
           {(myprofile.myProfile?.role === USER_ROLE.admin ||
             myprofile.myProfile?.role === USER_ROLE.superAdmin) && (
             <AdminItems></AdminItems>
           )}
+          {/* user */}
+          {myprofile.myProfile?.role === USER_ROLE.user && (
+            <UserItems></UserItems>
+          )}
+          {/* shared */}
+          <SharedItems></SharedItems>
+          <div className="flex items-center justify-between px-8 gap-1 font-inter font-semibold hover:bg-[#f0f3f8] duration-500 p-3 dark:hover:bg-gray-800 border-y cursor-pointer">
+            <button onClick={handleLogout}>Logout</button> <MdOutlineLogout />
+          </div>
         </nav>
       </div>
     </>

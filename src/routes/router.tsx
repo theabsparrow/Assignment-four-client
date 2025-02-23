@@ -5,24 +5,18 @@ import SignIn from "@/pages/SignIn.js";
 import SignUp from "@/pages/SignUp";
 import MyProfile from "@/pages/myProfile/MyProfile";
 import Settings from "@/pages/settings/Settings";
-
-import DashboardLayout from "@/layout/DashboardLayout";
 import ForgotPassword from "@/pages/forgotPassword/ForgotPassword";
 import VerifyOTP from "@/pages/forgotPassword/VerifyOTP";
 import SetNewPassword from "@/pages/forgotPassword/SetNewPassword";
 import ProtectedRoute from "@/layout/ProtectedRoute";
 import { USER_ROLE } from "@/config/role.const";
-import Dashboard from "@/pages/dashboard/Dashboard";
-import ManageListing from "@/pages/dashboard/admin/ManageListing";
-import UserManagement from "@/pages/dashboard/admin/UserManagement";
-import AddCar from "@/pages/dashboard/admin/AddCar";
-import OrderHistory from "@/pages/dashboard/admin/OrderHistory";
-import SalesReport from "@/pages/dashboard/admin/SalesReport";
-
+import Error from "@/pages/error/Error";
+import { dashboardRoutes } from "./dashboardRoute";
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <Error></Error>,
     children: [
       {
         index: true,
@@ -58,38 +52,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/dashboard",
-    element: <DashboardLayout></DashboardLayout>,
-    children: [
-      {
-        path: "/dashboard",
-        element: <Dashboard></Dashboard>,
-      },
-      // admin route
-      {
-        path: "/dashboard/car-listing",
-        element: <ManageListing></ManageListing>,
-      },
-      {
-        path: "/dashboard/manage-users",
-        element: <UserManagement></UserManagement>,
-      },
-      {
-        path: "/dashboard/add-car",
-        element: <AddCar></AddCar>,
-      },
-      {
-        path: "/dashboard/admin/order-history",
-        element: <OrderHistory></OrderHistory>,
-      },
-      {
-        path: "/dashboard/sales-report",
-        element: <SalesReport></SalesReport>,
-      },
-      // user dashboard
-    ],
-  },
+  ...dashboardRoutes,
   {
     path: "/forgot-password",
     element: <ForgotPassword></ForgotPassword>,
