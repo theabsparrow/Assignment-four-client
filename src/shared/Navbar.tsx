@@ -55,16 +55,15 @@ const Navbar = () => {
       name: myprofile.myProfile ? "Dashboard" : "Sign up",
       path: myprofile.myProfile ? "/dashboard" : "/sign-up",
     },
-
     ...(myprofile.myProfile ? [{ name: "Settings", path: "/settings" }] : []),
   ];
 
   return (
     <nav className="w-full dark:bg-gray-800 bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto flex items-center justify-between py-4 px-4 md:px-16">
-        <div className="cursor-pointer">
+      <div className="container mx-auto flex items-center justify-between py-4 px-4 md:px-32">
+        <div>
           <Link to="/">
-            <img className="w-36 lg:w-56" src={logo} alt=" Lambo car logo" />
+            <img className="w-36 lg:w-56 " src={logo} alt=" Lambo car logo" />
           </Link>
         </div>
 
