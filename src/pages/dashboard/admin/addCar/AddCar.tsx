@@ -93,12 +93,12 @@ const AddCar = () => {
   };
 
   return (
-    <div className="md:px-20 py-10 -600 font-inter w-[70vw]">
+    <div className="px-5 md:px-20 py-10 -600 font-inter md:w-[70vw]">
       <h1 className="text-2xl font-bold mb-4">Add a New Car</h1>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-3 gap-5 ">
-            <div className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5 ">
+            <div className="space-y-2 md:space-y-5">
               <AddCarSelectInput
                 name="brand"
                 label="Brand"
@@ -118,7 +118,7 @@ const AddCar = () => {
               />
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-2 md:space-y-5">
               <AddCarSelectInput
                 name="category"
                 label="Category"
@@ -136,7 +136,7 @@ const AddCar = () => {
               ></AddCarSelectInput>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-2 md:space-y-5">
               <AddCarSelectInput
                 name="year"
                 label="Year"
@@ -152,8 +152,8 @@ const AddCar = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-5 items-center">
-            <div className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5 items-center">
+            <div className="space-y-2 md:space-y-5">
               <FormInput
                 label="Model"
                 name="model"
@@ -186,7 +186,10 @@ const AddCar = () => {
           </div>
 
           <div>
-            <MultipleImageUpload name={"photo"} label={"Gallery Image"} />
+            <MultipleImageUpload
+              name={"photo"}
+              label={"Gallery Image (multiple photo)"}
+            />
           </div>
           <TextArea
             name="description"

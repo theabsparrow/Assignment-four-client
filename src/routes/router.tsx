@@ -12,6 +12,7 @@ import ProtectedRoute from "@/layout/ProtectedRoute";
 import { USER_ROLE } from "@/config/role.const";
 import Error from "@/pages/error/Error";
 import { dashboardRoutes } from "./dashboardRoute";
+import CarDetails from "@/pages/carDetails/CarDetails";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
       {
         path: "sign-up",
         element: <SignUp></SignUp>,
+      },
+      {
+        path: "details/:id",
+        element: <CarDetails />,
       },
     ],
   },

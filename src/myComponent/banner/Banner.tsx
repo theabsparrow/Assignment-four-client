@@ -44,21 +44,21 @@ const Banner = () => {
         style={{ backgroundImage: `url(${banner})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60 "></div>
-        <div className="absolute top-4 md:top-16 font-inter space-y-7 md:space-y-12">
-          <div>
-            <h1 className="text-2xl md:text-6xl text-white dark:text-slate-950 font-bold text-center">
+        <div className="absolute top-4 md:top-16 font-inter space-y-2 md:space-y-12 ">
+          <div className="px-4">
+            <h1 className="text-xl md:text-6xl text-white dark:text-slate-950 font-bold md:text-center">
               Find the Best Car Price in Bangladeshg
             </h1>
-            <p className="text-center mt-2 md:mt-10 font-inter md:text-2xl font-semibold text-white">
+            <p className="md:text-center mt-2 md:mt-10 font-inter md:text-2xl font-semibold text-white">
               Leading online automotive marketplace in Bnagladesh
             </p>
           </div>
-          <div className=" bg-opacity-65 md:bg-opacity-100 bg-white dark:bg-gray-900 px-3 md:px-16 py-2 md:py-6 space-x-10 shadow-lg w-full md:max-w-[calc(100vw-256px)]">
+          <div className=" bg-opacity-65 md:bg-opacity-100 bg-white dark:bg-gray-900 px-3 md:px-16 py-1 md:py-6 space-x-10 shadow-lg w-full md:max-w-[calc(100vw-256px)]">
             <form
               onSubmit={handelSubmit}
               className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-20"
             >
-              <div className="flex items-center gap-5 md:gap-20">
+              <div className="flex flex-col lg:flex-row items-center gap-1 md:gap-20">
                 <div>
                   <h1 className="text-gray-500 font-semibold">BRAND</h1>
                   <select
@@ -98,7 +98,7 @@ const Banner = () => {
                 </div>
               </div>
 
-              <div className="w-full text-gray-500 font-semibold ">
+              <div className="md:w-full text-gray-500 font-semibold ">
                 <div className="flex items-center mb-3 md:gap-3">
                   <h2 className="text-sm md:text-base md:font-semibold">
                     PRICE RANGE FROM{" "}
