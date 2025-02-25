@@ -1,5 +1,5 @@
 import DashboardLayout from "@/layout/DashboardLayout";
-import AddCar from "@/pages/dashboard/admin/AddCar";
+import AddCar from "@/pages/dashboard/admin/addCar/AddCar";
 import ManageListing from "@/pages/dashboard/admin/ManageListing";
 import OrderHistory from "@/pages/dashboard/admin/OrderHistory";
 import SalesReport from "@/pages/dashboard/admin/SalesReport";

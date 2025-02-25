@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldValues, UseFormRegister } from "react-hook-form";
-import { TGender } from "./formInput.const";
+import { TValue } from "./formInput.const";
 
 export type TFormInputProps = {
   label: string;
@@ -24,7 +24,7 @@ export type TFormPhoneInputProps = {
 export type TFormSelectProps = {
   label: string;
   name: string;
-  options: TGender[];
+  options: TValue[];
   register: UseFormRegister<FieldValues>;
   required?: boolean;
 };

@@ -1,28 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import banner from "../../assets/banner.png";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { IoSearchSharp } from "react-icons/io5";
-
-const brands = ["All", "Toyota", "Honda", "BMW", "Mercedes", "Ford"];
-const models = {
-  Toyota: ["Corolla", "Camry"],
-  Honda: ["Civic", "Accord"],
-  BMW: ["X5", "M3"],
-};
+import useGetAllCars from "@/hook/useGetAllCars";
+import { exTractModel, TCar } from "@/utills/extraxt.model";
 
 const Banner = () => {
-  const [selectedBrand, setSelectedBrand] = useState("All");
-  const [selectedModel, setSelectedModel] = useState(models["Toyota"][0]);
+  const { carData, meta } = useGetAllCars(["brand", "model"]) || {};
+  const brands: string[] =
+    carData.length > 1
+      ? Array.from(new Set(carData.map((car) => car.brand as string)))
+      : [];
+  const models: Record<string, string[]> =
+    carData.length > 1 ? exTractModel(carData as TCar[]) : {};
+
+  const [selectedBrand, setSelectedBrand] = useState<string>("All");
+  const [selectedModel, setSelectedModel] =
+    useState<string>("select brand first");
   const [priceRange, setPriceRange] = useState<[number, number]>([
     1, 100000000,
   ]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
+  useEffect(() => {
+    if (selectedBrand !== "All") {
+      setSelectedModel("select model");
+    }
+  }, [selectedBrand]);
 
+  const handelSubmit = (e: React.FormEvent<HTMLElement>) => {
+    e.preventDefault();
+    const minPrice = Number(priceRange[0]);
+    const maxPrice = Number(priceRange[1]);
+    const brand = selectedBrand;
+    const model = selectedModel;
+    console.log(brand, model, minPrice, maxPrice);
+  };
   return (
     <>
       <div
@@ -41,17 +55,20 @@ const Banner = () => {
           </div>
           <div className=" bg-opacity-65 md:bg-opacity-100 bg-white dark:bg-gray-900 px-3 md:px-16 py-2 md:py-6 space-x-10 shadow-lg w-full md:max-w-[calc(100vw-256px)]">
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handelSubmit}
               className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-20"
             >
               <div className="flex items-center gap-5 md:gap-20">
-                <div className="">
+                <div>
                   <h1 className="text-gray-500 font-semibold">BRAND</h1>
                   <select
                     value={selectedBrand}
                     onChange={(e) => setSelectedBrand(e.target.value)}
                     className="px-10 rounded outline-none bg-transparent font-bold"
                   >
+                    <option value="All" disabled>
+                      Select brand
+                    </option>
                     {brands.map((brand) => (
                       <option key={brand} value={brand}>
                         {brand}
@@ -66,14 +83,17 @@ const Banner = () => {
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
                     className="px-10 rounded outline-none bg-transparent font-bold"
+                    disabled={selectedBrand === "All"}
                   >
-                    {models[selectedBrand as keyof typeof models]?.map(
-                      (model) => (
+                    <option value="select brand first" disabled>
+                      Select brand first
+                    </option>
+                    {selectedBrand !== "All" &&
+                      models[selectedBrand]?.map((model) => (
                         <option key={model} value={model}>
                           {model}
                         </option>
-                      )
-                    )}
+                      ))}
                   </select>
                 </div>
               </div>

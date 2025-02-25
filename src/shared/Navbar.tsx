@@ -21,6 +21,7 @@ const Navbar = () => {
   const dispatch = useAppDispatch();
   const myprofile =
     useMyProfile(["name", "profileImage", "email"]) || undefined;
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
