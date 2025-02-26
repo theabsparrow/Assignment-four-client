@@ -48,6 +48,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
+    { name: "All cars", path: "/all-cars" },
     {
       name: myprofile.myProfile ? "My Profile" : "Sign In",
       path: myprofile.myProfile ? "/my-profile" : "/sign-in",
@@ -78,6 +79,16 @@ const Navbar = () => {
             }
           >
             Home
+          </NavLink>
+          <NavLink
+            to="/all-cars"
+            className={({ isActive }) =>
+              `transition-colors font-inter ${
+                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
+              }`
+            }
+          >
+            All cars
           </NavLink>
         </div>
 

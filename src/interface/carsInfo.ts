@@ -11,6 +11,7 @@ export type TCarInfo = {
   inStock: boolean;
   madeIn: string;
   country: string;
+  condition: string;
   image: string;
   carBrandLogo: string;
   seatingCapacity: string;

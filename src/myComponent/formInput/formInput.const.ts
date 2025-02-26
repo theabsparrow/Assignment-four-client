@@ -11,8 +11,16 @@ export const genders: TValue[] = [
 ];
 
 export const conditions: TValue[] = [
-  { value: "", label: "Select condition" },
   { value: "New", label: "New" },
   { value: "Used", label: "Used" },
   { value: "Certified Pre-Owned", label: "Certified Pre-Owned" },
+];
+
+export const sortingOrders: TValue[] = [
+  { value: "-price", label: "Price (desc)" },
+  { value: "-year", label: "Year (desc)" },
+  { value: "-brand", label: "Brand (desc)" },
+  { value: "price", label: "Price" },
+  { value: "year", label: "Year" },
+  { value: "brand", label: "Brand" },
 ];

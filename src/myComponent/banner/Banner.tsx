@@ -37,10 +37,11 @@ const Banner = () => {
     const model = selectedModel;
     console.log(brand, model, minPrice, maxPrice);
   };
+
   return (
     <>
       <div
-        className="relative w-full h-[55vh] md:h-[calc(100vh-80px)] bg-cover bg-center flex items-center justify-center"
+        className="relative w-full h-[55vh] md:h-[calc(100vh-80px)] bg-cover bg-center flex items-center justify-center font-inter"
         style={{ backgroundImage: `url(${banner})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60 "></div>

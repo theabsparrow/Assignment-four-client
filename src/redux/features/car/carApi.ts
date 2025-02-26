@@ -6,11 +6,22 @@ const carApi = baseApi.injectEndpoints({
       query: (args) => {
         const params = new URLSearchParams();
         if (args) {
-          Object.entries(args).forEach(([Key, value]) => {
+          Object.entries(args).forEach(([key, value]) => {
             if (Array.isArray(value)) {
-              params.append(Key, value.join(","));
-            } else {
-              params.append(Key, value as string);
+              params.append(key, value.join(","));
+            } else if (typeof value === "object" && value !== null) {
+              Object.entries(value).forEach(([subKey, subValue]) => {
+                if (
+                  subValue !== "" &&
+                  subValue !== null &&
+                  subValue !== undefined &&
+                  subValue !== 0
+                ) {
+                  params.append(subKey, subValue);
+                }
+              });
+            } else if (value !== undefined && value !== "") {
+              params.append(key, value!.toString());
             }
           });
         }

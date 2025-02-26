@@ -13,6 +13,7 @@ import { USER_ROLE } from "@/config/role.const";
 import Error from "@/pages/error/Error";
 import { dashboardRoutes } from "./dashboardRoute";
 import CarDetails from "@/pages/carDetails/CarDetails";
+import AllCars from "@/pages/allCars/AllCars";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
       {
         path: "details/:id",
         element: <CarDetails />,
+      },
+      {
+        path: "all-cars",
+        element: <AllCars></AllCars>,
       },
     ],
   },
