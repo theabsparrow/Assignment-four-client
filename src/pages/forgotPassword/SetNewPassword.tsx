@@ -3,10 +3,10 @@
 import useMyProfile from "@/hook/useMyProfile";
 import FormInput from "@/myComponent/formInput/FormInput";
 import { useSetNewPasswordMutation } from "@/redux/features/auth/authApi";
-import { setUser } from "@/redux/features/auth/authSlice";
+import { logOut, setUser } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { decodeToken } from "@/utills/decodeToken";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -21,7 +21,6 @@ const SetNewPassword = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
-    const toastId = toast.loading("Setting new Passoword....");
     setErrorMessage("");
     if (!myProfile) {
       navigate("/");
@@ -32,6 +31,7 @@ const SetNewPassword = () => {
         "new password and confirm new password doesn`t match"
       );
     }
+    const toastId = toast.loading("Setting new Passoword....");
     const password = { newPassword };
     try {
       const res = await setNewPass(password).unwrap();
@@ -51,6 +51,23 @@ const SetNewPassword = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (window.location.pathname !== "/") {
+        dispatch(logOut());
+        toast.error("Session expired! Please request OTP again.", {
+          duration: 3000,
+        });
+      }
+    };
+    window.addEventListener("beforeunload", handleRouteChange);
+    window.addEventListener("popstate", handleRouteChange);
+    return () => {
+      window.removeEventListener("beforeunload", handleRouteChange);
+      window.removeEventListener("popstate", handleRouteChange);
+    };
+  }, []);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-6">

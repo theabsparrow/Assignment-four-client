@@ -4,10 +4,10 @@ import {
   useForgetPasswordMutation,
   useResetPasswordMutation,
 } from "@/redux/features/auth/authApi";
-import { setUser } from "@/redux/features/auth/authSlice";
+import { logOut, setUser } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { decodeToken } from "@/utills/decodeToken";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -20,6 +20,20 @@ const VerifyOTP = () => {
   const [forgetPassword] = useForgetPasswordMutation();
   const dispatch = useAppDispatch();
   const [resetPassword] = useResetPasswordMutation();
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+    if (/^\d{6}$/.test(pastedData)) {
+      setOtpNum(pastedData.split(""));
+      pastedData.split("").forEach((char, index) => {
+        if (inputRefs.current[index]) {
+          inputRefs.current[index]!.value = char;
+        }
+      });
+      inputRefs.current[5]?.focus();
+    }
+  };
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
@@ -94,6 +108,24 @@ const VerifyOTP = () => {
     }
   };
 
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (window.location.pathname !== "/set-newPassword") {
+        dispatch(logOut());
+        toast.error("Session expired! Please request OTP again.", {
+          duration: 3000,
+        });
+      }
+    };
+
+    window.addEventListener("beforeunload", handleRouteChange);
+    window.addEventListener("popstate", handleRouteChange);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleRouteChange);
+      window.removeEventListener("popstate", handleRouteChange);
+    };
+  }, []);
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-6">
       <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
@@ -119,6 +151,7 @@ const VerifyOTP = () => {
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleBackspace(index, e)}
+                onPaste={handlePaste}
                 className="w-12 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-600 
                 focus:ring-2 focus:ring-secondary outline-none rounded-lg dark:bg-gray-700 dark:text-white"
               />

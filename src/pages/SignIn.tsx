@@ -16,7 +16,7 @@ const SignIn = () => {
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { refetch } = useMyProfile();
+  const { refetch, myProfile, isLoading } = useMyProfile();
 
   const onSubmit = async (data: any) => {
     const toastId = toast.loading("signing in....");
@@ -26,7 +26,6 @@ const SignIn = () => {
     };
     try {
       const res = await login(loginInfo).unwrap();
-
       const user = decodeToken(res.data);
       dispatch(setUser({ user, token: res.data }));
       toast.success("successfully signed in", { id: toastId, duration: 3000 });
@@ -38,6 +37,15 @@ const SignIn = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+
+  if (isLoading) {
+    return <h1>loading..........</h1>;
+  }
+
+  if (myProfile) {
+    navigate("/");
+  }
+
   return (
     <div className="flex justify-center pt-10 lg:pt-20 min-h-[calc(100vh-80px)] bg-gray-100 dark:bg-gray-900 px-4 font-inter ">
       <div className=" p-6 dark:bg-gray-800 rounded-lg shadow-md h-[50%]">

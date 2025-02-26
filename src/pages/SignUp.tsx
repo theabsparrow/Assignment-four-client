@@ -22,7 +22,7 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [register] = useRegisterMutation();
   const navigate = useNavigate();
-  const { refetch } = useMyProfile();
+  const { refetch, myProfile, isLoading } = useMyProfile();
 
   const onSubmit = async (data: any) => {
     const toastId = toast.loading("regestering");
@@ -71,6 +71,14 @@ const SignUp = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+
+  if (isLoading) {
+    return <h1>loading..........</h1>;
+  }
+
+  if (myProfile) {
+    navigate("/");
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4 font-inter">
