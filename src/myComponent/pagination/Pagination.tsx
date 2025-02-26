@@ -22,7 +22,7 @@ const Pagination = ({ meta, handlePageChange }: TPagninationProps) => {
       <button
         onClick={() => handlePageChange(page - 1)}
         disabled={page === 1}
-        className={`px-4 py-2 rounded-lg flex items-center gap-1 font-semibold 
+        className={`px-2 md:px-4 py-1 md:py-2 rounded-lg flex items-center gap-1 font-semibold 
           ${
             page === 1
               ? "bg-gray-300 cursor-not-allowed"
@@ -30,7 +30,7 @@ const Pagination = ({ meta, handlePageChange }: TPagninationProps) => {
           }
         `}
       >
-        <FaChevronLeft /> Previous
+        <FaChevronLeft /> Prev
       </button>
 
       {/* Page Number Buttons */}
@@ -39,7 +39,7 @@ const Pagination = ({ meta, handlePageChange }: TPagninationProps) => {
           <button
             key={pageNumber}
             onClick={() => handlePageChange(pageNumber)}
-            className={`px-4 py-2 rounded-lg font-semibold border
+            className={`px-2 md:px-4 py-1 md:py-2 rounded-lg font-semibold border
               ${
                 page === pageNumber
                   ? "bg-blue-600 text-white"
@@ -56,7 +56,7 @@ const Pagination = ({ meta, handlePageChange }: TPagninationProps) => {
       <button
         onClick={() => handlePageChange(page + 1)}
         disabled={page === totalPage}
-        className={`px-4 py-2 rounded-lg flex items-center gap-1 font-semibold 
+        className={`px-2 md:px-4 py-1 md:py-2 rounded-lg flex items-center gap-1 font-semibold 
           ${
             page === totalPage
               ? "bg-gray-300 cursor-not-allowed"
