@@ -41,8 +41,34 @@ const carApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["car"],
     }),
+    getSingleCar: builder.query({
+      query: (args) => ({
+        url: `/cars/${args}`,
+        method: "GET",
+      }),
+      providesTags: ["car"],
+    }),
+    updateCar: builder.mutation({
+      query: (carInfo) => ({
+        url: `/cars/update-info/${carInfo?.id}`,
+        method: "PATCH",
+        body: carInfo.carInfo,
+      }),
+      invalidatesTags: ["car"],
+    }),
+    updateGalleryImage: builder.mutation({
+      query: (imageInfo) => ({
+        url: `/cars/update-image/${imageInfo?.id}`,
+        method: "PATCH",
+        body: imageInfo?.imageInfo,
+      }),
+      invalidatesTags: ["car"],
+    }),
   }),
 });
 
 export const { useGetCarQuery } = carApi;
 export const { useAddCarMutation } = carApi;
+export const { useGetSingleCarQuery } = carApi;
+export const { useUpdateCarMutation } = carApi;
+export const { useUpdateGalleryImageMutation } = carApi;
