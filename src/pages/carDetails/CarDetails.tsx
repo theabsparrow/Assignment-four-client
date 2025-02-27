@@ -4,6 +4,7 @@ import CarDetailsSceleton from "@/myComponent/loader/CarDetailsSceleton";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import {
   useGetSingleCarQuery,
+  useRemoveGalleryImageMutation,
   useUpdateCarMutation,
   useUpdateGalleryImageMutation,
 } from "@/redux/features/car/carApi";
@@ -11,6 +12,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { imageUpload } from "@/utills/uploadImage";
 import { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -22,6 +24,7 @@ const CarDetails = () => {
   const [selectedImage, setSelectedImage] = useState(car?.image);
   const [updateCarInfo] = useUpdateCarMutation();
   const [updateGalleryImageInfo] = useUpdateGalleryImageMutation();
+  const [removeGalleryImageInfo] = useRemoveGalleryImageMutation();
 
   useEffect(() => {
     if (car?.image) {
@@ -81,29 +84,45 @@ const CarDetails = () => {
     }
   };
 
+  const handleDeleteImage = async (imageUrl: string) => {
+    const imageInfo = { galleryImage: [{ url: imageUrl }] };
+    try {
+      const res = await removeGalleryImageInfo({ imageInfo, id });
+      if (res.data) {
+        toast.success("photo deleted successfullt", { duration: 3000 });
+      }
+    } catch (error: any) {
+      console.log(error);
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { duration: 3000 });
+    }
+  };
+
   if (isLoading) {
     return <CarDetailsSceleton></CarDetailsSceleton>;
   }
   return (
-    <div className="md:px-32 min-h-screen bg-gray-100 flex justify-between items-start py-2">
-      <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg">
+    <div className="md:px-32 min-h-screen bg-gray-100 dark:bg-gray-800 flex justify-between items-start py-2">
+      <div className="max-w-4xl w-full shadow-lg dark:bg-gray-900 rounded-lg">
+        {/* large image section starts */}
         <div className="relative">
           <img
             src={selectedImage}
             alt={car?.model}
-            className="w-full h-[550px]"
+            className="w-full h-[200px] md:h-[550px]"
           />
-          <div className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md">
+          <div className="absolute top-1 right-1 md:top-4 md:right-4 bg-white p-2 rounded-full shadow-md">
             <img
               src={car?.carBrandLogo}
               alt={car?.brand}
-              className="h-12 w-12 "
+              className="h-5 w-5 md:h-12 md:w-12 "
             />
           </div>
 
           {(user?.userRole === USER_ROLE.admin ||
             user?.userRole === USER_ROLE.superAdmin) && (
-            <label className="absolute bottom-1 right-1 bg-gray-300 dark:bg-gray-700 p-2 rounded-full shadow-md cursor-pointer">
+            <label className="absolute bottom-1 right-1 bg-gray-300 dark:bg-gray-700 p-1 md:p-2 rounded-full shadow-md cursor-pointer">
               📷
               <input
                 type="file"
@@ -113,13 +132,82 @@ const CarDetails = () => {
             </label>
           )}
         </div>
+        {/* large image section ends */}
 
+        {/* sideber image section for mobile starts */}
+        <div className="flex flex-col md:hidden ">
+          <div className="h-16 flex items-center md:hidden">
+            <img
+              src={car?.image}
+              alt={car?.brand}
+              onClick={() => setSelectedImage(car?.image)}
+              className={`w-[70px] h-16 md:w-60 hover:scale-110 duration-500 cursor-pointer${
+                selectedImage === car?.image
+                  ? " border-2 border-secondary shadow-lg scale-110 z-10"
+                  : "border-none"
+              }`}
+            />
+            {car?.galleryImage.length < 5 &&
+              (user?.userRole === USER_ROLE.admin ||
+                user?.userRole === USER_ROLE.superAdmin) && (
+                <div className="w-16 h-16 md:w-60 bg-gray-300 dark:bg-gray-700 shadow-md border-2 border-secondary border-dashed ">
+                  <label className="cursor-pointer w-full flex justify-center items-center py-[14px]">
+                    <IoAdd className="text-4xl text-red-500" />
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => handleUpdateGalleryImage(e)}
+                    />
+                  </label>
+                </div>
+              )}
+          </div>
+          <div className="flex items-center h-16 md:hidden">
+            {car?.galleryImage.length > 0 &&
+              car.galleryImage.map(
+                (
+                  photo: { url: string; isDeleted: boolean; _id: string },
+                  index: number
+                ) => (
+                  <div
+                    key={index}
+                    className="relative w-[76px] md:w-60 group overflow-hidden"
+                  >
+                    {(user?.userRole === USER_ROLE.superAdmin ||
+                      user?.userRole === USER_ROLE.admin) && (
+                      <button
+                        onClick={() => handleDeleteImage(photo.url)}
+                        className="absolute top-1 right-1 text-secondary md:text-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+                      >
+                        <MdDelete />
+                      </button>
+                    )}
+                    <img
+                      src={photo.url}
+                      alt={car?.brand}
+                      onClick={() => setSelectedImage(photo.url)}
+                      className={`w-[70px] h-16 hover:cursor-pointer hover:scale-110 hover:relative hover:z-10 duration-500 ${
+                        selectedImage === photo.url
+                          ? "  shadow-lg scale-110 relative z-10"
+                          : "border-none z-0"
+                      }`}
+                    />
+                  </div>
+                )
+              )}
+          </div>
+        </div>
+        {/* sideber image section for mobile ends */}
+
+        {/* car information section starts */}
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {car?.brand} {car?.model}
           </h2>
-          <p className="text-gray-600 mt-2">{car?.description}</p>
-          <div className="mt-4 grid grid-cols-2 gap-4 text-gray-700">
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
+            {car?.description}
+          </p>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
             <p>
               <strong>Category:</strong> {car?.category}
             </p>
@@ -147,15 +235,18 @@ const CarDetails = () => {
             </p>
           </div>
         </div>
+        {/* car information section ends */}
       </div>
-      <div className="flex flex-col">
+
+      {/* sideber image section or large device starts */}
+      <div className="hidden md:flex flex-col">
         <img
           src={car?.image}
           alt={car?.brand}
           onClick={() => setSelectedImage(car?.image)}
-          className={`w-60 hover:scale-110 duration-500 cursor-pointer ${
+          className={`w-60 hover:scale-110 duration-500 cursor-pointer${
             selectedImage === car?.image
-              ? " border-2 border-secondary shadow-lg scale-110"
+              ? " border-2 border-secondary shadow-lg scale-110 z-10"
               : "border-none"
           }`}
         />
@@ -165,17 +256,24 @@ const CarDetails = () => {
               photo: { url: string; isDeleted: boolean; _id: string },
               index: number
             ) => (
-              <img
-                key={index}
-                src={photo.url}
-                alt={car?.brand}
-                onClick={() => setSelectedImage(photo.url)}
-                className={`w-60 hover:scale-110 duration-500 cursor-pointer ${
-                  selectedImage === photo.url
-                    ? " border-2 border-secondary shadow-lg scale-110"
-                    : "border-none"
-                }`}
-              />
+              <div key={index} className="relative w-60 group">
+                <button
+                  onClick={() => handleDeleteImage(photo.url)}
+                  className="absolute top-1 right-1  text-secondary text-2xl p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+                >
+                  <MdDelete />
+                </button>
+                <img
+                  src={photo.url}
+                  alt={car?.brand}
+                  onClick={() => setSelectedImage(photo.url)}
+                  className={`w-full hover:cursor-pointer hover:scale-110 hover:relative hover:z-10 duration-500 ${
+                    selectedImage === photo.url
+                      ? " border-2 border-secondary shadow-lg scale-110 relative z-10"
+                      : "border-none z-0"
+                  }`}
+                />
+              </div>
             )
           )}
         {car?.galleryImage.length < 5 &&
@@ -193,6 +291,7 @@ const CarDetails = () => {
             </div>
           )}
       </div>
+      {/* sideber image section for large device ends */}
     </div>
   );
 };
