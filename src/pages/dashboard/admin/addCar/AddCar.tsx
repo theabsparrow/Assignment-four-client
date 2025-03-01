@@ -78,13 +78,15 @@ const AddCar = () => {
         basicInfo.galleryImage = galleryImage;
       }
       const res = await addCar({ basicInfo }).unwrap();
-      console.log(res);
-      toast.success("car info uploaded successfully ", {
-        id: toastId,
-        duration: 3000,
-      });
-      reset();
+      if (res.data) {
+        toast.success("car info uploaded successfully ", {
+          id: toastId,
+          duration: 3000,
+        });
+        reset();
+      }
     } catch (error: any) {
+      console.log(error);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });

@@ -145,7 +145,7 @@ const CarDetails = () => {
   }
 
   return (
-    <div className="md:px-32 min-h-screen bg-gray-100 dark:bg-gray-800 flex justify-between items-start py-2">
+    <div className="md:px-32 min-h-screen bg-gray-100 dark:bg-gray-800 flex justify-between items-start py-2 font-inter">
       <div className="max-w-4xl w-full shadow-lg dark:bg-gray-900 rounded-lg">
         {/* large image section starts */}
         <div className="relative">

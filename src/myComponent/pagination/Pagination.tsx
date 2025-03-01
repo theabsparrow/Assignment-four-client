@@ -17,7 +17,7 @@ const Pagination = ({ meta, handlePageChange }: TPagninationProps) => {
   const pageNumbers = Array.from({ length: totalPage }, (_, i) => i + 1);
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 font-inter">
       {/* Previous Button */}
       <button
         onClick={() => handlePageChange(page - 1)}

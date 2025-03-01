@@ -2,7 +2,7 @@ import { USER_ROLE } from "@/config/role.const";
 import DashboardLayout from "@/layout/DashboardLayout";
 import ProtectedRoute from "@/layout/ProtectedRoute";
 import AddCar from "@/pages/dashboard/admin/addCar/AddCar";
-import ManageListing from "@/pages/dashboard/admin/ManageListing";
+import CarListing from "@/pages/dashboard/admin/carListing/CarListing";
 import OrderHistory from "@/pages/dashboard/admin/OrderHistory";
 import SalesReport from "@/pages/dashboard/admin/SalesReport";
 import UserManagement from "@/pages/dashboard/admin/UserManagement";
@@ -37,7 +37,7 @@ export const dashboardRoutes = [
         path: "/dashboard/car-listing",
         element: (
           <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-            <ManageListing />
+            <CarListing />
           </ProtectedRoute>
         ),
       },
