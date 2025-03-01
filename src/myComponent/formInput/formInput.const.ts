@@ -11,6 +11,7 @@ export const genders: TValue[] = [
 ];
 
 export const conditions: TValue[] = [
+  { value: "", label: "Select a condition" },
   { value: "New", label: "New" },
   { value: "Used", label: "Used" },
   { value: "Certified Pre-Owned", label: "Certified Pre-Owned" },

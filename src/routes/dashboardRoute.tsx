@@ -1,4 +1,6 @@
+import { USER_ROLE } from "@/config/role.const";
 import DashboardLayout from "@/layout/DashboardLayout";
+import ProtectedRoute from "@/layout/ProtectedRoute";
 import AddCar from "@/pages/dashboard/admin/addCar/AddCar";
 import ManageListing from "@/pages/dashboard/admin/ManageListing";
 import OrderHistory from "@/pages/dashboard/admin/OrderHistory";
@@ -12,45 +14,89 @@ import Wishlist from "@/pages/dashboard/user/Wishlist";
 export const dashboardRoutes = [
   {
     path: "/dashboard",
-    element: <DashboardLayout></DashboardLayout>,
+    element: (
+      <ProtectedRoute
+        roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+      >
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/dashboard",
-        element: <Dashboard></Dashboard>,
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       // admin route
       {
         path: "/dashboard/car-listing",
-        element: <ManageListing></ManageListing>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <ManageListing />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/dashboard/manage-users",
-        element: <UserManagement></UserManagement>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <UserManagement />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/dashboard/add-car",
-        element: <AddCar></AddCar>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <AddCar />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/dashboard/order-history",
-        element: <OrderHistory></OrderHistory>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <OrderHistory />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/dashboard/sales-report",
-        element: <SalesReport></SalesReport>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <SalesReport />
+          </ProtectedRoute>
+        ),
       },
       // user dashboard
       {
         path: "/dashboard/my-orders",
-        element: <MyOrders></MyOrders>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MyOrders />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/dashboard/my-wishlist",
-        element: <Wishlist></Wishlist>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <Wishlist />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/dashboard/payment-history",
-        element: <PaymentHistory></PaymentHistory>,
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <PaymentHistory />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

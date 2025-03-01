@@ -16,10 +16,16 @@ import {
 import Pagination from "@/myComponent/pagination/Pagination";
 import { initalState } from "./allCars.const";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { useSearchParams } from "react-router-dom";
 
 const AllCars = () => {
+  // const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const initialMinPrice = Number(searchParams.get("minPrice")) || 1;
+  const initialMaxPrice = Number(searchParams.get("maxPrice")) || 100000000;
   const [priceRange, setPriceRange] = useState<[number, number]>([
-    1, 100000000,
+    initialMinPrice,
+    initialMaxPrice,
   ]);
   const [searchTerm, setSearch] = useState("");
   const [filter, setFilter] = useState(initalState);
@@ -27,7 +33,6 @@ const AllCars = () => {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
-
   const queryParams = {
     fields: [
       "brand",
@@ -44,6 +49,7 @@ const AllCars = () => {
     page: page || 1,
     limit: limit || 10,
   };
+
   const { data, isLoading } = useGetCarQuery(queryParams);
   const cars = data?.data?.result || [];
 
@@ -103,9 +109,27 @@ const AllCars = () => {
     setPage(1);
     setPriceRange([1, 100000000]);
   };
+
+  useEffect(() => {
+    const brand = searchParams.get("brand") || "";
+    const model = searchParams.get("model") || "";
+    const category = searchParams.get("category") || "";
+    const minPrice = initialMinPrice;
+    const maxPrice = initialMaxPrice;
+    setFilter((prev) => ({
+      ...prev,
+      brand,
+      model,
+      category,
+      minPrice: Number(minPrice),
+      maxPrice: Number(maxPrice),
+    }));
+  }, [searchParams]);
+
   if (isLoading) {
     return <Sceleton></Sceleton>;
   }
+
   return (
     <>
       <div className="bg-[#f0f3f8] dark:bg-gray-700 md:px-32 font-inter relative">
@@ -351,7 +375,7 @@ const AllCars = () => {
               />
               <button
                 onClick={handelReset}
-                className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 duration-500"
+                className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition "
               >
                 Reset
               </button>
@@ -528,8 +552,8 @@ const AllCars = () => {
                 </p>
               </div>
               <ReactRangeSliderInput
-                min={1}
-                max={100000000}
+                min={initialMinPrice}
+                max={initialMaxPrice}
                 step={50000}
                 value={priceRange}
                 onInput={handlePriceRangeChange}

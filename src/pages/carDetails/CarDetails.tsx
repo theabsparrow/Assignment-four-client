@@ -1,5 +1,4 @@
 import { USER_ROLE } from "@/config/role.const";
-
 import CarDetailsSceleton from "@/myComponent/loader/CarDetailsSceleton";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import {
@@ -11,10 +10,24 @@ import {
 import { useAppSelector } from "@/redux/hooks";
 import { imageUpload } from "@/utills/uploadImage";
 import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { IoAdd } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { TbCurrencyTaka } from "react-icons/tb";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import AddCarSelectInput from "../dashboard/admin/addCar/AddCarSelectInput";
+import carColors, {
+  carBrands,
+  carCategories,
+  seatingCapacities,
+  years,
+} from "../dashboard/admin/addCar/addcar.const";
+import { countries } from "@/config/country.const";
+import FormSelect from "@/myComponent/formInput/FormSelect";
+import { conditions } from "@/myComponent/formInput/formInput.const";
+import FormInput from "@/myComponent/formInput/FormInput";
+import TextArea from "../dashboard/admin/addCar/addCarTextArea";
 
 const CarDetails = () => {
   const user = useAppSelector(currentUser);
@@ -22,9 +35,13 @@ const CarDetails = () => {
   const { data, isLoading } = useGetSingleCarQuery(id);
   const car = data?.data;
   const [selectedImage, setSelectedImage] = useState(car?.image);
+  const [editing, setEditing] = useState(false);
   const [updateCarInfo] = useUpdateCarMutation();
   const [updateGalleryImageInfo] = useUpdateGalleryImageMutation();
   const [removeGalleryImageInfo] = useRemoveGalleryImageMutation();
+  const methods = useForm();
+  const { handleSubmit, reset } = methods;
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (car?.image) {
@@ -61,8 +78,8 @@ const CarDetails = () => {
   const handleUpdateGalleryImage = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const toastId = toast.loading(` photo uploading....`);
     const file = e.target.files?.[0];
+    const toastId = toast.loading(` photo uploading....`);
     try {
       let res;
       if (file) {
@@ -70,7 +87,6 @@ const CarDetails = () => {
         const imageInfo = { galleryImage: [{ url }] };
         res = await updateGalleryImageInfo({ imageInfo, id }).unwrap();
       }
-
       if (res.data?.galleryImage.length > 0) {
         toast.success(` photo uploaded successfully`, {
           id: toastId,
@@ -92,16 +108,42 @@ const CarDetails = () => {
         toast.success("photo deleted successfullt", { duration: 3000 });
       }
     } catch (error: any) {
-      console.log(error);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { duration: 3000 });
     }
   };
 
+  const onSubmit = async (data: any) => {
+    setErrorMessage("");
+    const updatedFields = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== "")
+    );
+    if (Object.entries(updatedFields).length === 0) {
+      return setErrorMessage("Nothing to update");
+    }
+    const toastId = toast.loading("car info updating....");
+    try {
+      const res = await updateCarInfo({ carInfo: updatedFields, id }).unwrap();
+      if (res.data) {
+        toast.success("car info updated successfully", {
+          id: toastId,
+          duration: 3000,
+        });
+        reset();
+        setEditing(false);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
+
   if (isLoading) {
     return <CarDetailsSceleton></CarDetailsSceleton>;
   }
+
   return (
     <div className="md:px-32 min-h-screen bg-gray-100 dark:bg-gray-800 flex justify-between items-start py-2">
       <div className="max-w-4xl w-full shadow-lg dark:bg-gray-900 rounded-lg">
@@ -177,7 +219,9 @@ const CarDetails = () => {
                       user?.userRole === USER_ROLE.admin) && (
                       <button
                         onClick={() => handleDeleteImage(photo.url)}
-                        className="absolute top-1 right-1 text-secondary md:text-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+                        className={`${
+                          user?.userRole === USER_ROLE.user && "hidden"
+                        } absolute top-1 right-1 text-secondary md:text-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20`}
                       >
                         <MdDelete />
                       </button>
@@ -207,33 +251,170 @@ const CarDetails = () => {
           <p className="text-gray-600 dark:text-gray-300 mt-2">
             {car?.description}
           </p>
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
-            <p>
-              <strong>Category:</strong> {car?.category}
-            </p>
-            <p>
-              <strong>Color:</strong> {car?.color}
-            </p>
-            <p>
-              <strong>Condition:</strong> {car?.condition}
-            </p>
-            <p>
-              <strong>Seating Capacity:</strong> {car?.seatingCapacity}
-            </p>
-            <p>
-              <strong>Made In:</strong> {car?.madeIn}
-            </p>
-            <p>
-              <strong>Country:</strong> {car?.country}
-            </p>
-            <p className="text-lg font-semibold text-green-600">
-              <strong>Price:</strong> ${car?.price.toLocaleString()}
-            </p>
-            <p className={car?.inStock ? "text-green-500" : "text-red-500"}>
-              <strong>Status:</strong>{" "}
-              {car?.inStock ? "In Stock" : "Out of Stock"}
-            </p>
-          </div>
+          {(user?.userRole === USER_ROLE.admin ||
+            user?.userRole === USER_ROLE.superAdmin) && (
+            <div className="flex justify-end mt-4 ">
+              <button
+                className="text-blue-500 font-semibold hover:underline "
+                onClick={() => {
+                  setEditing(!editing);
+                }}
+              >
+                {editing ? "Cancel" : "Edit"}
+              </button>
+            </div>
+          )}
+
+          {/* editable section starts */}
+          {!editing && (
+            <div className="text-gray-700 dark:text-gray-300">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 ">
+                <p>
+                  <strong>Brand:</strong> {car?.brand}
+                </p>
+                <p>
+                  <strong>Model:</strong> {car?.model}
+                </p>
+                <p>
+                  <strong>Year:</strong> {car?.year}
+                </p>
+                <p>
+                  <strong>Category:</strong> {car?.category}
+                </p>
+                <p>
+                  <strong>Color:</strong> {car?.color}
+                </p>
+                <p>
+                  <strong>Condition:</strong> {car?.condition}
+                </p>
+                <p>
+                  <strong>Seating Capacity:</strong> {car?.seatingCapacity}
+                </p>
+                <p>
+                  <strong>Made In:</strong> {car?.madeIn}
+                </p>
+                <p>
+                  <strong>Country:</strong> {car?.country}
+                </p>
+                <p className="text-lg font-semibold text-green-600 flex items-center">
+                  <strong>Price:</strong> <TbCurrencyTaka className="text-xl" />{" "}
+                  {car?.price.toLocaleString()}
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 mt-4 items-center space-y-4 md:space-y-0">
+                <p className={car?.inStock ? "text-green-500" : "text-red-500"}>
+                  <strong>Status:</strong>{" "}
+                  {car?.inStock ? "In Stock" : "Out of Stock"}
+                </p>
+                <Link
+                  to="/checkout"
+                  className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center md:w-36 text-white font-bold p-2 rounded-md duration-500 transition"
+                >
+                  Checkout
+                </Link>
+              </div>
+            </div>
+          )}
+          {/* editable section ends */}
+          {errorMessage && editing && (
+            <h1 className="text-red-600 text-sm text-center mb-4">
+              {errorMessage}
+            </h1>
+          )}
+          {/* edit option input starts */}
+          {editing &&
+            (user?.userRole === USER_ROLE.admin ||
+              user?.userRole === USER_ROLE.superAdmin) && (
+              <div className="text-gray-700 dark:text-gray-300">
+                <FormProvider {...methods}>
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5 ">
+                      <AddCarSelectInput
+                        name="brand"
+                        label="Brand"
+                        options={carBrands}
+                      ></AddCarSelectInput>
+                      <AddCarSelectInput
+                        name="category"
+                        label="Category"
+                        options={carCategories}
+                      ></AddCarSelectInput>
+                      <FormSelect
+                        label="Condition"
+                        name="condition"
+                        options={conditions}
+                        register={methods.register}
+                      />
+                      <AddCarSelectInput
+                        name="country"
+                        label="Country"
+                        options={countries}
+                      ></AddCarSelectInput>
+
+                      <AddCarSelectInput
+                        name="madeIn"
+                        label="Made in country"
+                        options={countries}
+                      ></AddCarSelectInput>
+                      <AddCarSelectInput
+                        name="color"
+                        label="Color"
+                        options={carColors}
+                      ></AddCarSelectInput>
+                      <AddCarSelectInput
+                        name="year"
+                        label="Year"
+                        options={years}
+                      ></AddCarSelectInput>
+                      <FormSelect
+                        label="Seating Capacity"
+                        name="seatingCapacity"
+                        options={seatingCapacities}
+                        register={methods.register}
+                      />
+                      <FormInput
+                        label="Model"
+                        name="model"
+                        placeholder="Your car model"
+                        type="text"
+                        maxLength={40}
+                        register={methods.register}
+                      />
+                      <FormInput
+                        label="Price"
+                        name="price"
+                        placeholder="Enter price"
+                        type="number"
+                        maxLength={10}
+                        register={methods.register}
+                      />
+                      <TextArea
+                        name="description"
+                        label="Description"
+                        placeholder="Enter your text..."
+                        register={methods.register}
+                        errors={methods.formState.errors}
+                        validationRules={{
+                          minLength: {
+                            value: 10,
+                            message: "Must be at least 10 characters",
+                          },
+                        }}
+                      />
+                      <div className=" flex items-center justify-end">
+                        <button
+                          type="submit"
+                          className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition "
+                        >
+                          Update
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </FormProvider>
+              </div>
+            )}
+          {/* editng option input ends */}
         </div>
         {/* car information section ends */}
       </div>
@@ -259,7 +440,9 @@ const CarDetails = () => {
               <div key={index} className="relative w-60 group">
                 <button
                   onClick={() => handleDeleteImage(photo.url)}
-                  className="absolute top-1 right-1  text-secondary text-2xl p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+                  className={`${
+                    user?.userRole === USER_ROLE.user && "hidden"
+                  } absolute top-1 right-1  text-secondary text-2xl p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20`}
                 >
                   <MdDelete />
                 </button>

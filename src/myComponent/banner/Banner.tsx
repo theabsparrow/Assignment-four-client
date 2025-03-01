@@ -6,9 +6,10 @@ import { TbCurrencyTaka } from "react-icons/tb";
 import { IoSearchSharp } from "react-icons/io5";
 import useGetAllCars from "@/hook/useGetAllCars";
 import { exTractModel, TCar } from "@/utills/extraxt.model";
+import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
-  const { carData, meta } = useGetAllCars(["brand", "model"]) || {};
+  const { carData } = useGetAllCars(["brand", "model"]) || {};
   const brands: string[] =
     carData.length > 1
       ? Array.from(new Set(carData.map((car) => car.brand as string)))
@@ -22,10 +23,11 @@ const Banner = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([
     1, 100000000,
   ]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (selectedBrand !== "All") {
-      setSelectedModel("select model");
+      setSelectedModel("");
     }
   }, [selectedBrand]);
 
@@ -33,9 +35,14 @@ const Banner = () => {
     e.preventDefault();
     const minPrice = Number(priceRange[0]);
     const maxPrice = Number(priceRange[1]);
-    const brand = selectedBrand;
-    const model = selectedModel;
-    console.log(brand, model, minPrice, maxPrice);
+    const brand = selectedBrand !== "All" ? selectedBrand : "";
+    const model = selectedModel !== "select brand first" ? selectedModel : "";
+    const queryParams = new URLSearchParams();
+    if (brand) queryParams.set("brand", brand);
+    if (model) queryParams.set("model", model);
+    queryParams.set("minPrice", minPrice.toString());
+    queryParams.set("maxPrice", maxPrice.toString());
+    navigate(`/all-cars?${queryParams.toString()}`);
   };
 
   return (
@@ -86,7 +93,7 @@ const Banner = () => {
                     className="px-10 rounded outline-none bg-transparent font-bold"
                     disabled={selectedBrand === "All"}
                   >
-                    <option value="select brand first" disabled>
+                    <option value="select brand first">
                       Select brand first
                     </option>
                     {selectedBrand !== "All" &&

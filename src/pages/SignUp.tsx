@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormProvider, useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormInput from "@/myComponent/formInput/FormInput";
 import "react-phone-input-2/lib/style.css";
 import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
@@ -25,7 +25,6 @@ const SignUp = () => {
   const { refetch, myProfile, isLoading } = useMyProfile();
 
   const onSubmit = async (data: any) => {
-    const toastId = toast.loading("regestering");
     setErrorMessage("");
     const {
       firstName,
@@ -42,6 +41,7 @@ const SignUp = () => {
     if (password !== confirmPass) {
       return setErrorMessage("Password and confirm Passowrd doesn`t match");
     }
+    const toastId = toast.loading("regestering");
     try {
       const userInfo: TUserInfo = {
         name: {
@@ -72,12 +72,14 @@ const SignUp = () => {
     }
   };
 
+  useEffect(() => {
+    if (myProfile) {
+      navigate("/");
+    }
+  }, [myProfile, navigate]);
+
   if (isLoading) {
     return <h1>loading..........</h1>;
-  }
-
-  if (myProfile) {
-    navigate("/");
   }
 
   return (

@@ -7,6 +7,7 @@ import { setUser } from "@/redux/features/auth/authSlice";
 
 import { useAppDispatch } from "@/redux/hooks";
 import { decodeToken } from "@/utills/decodeToken";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -19,11 +20,11 @@ const SignIn = () => {
   const { refetch, myProfile, isLoading } = useMyProfile();
 
   const onSubmit = async (data: any) => {
-    const toastId = toast.loading("signing in....");
     const loginInfo = {
       email: data.email,
       password: data.password,
     };
+    const toastId = toast.loading("signing in....");
     try {
       const res = await login(loginInfo).unwrap();
       const user = decodeToken(res.data);
@@ -37,13 +38,14 @@ const SignIn = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+  useEffect(() => {
+    if (myProfile) {
+      navigate("/");
+    }
+  }, [myProfile, navigate]);
 
   if (isLoading) {
     return <h1>loading..........</h1>;
-  }
-
-  if (myProfile) {
-    navigate("/");
   }
 
   return (

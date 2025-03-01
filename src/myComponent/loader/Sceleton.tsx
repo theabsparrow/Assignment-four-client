@@ -1,6 +1,6 @@
 const Sceleton = () => {
   return (
-    <div className="grid grid-cols-4 gap-3 md:px-32 mt-16">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:px-32 mt-16">
       <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden p-4 animate-pulse">
         <div className="w-full h-48 bg-gray-300 dark:bg-gray-700 rounded-lg"></div>
         <div className="mt-4 space-y-3">

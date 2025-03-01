@@ -24,7 +24,6 @@ const AddCar = () => {
   const [addCar] = useAddCarMutation();
 
   const onSubmit = async (data: any) => {
-    const toastId = toast.loading("car data uploading.....");
     let hasError = false;
     requiredFields.forEach((field) => {
       if (!data[field]) {
@@ -49,6 +48,7 @@ const AddCar = () => {
       year,
     } = data;
     const carPrice = Number(car);
+    const toastId = toast.loading("car data uploading.....");
     try {
       const basicInfo: TCarInfo = {
         seatingCapacity,
@@ -85,7 +85,6 @@ const AddCar = () => {
       });
       reset();
     } catch (error: any) {
-      console.log(error);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });

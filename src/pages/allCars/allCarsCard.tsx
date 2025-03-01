@@ -26,7 +26,7 @@ const AllCarsCard = (car: Partial<TCarInfo>) => {
       <div className="mt-4">
         <Link
           to={`/details/${_id}`}
-          className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md"
+          className="w-full bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary duration-500 text-white font-bold p-2 rounded-md"
         >
           View Details
         </Link>

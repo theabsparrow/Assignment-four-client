@@ -30,6 +30,7 @@ const ProtectedRoute = ({ children, roles }: TProtectedRouteProps) => {
           dispatch(logOut());
           dispatch(baseApi.util.resetApiState());
           navigate("/sign-in");
+          window.location.reload();
         } catch (error) {
           console.log(error);
         }

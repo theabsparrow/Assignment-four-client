@@ -35,7 +35,6 @@ const Settings = () => {
   const navigate = useNavigate();
 
   const onInfoSubmit = async (data: any) => {
-    const toastId = toast.loading(`personal info updating....`);
     setErrorMessage("");
     const updatedFields = Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== "")
@@ -55,6 +54,7 @@ const Settings = () => {
     if (Object.keys(name).length > 0) {
       updatedFields.name = name;
     }
+    const toastId = toast.loading(`personal info updating....`);
     try {
       const res = await updatedInfo(updatedFields).unwrap();
       if (res.data.result) {
@@ -84,10 +84,8 @@ const Settings = () => {
   };
 
   const onPassChangeSubmit = async (data: any) => {
-    const toastId = toast.loading("spassword is changing....");
     setErrorMessage("");
     const { confirmNewPass, newPassword, oldPassword } = data;
-
     if (newPassword !== confirmNewPass) {
       return setErrorMessage(
         "new password and confirm new password doesn`t match"
@@ -97,7 +95,7 @@ const Settings = () => {
       oldPassword,
       newPassword,
     };
-
+    const toastId = toast.loading("spassword is changing....");
     try {
       const res = await changePasswordInfo(changePassword).unwrap();
       if (res.data) {
@@ -115,13 +113,12 @@ const Settings = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+
   const onDeleteSubmit = async (data: any) => {
-    const toastId = toast.loading("deleting account....");
     const { password } = data;
-    console.log(password);
+    const toastId = toast.loading("deleting account....");
     try {
       const res = await deleteAccount({ password }).unwrap();
-      console.log(res);
       if (res.success) {
         dispatch(logOut());
         toast.success("account deleted successfully", {
@@ -132,12 +129,12 @@ const Settings = () => {
         navigate("/sign-in");
       }
     } catch (error: any) {
-      console.log(error);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+
   return (
     <>
       <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md mt-6">
@@ -156,7 +153,7 @@ const Settings = () => {
               Personal Information
             </h3>
             <button
-              className="text-blue-500 font-semibold hover:underline"
+              className="text-blue-500 font-semibold hover:underline "
               onClick={() => {
                 setEditing(!editing);
                 setErrorMessage("");

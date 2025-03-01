@@ -116,7 +116,7 @@ const Navbar = () => {
         {display && (
           <div
             id="profile-container"
-            className="absolute top-[82px] hidden md:flex flex-col right-16 w-96 py-6 border-x border-gray-400 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
+            className="absolute top-[76px] hidden md:flex flex-col right-16 w-96 py-6 border-x border-gray-400 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
           >
             <h1 className="text-2xl font-inter font-bold text-center">
               {myprofile.myProfile ? (

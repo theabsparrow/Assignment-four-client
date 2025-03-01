@@ -46,8 +46,8 @@ const MyProfile = () => {
     event: React.ChangeEvent<HTMLInputElement>,
     type: string
   ) => {
-    const toastId = toast.loading(`${type} photo uploading....`);
     const file = event.target.files?.[0];
+    const toastId = toast.loading(`${type} photo uploading....`);
     try {
       const image: { profileImage?: string; coverImage?: string } = {};
       if (type === "cover") {
@@ -74,12 +74,24 @@ const MyProfile = () => {
   };
 
   const onSubmit = async (data: any) => {
-    const res = await updatedInfo(data);
-    if (res.data.result?.homeTown) {
-      setHomeTown(res.data.result?.homeTown);
-    }
-    if (res.data.result?.currentAddress) {
-      setCurrentAddress(res.data.result?.currentAddress);
+    const toastId = toast.loading(`address info updating....`);
+    try {
+      const res = await updatedInfo(data).unwrap();
+      if (res.data.result?.homeTown) {
+        setHomeTown(res.data.result?.homeTown);
+        toast.success(res.message, {
+          id: toastId,
+          duration: 3000,
+        });
+      }
+      if (res.data.result?.currentAddress) {
+        setCurrentAddress(res.data.result?.currentAddress);
+        setEditing(!editing);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
 
@@ -191,16 +203,17 @@ const MyProfile = () => {
       </div>
 
       <div className="p-4 bg-white dark:bg-gray-950 mt-4 mx-4 rounded-lg shadow-md">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Address Information</h3>
+
+          <button
+            onClick={() => setEditing(!editing)}
+            className="text-blue-500 font-semibold hover:underline"
+          >
+            {editing ? "cancel " : "Edit"}
+          </button>
+        </div>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Address Information</h3>
-            <button
-              className="text-blue-500 font-semibold hover:underline"
-              onClick={() => setEditing(!editing)}
-            >
-              {editing ? "Save" : "Edit"}
-            </button>
-          </div>
           <div className="mt-2">
             <label className="block text-sm font-medium text-gray-700">
               Home Town
@@ -231,6 +244,14 @@ const MyProfile = () => {
               </p>
             )}
           </div>
+          {editing && (
+            <div className="mt-4">
+              <button className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition ">
+                {" "}
+                update{" "}
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

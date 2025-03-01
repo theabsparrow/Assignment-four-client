@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 export type TBrandCardProps = {
   _id: string;
   brand: string;
@@ -6,8 +8,18 @@ export type TBrandCardProps = {
 
 const PopularBrandCards = (car: TBrandCardProps) => {
   const { brand, carBrandLogo } = car;
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    const queryParams = new URLSearchParams();
+    queryParams.set("brand", brand);
+    navigate(`/all-cars?${queryParams.toString()}`);
+  };
   return (
-    <div className=" dark:bg-gray-900  p-4 text-center transition transform hover:scale-105 hover:shadow-2xl duration-500 font-inter cursor-pointer">
+    <div
+      onClick={handleSubmit}
+      className=" dark:bg-gray-900  p-4 text-center transition transform hover:scale-105 hover:shadow-2xl duration-500 font-inter cursor-pointer"
+    >
       <img
         src={carBrandLogo}
         alt="category"
