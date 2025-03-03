@@ -17,9 +17,10 @@ import Pagination from "@/myComponent/pagination/Pagination";
 import { initalState } from "./allCars.const";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useSearchParams } from "react-router-dom";
+import useGetAllCars from "@/hook/useGetAllCars";
 
 const AllCars = () => {
-  // const location = useLocation();
+  const { carData } = useGetAllCars(["brand", "category"]) || [];
   const [searchParams] = useSearchParams();
   const initialMinPrice = Number(searchParams.get("minPrice")) || 1;
   const initialMaxPrice = Number(searchParams.get("maxPrice")) || 100000000;
@@ -50,41 +51,35 @@ const AllCars = () => {
     limit: limit || 10,
   };
 
+  useEffect(() => {
+    const brand = searchParams.get("brand") || "";
+    const model = searchParams.get("model") || "";
+    const category = searchParams.get("category") || "";
+    const minPrice = initialMinPrice;
+    const maxPrice = initialMaxPrice;
+    setFilter((prev) => ({
+      ...prev,
+      brand,
+      model,
+      category,
+      minPrice: Number(minPrice),
+      maxPrice: Number(maxPrice),
+    }));
+  }, [searchParams]);
+
   const { data, isLoading } = useGetCarQuery(queryParams);
   const cars = data?.data?.result || [];
-
-  const brands = useMemo<string[]>(() => {
-    if (isLoading || !data?.data?.result) return [];
-    return Array.from(
-      new Set(
-        data.data.result.map((car: Partial<TCarInfo>) => car.brand as string)
-      )
-    );
-  }, [isLoading, data]);
-
-  const categories = useMemo<string[]>(() => {
-    if (isLoading || !data?.data?.result) return [];
-    return Array.from(
-      new Set(
-        data.data.result.map((car: Partial<TCarInfo>) => car.category as string)
-      )
-    );
-  }, [isLoading, data]);
+  const brands = [...new Set(carData.map((car) => car.brand))];
+  const uniqueCategories = [...new Set(carData.map((car) => car.category))];
 
   const models = useMemo<Record<string, string[]>>(() => {
     if (isLoading || !data?.data?.result) return {};
     return exTractModel(data.data.result);
   }, [isLoading, data]);
-
   const meta = data?.data?.meta;
 
-  useEffect(() => {
-    if (!brands.includes(filter.brand)) {
-      setFilter((prev) => ({ ...prev, brand: "" }));
-    }
-  }, [brands]);
-
   const handleFilterChange = (name: string, value: string) => {
+    console.log(name, value);
     setFilter((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -110,22 +105,6 @@ const AllCars = () => {
     setPriceRange([1, 100000000]);
   };
 
-  useEffect(() => {
-    const brand = searchParams.get("brand") || "";
-    const model = searchParams.get("model") || "";
-    const category = searchParams.get("category") || "";
-    const minPrice = initialMinPrice;
-    const maxPrice = initialMaxPrice;
-    setFilter((prev) => ({
-      ...prev,
-      brand,
-      model,
-      category,
-      minPrice: Number(minPrice),
-      maxPrice: Number(maxPrice),
-    }));
-  }, [searchParams]);
-
   if (isLoading) {
     return <Sceleton></Sceleton>;
   }
@@ -150,8 +129,8 @@ const AllCars = () => {
         </div>
 
         {/* mobile responsive starts */}
-        <div className="md:hidden block sticky top-[115px] z-10 bg-white dark:bg-gray-900 shadow-lg px-4 py-2 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="flex items-center justify-between">
+        <div className="md:hidden sticky top-[115px] z-10 bg-white dark:bg-gray-900 shadow-lg px-4 py-2 space-y-4 max-h-[80vh] overflow-y-auto">
+          <div className="flex items-center justify-between ">
             <input
               type="text"
               placeholder="Search items"
@@ -166,204 +145,199 @@ const AllCars = () => {
               Reset
             </button>
           </div>
-        </div>
-        {!open && (
-          <IoMdArrowDropdown
-            onClick={() => setOpen(!open)}
-            className="text-4xl text-secondary mx-auto -mt-3 md:hidden"
-          />
-        )}
-        {open && (
-          <div className="block md:hidden sticky top-[172px] z-20">
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Brand :
-              </h1>
-              <select
-                value={filter.brand}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, brand: value }));
-                  handleFilterChange("brand", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="select brand">Select brand</option>
-                {brands.map((brand) => (
-                  <option
-                    key={brand}
-                    value={brand}
-                    className="dark:bg-gray-700"
-                  >
-                    {brand}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700  p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-medium ">
-                Filter Model :
-              </h1>
-              <select
-                value={filter.model}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, model: value }));
-                  handleFilterChange("model", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="select brand first">Select brand first</option>
-                {models[filter.brand]?.map((model) => (
-                  <option
-                    key={model}
-                    value={model}
-                    className="dark:bg-gray-700"
-                  >
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Year :
-              </h1>
-              <select
-                value={filter.year}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, year: value }));
-                  handleFilterChange("year", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="select year">Select year</option>
-                {years.map((years) => (
-                  <option
-                    key={years}
-                    value={years}
-                    className="dark:bg-gray-700"
-                  >
-                    {years}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Category :
-              </h1>
-              <select
-                value={filter.category}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, category: value }));
-                  handleFilterChange("category", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="select category">Select Category</option>
-                {categories.map((category) => (
-                  <option
-                    key={category}
-                    value={category}
-                    className="dark:bg-gray-700"
-                  >
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Conditon :
-              </h1>
-              <select
-                value={filter.condition}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, condition: value }));
-                  handleFilterChange("condition", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="select condition">Select condition</option>
-                {conditions.map((condition: TValue) => (
-                  <option
-                    key={condition.value}
-                    value={condition.value}
-                    className="dark:bg-gray-700"
-                  >
-                    {condition.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Sort by :
-              </h1>
-              <select
-                value={sort}
-                onChange={(e) => setSelectedSortingOrder(e.target.value)}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="select category">Select an option</option>
-                {sortingOrders.map((sortingOrder: TValue) => (
-                  <option
-                    key={sortingOrder.value}
-                    value={sortingOrder.value}
-                    className="dark:bg-gray-700"
-                  >
-                    {sortingOrder.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="md:w-full text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <div className="flex items-center mb-3 md:gap-3">
-                <h2 className="text-sm md:font-semibold">PRICE RANGE : </h2>
-                <p className="font-bold text-black dark:text-white flex items-center">
-                  <TbCurrencyTaka className="text-lg" />{" "}
-                  {priceRange[0].toLocaleString()}
-                </p>{" "}
-                <p className="text-sm">TO</p>{" "}
-                <p className="font-bold text-black dark:text-white flex items-center">
-                  <TbCurrencyTaka className="text-lg" />{" "}
-                  {priceRange[1].toLocaleString()}
-                </p>
+          {open && (
+            <div className=" md:hidden ">
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
+                <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
+                  {" "}
+                  Filter Brand :
+                </h1>
+                <select
+                  value={filter.brand}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFilter((prev) => ({ ...prev, brand: value }));
+                    handleFilterChange("brand", value);
+                  }}
+                  className="px-5 rounded outline-none bg-transparent font-bold"
+                >
+                  <option value="">Select brand</option>
+                  {brands.map((brand, index) => (
+                    <option
+                      key={index}
+                      value={brand as string}
+                      className="dark:bg-gray-700"
+                    >
+                      {brand as string}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <ReactRangeSliderInput
-                min={1}
-                max={100000000}
-                step={50000}
-                value={priceRange}
-                onInput={handlePriceRangeChange}
-                className="w-full"
-              />
-              <IoMdArrowDropdown
-                onClick={() => setOpen(!open)}
-                className="text-4xl text-secondary mx-auto "
-              />
+
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700  p-2">
+                <h1 className="text-gray-500 dark:text-gray-300 font-medium ">
+                  Filter Model :
+                </h1>
+                <select
+                  value={filter.model}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFilter((prev) => ({ ...prev, model: value }));
+                    handleFilterChange("model", value);
+                  }}
+                  className="px-5 rounded outline-none bg-transparent font-bold"
+                >
+                  <option value="">Select brand first</option>
+                  {models[filter.brand]?.map((model) => (
+                    <option
+                      key={model}
+                      value={model}
+                      className="dark:bg-gray-700"
+                    >
+                      {model}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
+                <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
+                  {" "}
+                  Filter Year :
+                </h1>
+                <select
+                  value={filter.year}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFilter((prev) => ({ ...prev, year: value }));
+                    handleFilterChange("year", value);
+                  }}
+                  className="px-5 rounded outline-none bg-transparent font-bold"
+                >
+                  <option value="">Select year</option>
+                  {years.map((years) => (
+                    <option
+                      key={years}
+                      value={years}
+                      className="dark:bg-gray-700"
+                    >
+                      {years}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
+                <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
+                  {" "}
+                  Filter Category :
+                </h1>
+                <select
+                  value={filter.category}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleFilterChange("category", value);
+                  }}
+                  className="px-5 rounded outline-none bg-transparent font-bold"
+                >
+                  <option value="">All Categories</option>
+                  {uniqueCategories.map((category, index) => (
+                    <option
+                      key={index}
+                      value={category as string}
+                      className="dark:bg-gray-700"
+                    >
+                      {category as string}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
+                <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
+                  {" "}
+                  Filter Conditon :
+                </h1>
+                <select
+                  value={filter.condition}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleFilterChange("condition", value);
+                  }}
+                  className="px-5 rounded outline-none bg-transparent font-bold"
+                >
+                  <option value=""></option>
+                  {conditions.map((condition: TValue) => (
+                    <option
+                      key={condition.label}
+                      value={condition.value as string}
+                      className="dark:bg-gray-700"
+                    >
+                      {condition.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
+                <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
+                  {" "}
+                  Sort by :
+                </h1>
+                <select
+                  value={sort}
+                  onChange={(e) => setSelectedSortingOrder(e.target.value)}
+                  className="px-5 rounded outline-none bg-transparent font-bold"
+                >
+                  <option value="select category">Select an option</option>
+                  {sortingOrders.map((sortingOrder: TValue) => (
+                    <option
+                      key={sortingOrder.value as string}
+                      value={sortingOrder.value as string}
+                      className="dark:bg-gray-700"
+                    >
+                      {sortingOrder.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="md:w-full text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-2">
+                <div className="flex items-center mb-3 md:gap-3">
+                  <h2 className="text-sm md:font-semibold">PRICE RANGE : </h2>
+                  <p className="font-bold text-black dark:text-white flex items-center">
+                    <TbCurrencyTaka className="text-lg" />{" "}
+                    {priceRange[0].toLocaleString()}
+                  </p>{" "}
+                  <p className="text-sm">TO</p>{" "}
+                  <p className="font-bold text-black dark:text-white flex items-center">
+                    <TbCurrencyTaka className="text-lg" />{" "}
+                    {priceRange[1].toLocaleString()}
+                  </p>
+                </div>
+                <ReactRangeSliderInput
+                  min={1}
+                  max={100000000}
+                  step={50000}
+                  value={priceRange}
+                  onInput={handlePriceRangeChange}
+                  className="w-full"
+                />
+              </div>
             </div>
+          )}
+          <div className="md:hidden ">
+            <IoMdArrowDropdown
+              onClick={() => setOpen(!open)}
+              className="text-4xl text-secondary mx-auto "
+            />
           </div>
-        )}
+        </div>
+
         {/* mobile responsive ends */}
 
         <div className="flex justify-between items-start gap-5">
-          {/* left side */}
+          {/* left side starts */}
           <div className="hidden md:block sticky top-32 z-10 bg-white dark:bg-gray-900 shadow-lg px-4 py-4 space-y-4 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <input
@@ -395,14 +369,14 @@ const AllCars = () => {
                 }}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
-                <option value="select brand">Select brand</option>
-                {brands.map((brand) => (
+                <option value="">Select brand</option>
+                {brands.map((brand, index) => (
                   <option
-                    key={brand}
-                    value={brand}
+                    key={index}
+                    value={brand as string}
                     className="dark:bg-gray-700"
                   >
-                    {brand}
+                    {brand as string}
                   </option>
                 ))}
               </select>
@@ -421,7 +395,7 @@ const AllCars = () => {
                 }}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
-                <option value="select brand first">Select brand first</option>
+                <option value="">Select brand first</option>
                 {models[filter.brand]?.map((model) => (
                   <option
                     key={model}
@@ -448,7 +422,7 @@ const AllCars = () => {
                 }}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
-                <option value="select year">Select year</option>
+                <option value="">Select year</option>
                 {years.map((years) => (
                   <option
                     key={years}
@@ -475,14 +449,14 @@ const AllCars = () => {
                 }}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
-                <option value="select category">Select Category</option>
-                {categories.map((category) => (
+                <option value="">Select Category</option>
+                {uniqueCategories.map((category, index) => (
                   <option
-                    key={category}
-                    value={category}
+                    key={index}
+                    value={category as string}
                     className="dark:bg-gray-700"
                   >
-                    {category}
+                    {category as string}
                   </option>
                 ))}
               </select>
@@ -502,11 +476,11 @@ const AllCars = () => {
                 }}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
-                <option value="select condition">Select condition</option>
+                <option value="">Select condition</option>
                 {conditions.map((condition: TValue) => (
                   <option
-                    key={condition.value}
-                    value={condition.value}
+                    key={condition.value as string}
+                    value={condition.value as string}
                     className="dark:bg-gray-700"
                   >
                     {condition.label}
@@ -525,11 +499,11 @@ const AllCars = () => {
                 onChange={(e) => setSelectedSortingOrder(e.target.value)}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
-                <option value="select category">Select an option</option>
+                <option value="">Select an option</option>
                 {sortingOrders.map((sortingOrder: TValue) => (
                   <option
-                    key={sortingOrder.value}
-                    value={sortingOrder.value}
+                    key={sortingOrder.value as string}
+                    value={sortingOrder.value as string}
                     className="dark:bg-gray-700"
                   >
                     {sortingOrder.label}
@@ -561,7 +535,7 @@ const AllCars = () => {
               />
             </div>
           </div>
-          {/* right side */}
+          {/* right side ends*/}
           <div className=" space-y-4 ">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {cars.map((car: Partial<TCarInfo>) => (

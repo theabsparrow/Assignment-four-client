@@ -1,17 +1,15 @@
 export type TValue = {
-  value: string;
+  value: string | boolean;
   label: string;
 };
 
 export const genders: TValue[] = [
-  { value: "", label: "Select Gender" },
   { value: "male", label: "Male" },
   { value: "female", label: "Female" },
   { value: "others", label: "Others" },
 ];
 
 export const conditions: TValue[] = [
-  { value: "", label: "Select a condition" },
   { value: "New", label: "New" },
   { value: "Used", label: "Used" },
   { value: "Certified Pre-Owned", label: "Certified Pre-Owned" },
@@ -24,4 +22,19 @@ export const sortingOrders: TValue[] = [
   { value: "price", label: "Price" },
   { value: "year", label: "Year" },
   { value: "brand", label: "Brand" },
+];
+
+export const roles: TValue[] = [
+  { value: "user", label: "User" },
+  { value: "admin", label: "Admin" },
+];
+
+export const statuses: TValue[] = [
+  { value: "active", label: "Active" },
+  { value: "deactive", label: "Deactive" },
+];
+
+export const iSDelete: TValue[] = [
+  { value: "false", label: "False" },
+  { value: "true", label: "True" },
 ];

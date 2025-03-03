@@ -1,7 +1,4 @@
-import {
-  useDeleteCarMutation,
-  useGetCarQuery,
-} from "@/redux/features/car/carApi";
+import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,28 +6,36 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { years } from "../addCar/addcar.const";
-import { initalState } from "@/pages/allCars/allCars.const";
-import useGetAllCars from "@/hook/useGetAllCars";
-import { TCarTable } from "./carListing.interface";
+import { userInitalState } from "./userManagement.const";
+import { TUserTable } from "./usermanagement.interface";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
-import { sortingOrders, TValue } from "@/myComponent/formInput/formInput.const";
+import { USER_ROLE } from "@/config/role.const";
+import {
+  genders,
+  iSDelete,
+  roles,
+  statuses,
+} from "@/myComponent/formInput/formInput.const";
 
-const CarListing = () => {
-  const { carData } = useGetAllCars(["brand", "category"]) || [];
+const UserManagement = () => {
   const [searchText, setSearchText] = useState("");
-  const [filter, setFilter] = useState(initalState);
+  const [filter, setFilter] = useState(userInitalState);
   const [sort, setSelectedSortingOrder] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
-  const [deleteCarId, setDeleteCarId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [deleteCar] = useDeleteCarMutation();
 
   const queryParams = {
-    fields: ["brand", "model", "category", "price", "year"],
+    fields: [
+      "name",
+      "email",
+      "phoneNumber",
+      "gender",
+      "role",
+      "status",
+      "isDeleted",
+    ],
     filter: filter || {},
     searchTerm: searchText || "",
     sort: sort || "",
@@ -38,16 +43,21 @@ const CarListing = () => {
     limit: limit || 10,
   };
 
-  const { data, isLoading } = useGetCarQuery(queryParams);
-  const cars = data?.data?.result || [];
-
-  const uniqueBrands = [...new Set(carData.map((car) => car.brand))];
-  const uniqueCategories = [...new Set(carData.map((car) => car.category))];
-  const meta = data?.data?.meta;
+  const { data, isLoading } = useGetAllUsersQuery(queryParams);
+  const users = data?.data || [];
+  const meta = data?.meta;
   const pageNumbers = Array.from({ length: meta?.totalPage }, (_, i) => i + 1);
 
   const handleFilterChange = (name: string, value: string) => {
+    console.log(name, value);
     setFilter((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handelReset = () => {
+    setFilter(userInitalState);
+    setSearchText("");
+    setSelectedSortingOrder("");
+    setPage(1);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -55,67 +65,67 @@ const CarListing = () => {
     setLimit(meta?.limit);
   };
 
-  const handleDelete = (id: string) => {
-    setDeleteCarId(id);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setDeleteCarId(null);
-  };
-
-  const handelReset = () => {
-    setFilter(initalState);
-    setSearchText("");
-    setSelectedSortingOrder("");
-    setPage(1);
-  };
-
-  // delete functionality
-  const confirmDelete = async () => {
-    if (!deleteCarId) {
-      return setErrorMessage("Faild to delete. Please try again letter");
-    }
-    const toastId = toast.loading("car data deleting.....");
-    try {
-      const id = deleteCarId;
-      const res = await deleteCar({ id }).unwrap();
-      if (res?.success) {
-        toast.success("car data deleted successfully ", {
-          id: toastId,
-          duration: 3000,
-        });
-        setIsModalOpen(false);
-      }
-    } catch (error: any) {
-      const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
-    }
-  };
-
-  const columns: ColumnDef<TCarTable>[] = [
-    { accessorKey: "brand", header: "Brand" },
-    { accessorKey: "model", header: "Model" },
-    { accessorKey: "category", header: "Category" },
+  const columns: ColumnDef<TUserTable>[] = [
     {
-      accessorKey: "price",
-      header: "Price",
-      cell: (info) => `৳${(info.getValue() as number).toLocaleString()}`,
+      accessorKey: "name",
+      header: "Full Name",
+      cell: (info) => (
+        <span>
+          {info.row.original.name.firstName} {info.row.original.name.lastName}
+        </span>
+      ),
     },
-    { accessorKey: "year", header: "Year" },
+    { accessorKey: "email", header: "Email" },
+    { accessorKey: "phoneNumber", header: "Phone Number" },
+    { accessorKey: "gender", header: "Gender" },
     {
-      header: "View",
-      cell: ({ row }) => (
-        <div>
-          <Link
-            to={`/details/${row.original?._id}`}
-            className="px-2 py-1 bg-blue-500 text-white rounded font-inter"
-          >
-            Details
-          </Link>
-        </div>
+      accessorKey: "role",
+      header: "Role",
+      cell: (info) => (
+        <span
+          className={`px-2 py-1 rounded-xl font-inter ${
+            info.row.original.role === USER_ROLE.user &&
+            "bg-blue-200 text-blue-600"
+          } ${
+            info.row.original.role === USER_ROLE.admin &&
+            "bg-yellow-200 text-yellow-700"
+          } ${
+            info.row.original.role === USER_ROLE.superAdmin &&
+            "bg-green-200 text-green-700"
+          }`}
+        >
+          {info.row.original.role}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: (info) => (
+        <span
+          className={`px-2 py-1 rounded font-inter ${
+            info.getValue() === "active"
+              ? "bg-green-200 text-green-700"
+              : "bg-red-200 text-red-700"
+          }`}
+        >
+          {info.row.original.status}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "isDelete",
+      header: "IsDeleted",
+      cell: (info) => (
+        <span
+          className={`px-2 py-1 rounded font-inter ${
+            info.row.original.isDeleted
+              ? "bg-red-500 text-white"
+              : "bg-green-800 text-white"
+          }`}
+        >
+          {info.row.original.isDeleted ? "true" : "false"}
+        </span>
       ),
     },
     {
@@ -123,26 +133,38 @@ const CarListing = () => {
       cell: ({ row }) => (
         <div>
           <button
-            onClick={() => handleDelete(row.original._id)}
+            // onClick={() => handleDelete(row.original.email)}
             className="px-2 py-1 bg-red-500 text-white rounded font-inter"
           >
-            Delete
+            delete
           </button>
+        </div>
+      ),
+    },
+    {
+      header: "View",
+      cell: ({ row }) => (
+        <div>
+          <Link
+            to={`/user-details/${row.original?.email}`}
+            className="px-2 py-1 bg-blue-500 text-white rounded font-inter"
+          >
+            details
+          </Link>
         </div>
       ),
     },
   ];
   const table = useReactTable({
-    data: cars,
+    data: users,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
   if (isLoading) return <p>Loading cars...</p>;
 
   return (
     <div className="container mx-auto p-4 font-inter">
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <div
           onClick={closeModal}
           className="fixed inset-0 flex items-center justify-center "
@@ -178,74 +200,84 @@ const CarListing = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       <div className="mb-4">
-        <h2 className="text-2xl font-bold mb-4">Car Listings</h2>
-        <h1 className="text-xl">Total cars: {cars.length}</h1>
+        <h2 className="text-2xl font-bold mb-4">User Management</h2>
+        <h1 className="text-xl">Total users: {users.length}</h1>
       </div>
-
-      {/* ✅ Search & Filters */}
       <div className="flex flex-wrap gap-4 mb-4">
-        {/* Search Input */}
         <input
           type="text"
-          placeholder="Search by Brand or Model..."
+          placeholder="Search by name, email or phone"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className="border p-2 rounded outline-none"
         />
-
-        {/* Filter: Brand */}
         <select
-          value={filter.brand}
+          value={filter.gender}
           onChange={(e) => {
             const value = e.target.value;
-            handleFilterChange("brand", value);
+            handleFilterChange("gender", value);
           }}
           className="border p-2 rounded outline-none"
         >
-          <option value="">All Brands</option>
-          {uniqueBrands.map((brand, index) => (
-            <option key={index} value={brand as string}>
-              {brand as string}
+          <option value="">Filter by gender</option>
+          {genders.map((gender) => (
+            <option key={gender.label} value={gender.value as string}>
+              {gender.label as string}
             </option>
           ))}
         </select>
 
-        {/* Filter: Category */}
         <select
-          value={filter.category}
+          value={filter.role}
           onChange={(e) => {
             const value = e.target.value;
-            handleFilterChange("category", value);
+            handleFilterChange("role", value);
           }}
           className="border p-2 rounded outline-none"
         >
-          <option value="">All Categories</option>
-          {uniqueCategories.map((category, index) => (
-            <option key={index} value={category as string}>
-              {category as string}
+          <option value="">Filter by role</option>
+          {roles.map((role) => (
+            <option key={role.label} value={role.value as string}>
+              {role.label as string}
             </option>
           ))}
         </select>
 
-        {/* Filter: Year */}
         <select
-          value={filter.year}
+          value={filter.status}
           onChange={(e) => {
             const value = e.target.value;
-            handleFilterChange("year", value);
+            handleFilterChange("status", value);
           }}
           className="border p-2 rounded outline-none"
         >
-          <option value="">All Years</option>
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
+          <option value="">Filter by status</option>
+          {statuses.map((status) => (
+            <option key={status.label} value={status.value as string}>
+              {status.label}
             </option>
           ))}
         </select>
+
         <select
+          value={filter.isDeleted}
+          onChange={(e) => {
+            const value = e.target.value;
+            handleFilterChange("isDeleted", value);
+          }}
+          className="border p-2 rounded outline-none"
+        >
+          <option value="">Filter by delete</option>
+          {iSDelete.map((deleteInfo) => (
+            <option key={deleteInfo.label} value={deleteInfo.value as string}>
+              {deleteInfo.label as string}
+            </option>
+          ))}
+        </select>
+
+        {/* <select
           value={sort}
           onChange={(e) => setSelectedSortingOrder(e.target.value)}
           className="border p-2 rounded outline-none"
@@ -253,14 +285,14 @@ const CarListing = () => {
           <option value="select category">Sort by</option>
           {sortingOrders.map((sortingOrder: TValue) => (
             <option
-              key={sortingOrder.value as string}
-              value={sortingOrder.value as string}
+              key={sortingOrder.value}
+              value={sortingOrder.value}
               className="dark:bg-gray-700"
             >
               {sortingOrder.label}
             </option>
           ))}
-        </select>
+        </select> */}
         <div>
           <button
             onClick={handelReset}
@@ -272,7 +304,7 @@ const CarListing = () => {
       </div>
 
       {/* ✅ Table */}
-      <div className="overflow-x-auto  md:w-[60vw]">
+      <div className="overflow-x-auto  md:w-[70vw]">
         <table className=" border-collapse border border-gray-300 w-full">
           {/* ✅ Table Head */}
           <thead className="bg-gray-200">
@@ -325,12 +357,12 @@ const CarListing = () => {
               key={index}
               onClick={() => handlePageChange(pageNumber)}
               className={`px-2 md:px-4 py-1 md:py-2 rounded-lg font-semibold border
-              ${
-                meta?.page === pageNumber
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 hover:bg-gray-300"
-              }
-            `}
+                ${
+                  meta?.page === pageNumber
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
+                }
+              `}
             >
               {pageNumber}
             </button>
@@ -348,4 +380,4 @@ const CarListing = () => {
   );
 };
 
-export default CarListing;
+export default UserManagement;

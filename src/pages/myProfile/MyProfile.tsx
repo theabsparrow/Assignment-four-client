@@ -116,7 +116,7 @@ const MyProfile = () => {
           />
         </label>
       </div>
-      <div className="relative ">
+      <div className="relative w-24 h-24 md:w-44 md:h-44 rounded-full border border-primary cursor-pointer">
         {profileImage && (
           <img
             src={profileImage}
