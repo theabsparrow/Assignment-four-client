@@ -5,4 +5,5 @@ export type TCarTable = {
   category: string;
   price: number;
   year: number;
+  inStock: boolean;
 };

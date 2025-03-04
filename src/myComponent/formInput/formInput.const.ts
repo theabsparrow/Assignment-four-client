@@ -24,6 +24,15 @@ export const sortingOrders: TValue[] = [
   { value: "brand", label: "Brand" },
 ];
 
+export const userSortingOrder: TValue[] = [
+  { value: "-firstName", label: "Name (desc)" },
+  { value: "-email", label: "Email (desc)" },
+  { value: "-phoneNumber", label: "Phone (desc)" },
+  { value: "firstName", label: "Name" },
+  { value: "email", label: "Email" },
+  { value: "phoneNumber", label: "Phone " },
+];
+
 export const roles: TValue[] = [
   { value: "user", label: "User" },
   { value: "admin", label: "Admin" },
@@ -37,4 +46,9 @@ export const statuses: TValue[] = [
 export const iSDelete: TValue[] = [
   { value: "false", label: "False" },
   { value: "true", label: "True" },
+];
+
+export const isInStock: TValue[] = [
+  { value: "true", label: "Available" },
+  { value: "false", label: "Not Available" },
 ];

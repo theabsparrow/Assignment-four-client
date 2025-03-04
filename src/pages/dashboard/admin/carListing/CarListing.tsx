@@ -15,22 +15,28 @@ import useGetAllCars from "@/hook/useGetAllCars";
 import { TCarTable } from "./carListing.interface";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { sortingOrders, TValue } from "@/myComponent/formInput/formInput.const";
+import {
+  isInStock,
+  sortingOrders,
+  TValue,
+} from "@/myComponent/formInput/formInput.const";
+import { carListingInitalState } from "./carListingInitialState";
 
 const CarListing = () => {
   const { carData } = useGetAllCars(["brand", "category"]) || [];
   const [searchText, setSearchText] = useState("");
-  const [filter, setFilter] = useState(initalState);
+  const [filter, setFilter] = useState(carListingInitalState);
   const [sort, setSelectedSortingOrder] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
+  const [inStockData, setInStockData] = useState("");
   const [deleteCarId, setDeleteCarId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [deleteCar] = useDeleteCarMutation();
 
   const queryParams = {
-    fields: ["brand", "model", "category", "price", "year"],
+    fields: ["brand", "model", "category", "price", "year", "inStock"],
     filter: filter || {},
     searchTerm: searchText || "",
     sort: sort || "",
@@ -47,6 +53,11 @@ const CarListing = () => {
   const pageNumbers = Array.from({ length: meta?.totalPage }, (_, i) => i + 1);
 
   const handleFilterChange = (name: string, value: string) => {
+    if (name === "inStock") {
+      const reValue = value === "true" ? true : false;
+      setFilter((prev) => ({ ...prev, [name]: reValue }));
+      setInStockData(value);
+    }
     setFilter((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -66,10 +77,11 @@ const CarListing = () => {
   };
 
   const handelReset = () => {
-    setFilter(initalState);
+    setFilter(carListingInitalState);
     setSearchText("");
     setSelectedSortingOrder("");
     setPage(1);
+    setInStockData("");
   };
 
   // delete functionality
@@ -105,6 +117,21 @@ const CarListing = () => {
       cell: (info) => `৳${(info.getValue() as number).toLocaleString()}`,
     },
     { accessorKey: "year", header: "Year" },
+    {
+      accessorKey: "inStock",
+      header: "In Stock",
+      cell: ({ row }) => (
+        <span
+          className={`${
+            row.original.inStock
+              ? "text-green-700 bg-green-300 rounded-xl p-1"
+              : "text-red-700 bg-red-300 rounded-xl p-1"
+          }`}
+        >
+          {row.original.inStock ? "Available" : "Not Available"}
+        </span>
+      ),
+    },
     {
       header: "View",
       cell: ({ row }) => (
@@ -245,6 +272,24 @@ const CarListing = () => {
             </option>
           ))}
         </select>
+
+        {/* filter in stock */}
+        <select
+          value={inStockData}
+          onChange={(e) => {
+            const value = e.target.value;
+            handleFilterChange("inStock", value);
+          }}
+          className="border p-2 rounded outline-none"
+        >
+          <option value="">In Stock</option>
+          {isInStock.map((inStock) => (
+            <option key={inStock.label} value={inStock.value as string}>
+              {inStock.label as string}
+            </option>
+          ))}
+        </select>
+
         <select
           value={sort}
           onChange={(e) => setSelectedSortingOrder(e.target.value)}

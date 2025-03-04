@@ -5,6 +5,7 @@ type TName = {
 };
 
 export type TUserTable = {
+  _id: string;
   name: TName;
   email: string;
   phoneNumber: string;
