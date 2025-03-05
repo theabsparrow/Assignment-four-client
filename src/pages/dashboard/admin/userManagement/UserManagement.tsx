@@ -1,4 +1,9 @@
-import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
+import {
+  useDeleteUserAccountMutation,
+  useGetAllUsersQuery,
+  useUpdateUserRoleMutation,
+  useUpdateUserStatusMutation,
+} from "@/redux/features/user/userApi";
 import {
   useReactTable,
   getCoreRowModel,
@@ -12,6 +17,8 @@ import { userTableColumns } from "./userTableColoumn";
 import UserModalComponent from "./userModalComponent";
 import UserFilterComponent from "./UserFilterComponent";
 import Pagination from "@/myComponent/pagination/Pagination";
+import { USER_ROLE } from "@/config/role.const";
+import { toast } from "sonner";
 
 const UserManagement = () => {
   const user = useAppSelector(currentUser);
@@ -24,6 +31,11 @@ const UserManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
+  const [userRole, setUSerRole] = useState("");
+  const [isDeletedata, setIsDeletedata] = useState("");
+  const [updateUserRole] = useUpdateUserRoleMutation();
+  const [updateUserStatus] = useUpdateUserStatusMutation();
+  const [deleteUserAccount] = useDeleteUserAccountMutation();
 
   const queryParams = {
     fields: [
@@ -47,7 +59,11 @@ const UserManagement = () => {
   const meta = data?.meta;
 
   const handleFilterChange = (name: string, value: string) => {
-    console.log(name, value);
+    if (name === "isDeleted") {
+      const reValue = value === "true" ? true : false;
+      setFilter((prev) => ({ ...prev, [name]: reValue }));
+      setIsDeletedata(value);
+    }
     setFilter((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -56,6 +72,7 @@ const UserManagement = () => {
     setSearchText("");
     setSelectedSortingOrder("");
     setPage(1);
+    setIsDeletedata("");
   };
 
   const handlePageChange = (newPage: number) => {
@@ -63,9 +80,13 @@ const UserManagement = () => {
     setLimit(meta?.limit);
   };
 
-  const handleMOdal = (id: string, name: string) => {
+  const handleMOdal = (
+    userData: { id: string; role: string },
+    name: string
+  ) => {
     setModalState("");
-    setUserId(id);
+    setUserId(userData.id);
+    setUSerRole(userData.role);
     setIsModalOpen(true);
     setModalState(name);
   };
@@ -74,6 +95,45 @@ const UserManagement = () => {
     setIsModalOpen(false);
     setUserId(null);
     setModalState("");
+  };
+
+  const handleUpdateUserInfo = async (value: string, label: string) => {
+    if (!value) {
+      return setErrorMessage(" nothing is selected here");
+    }
+    if (userRole === USER_ROLE.superAdmin) {
+      return setErrorMessage(" super admin info can`t be changed");
+    }
+    const id = userId;
+    let toastId;
+    let res;
+    try {
+      if (label === "role") {
+        toastId = toast.loading(`user role is updating.....`);
+        res = await updateUserRole({ role: value, id: id }).unwrap();
+      }
+      if (label === "status") {
+        toastId = toast.loading(`user status is updating.....`);
+        res = await updateUserStatus({ status: value, id: id }).unwrap();
+      }
+      if (label === "delete") {
+        toastId = toast.loading(`user account is deleting.....`);
+        res = await deleteUserAccount(id).unwrap();
+      }
+
+      if (res.data) {
+        toast.success(`user ${label} updated successfully`, {
+          id: toastId,
+          duration: 3000,
+        });
+        setModalState("");
+        setIsModalOpen(false);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
   };
 
   const columns = userTableColumns(user, handleMOdal);
@@ -93,7 +153,9 @@ const UserManagement = () => {
             modalState={modalState}
             closeModal={closeModal}
             errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
             setIsModalOpen={setIsModalOpen}
+            handleUpdateUserInfo={handleUpdateUserInfo}
           ></UserModalComponent>
         </>
       )}
@@ -111,6 +173,7 @@ const UserManagement = () => {
         sort={sort}
         setSelectedSortingOrder={setSelectedSortingOrder}
         handelReset={handelReset}
+        isDeletedata={isDeletedata}
       ></UserFilterComponent>
 
       {/* ✅ Table */}

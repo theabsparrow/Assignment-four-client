@@ -10,7 +10,6 @@ type TFilter = {
   gender: string;
   role: string;
   status: string;
-  isDeleted: string;
 };
 interface FilterProps {
   searchText: string;
@@ -20,6 +19,7 @@ interface FilterProps {
   sort: string;
   setSelectedSortingOrder: (value: string) => void;
   handelReset: () => void;
+  isDeletedata: string;
 }
 const UserFilterComponent: React.FC<FilterProps> = ({
   searchText,
@@ -29,6 +29,7 @@ const UserFilterComponent: React.FC<FilterProps> = ({
   sort,
   setSelectedSortingOrder,
   handelReset,
+  isDeletedata,
 }) => {
   return (
     <div className="flex flex-wrap gap-4 mb-4">
@@ -85,7 +86,7 @@ const UserFilterComponent: React.FC<FilterProps> = ({
 
       {/* Delete Filter */}
       <select
-        value={filter.isDeleted}
+        value={isDeletedata as string}
         onChange={(e) => handleFilterChange("isDeleted", e.target.value)}
         className="border p-2 rounded outline-none"
       >

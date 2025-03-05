@@ -12,5 +12,5 @@ export type TUserTable = {
   gender: "male" | "female" | "others";
   role: "user" | "admin" | "superAdmin";
   status: "active" | "deactive";
-  isDeleted?: true | false;
+  isDeleted?: boolean;
 };

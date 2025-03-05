@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export const userTableColumns = (
   user: any,
-  handleModal: (id: string, action: string) => void
+  handleModal: (userData: { id: string; role: string }, action: string) => void
 ): ColumnDef<TUserTable>[] => [
   {
     accessorKey: "name",
@@ -25,7 +25,12 @@ export const userTableColumns = (
     cell: ({ row }) =>
       user?.userRole === USER_ROLE.superAdmin ? (
         <button
-          onClick={() => handleModal(row.original._id, "updateRole")}
+          onClick={() =>
+            handleModal(
+              { id: row.original._id, role: row.original.role },
+              "role"
+            )
+          }
           className={`px-2 py-1 rounded-xl font-inter ${
             row.original.role === USER_ROLE.user && "bg-blue-200 text-blue-600"
           } ${
@@ -61,7 +66,12 @@ export const userTableColumns = (
     header: "Status",
     cell: ({ row }) => (
       <button
-        onClick={() => handleModal(row.original._id, "updateStatus")}
+        onClick={() =>
+          handleModal(
+            { id: row.original._id, role: row.original.role },
+            "status"
+          )
+        }
         className={`px-2 py-1 rounded-xl font-inter ${
           row.original.status === "active"
             ? "bg-green-300 text-green-700"
@@ -94,7 +104,12 @@ export const userTableColumns = (
       user?.userRole === USER_ROLE.superAdmin && (
         <div>
           <button
-            onClick={() => handleModal(row.original._id, "deleteUser")}
+            onClick={() =>
+              handleModal(
+                { id: row.original._id, role: row.original.role },
+                "deleted"
+              )
+            }
             className="px-2 py-1 bg-red-500 text-white rounded font-inter"
           >
             delete

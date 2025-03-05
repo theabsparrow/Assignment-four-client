@@ -52,3 +52,11 @@ export const isInStock: TValue[] = [
   { value: "true", label: "Available" },
   { value: "false", label: "Not Available" },
 ];
+export const userRoles: TValue[] = [
+  { value: "admin", label: "Admin" },
+  { value: "user", label: "User" },
+];
+export const userStatus: TValue[] = [
+  { value: "active", label: "Active" },
+  { value: "deactive", label: "Deactive" },
+];

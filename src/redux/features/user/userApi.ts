@@ -53,6 +53,31 @@ const userApi = baseApi.injectEndpoints({
           params: params,
         };
       },
+      providesTags: ["users"],
+    }),
+    updateUserRole: builder.mutation({
+      query: (info) => ({
+        url: `/user/update-role/${info.id}`,
+        method: "PATCH",
+        body: { role: info.role },
+      }),
+      invalidatesTags: ["users"],
+    }),
+    updateUserStatus: builder.mutation({
+      query: (info) => ({
+        url: `/user/change-status/${info.id}`,
+        method: "PATCH",
+        body: { status: info.status },
+      }),
+      invalidatesTags: ["users"],
+    }),
+
+    deleteUserAccount: builder.mutation({
+      query: (id) => ({
+        url: `/user/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["users"],
     }),
   }),
 });
@@ -60,3 +85,6 @@ export const { useMyProfileQuery } = userApi;
 export const { useUpdateUserInfoMutation } = userApi;
 export const { useDeleteUserMutation } = userApi;
 export const { useGetAllUsersQuery } = userApi;
+export const { useUpdateUserRoleMutation } = userApi;
+export const { useUpdateUserStatusMutation } = userApi;
+export const { useDeleteUserAccountMutation } = userApi;
