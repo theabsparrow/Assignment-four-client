@@ -301,18 +301,23 @@ const CarDetails = () => {
                   {car?.price.toLocaleString()}
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 mt-4 items-center space-y-4 md:space-y-0">
-                <p className={car?.inStock ? "text-green-500" : "text-red-500"}>
-                  <strong>Status:</strong>{" "}
-                  {car?.inStock ? "In Stock" : "Out of Stock"}
-                </p>
-                <Link
-                  to="/checkout"
-                  className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center md:w-36 text-white font-bold p-2 rounded-md duration-500 transition"
-                >
-                  Checkout
-                </Link>
-              </div>
+
+              {car?.inStock && user?.userRole === USER_ROLE.user && (
+                <div className="grid grid-cols-1 md:grid-cols-2 mt-4 items-center space-y-4 md:space-y-0">
+                  <p
+                    className={car?.inStock ? "text-green-500" : "text-red-500"}
+                  >
+                    <strong>Status:</strong>{" "}
+                    {car?.inStock ? "In Stock" : "Out of Stock"}
+                  </p>
+                  <Link
+                    to="/checkout"
+                    className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center md:w-36 text-white font-bold p-2 rounded-md duration-500 transition"
+                  >
+                    Checkout
+                  </Link>
+                </div>
+              )}
             </div>
           )}
           {/* editable section ends */}

@@ -19,6 +19,7 @@ import UserFilterComponent from "./UserFilterComponent";
 import Pagination from "@/myComponent/pagination/Pagination";
 import { USER_ROLE } from "@/config/role.const";
 import { toast } from "sonner";
+import TableSceleton from "@/myComponent/loader/TableSceleton";
 
 const UserManagement = () => {
   const user = useAppSelector(currentUser);
@@ -142,7 +143,7 @@ const UserManagement = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  if (isLoading) return <p>Loading cars...</p>;
+  if (isLoading) return <TableSceleton rows={11} columns={9}></TableSceleton>;
 
   return (
     <div className="container mx-auto p-4 font-inter">

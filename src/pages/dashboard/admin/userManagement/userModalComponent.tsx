@@ -26,26 +26,27 @@ const UserModalComponent: React.FC<ModalProps> = ({
   return (
     <div
       onClick={closeModal}
-      className="fixed inset-0 flex items-center justify-center "
+      className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white p-6 rounded-lg shadow-lg"
+        className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-lg shadow-xl w-80 md:w-96 transition-transform transform scale-95 animate-fadeIn"
       >
+        {/* Title */}
         {modalState === "role" && (
           <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Change user role from here
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
+              Change user role
             </h3>
             <select
               value={value}
               onChange={(e) => {
-                const value = e.target.value;
-                setValue(value);
+                const selectedValue = e.target.value;
+                setValue(selectedValue);
                 setLabel(modalState);
                 setErrorMessage("");
               }}
-              className="border p-2 rounded outline-none"
+              className="w-full border p-3 rounded-lg outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
             >
               <option value="">Select role</option>
               {userRoles.map((role) => (
@@ -59,18 +60,18 @@ const UserModalComponent: React.FC<ModalProps> = ({
 
         {modalState === "status" && (
           <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Change user status from here
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
+              Change user status
             </h3>
             <select
               value={value}
               onChange={(e) => {
-                const value = e.target.value;
-                setValue(value);
+                const selectedValue = e.target.value;
+                setValue(selectedValue);
                 setLabel(modalState);
                 setErrorMessage("");
               }}
-              className="border p-2 rounded outline-none"
+              className="w-full border p-3 rounded-lg outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
             >
               <option value="">Select status</option>
               {userStatus.map((status) => (
@@ -83,16 +84,20 @@ const UserModalComponent: React.FC<ModalProps> = ({
         )}
 
         {modalState === "deleted" && (
-          <h1>Are you sure , You want to delete this user account</h1>
+          <h3 className="text-lg font-semibold mb-4 text-red-600 dark:text-red-400">
+            Are you sure you want to delete this user account?
+          </h3>
         )}
 
+        {/* Error Message */}
         {errorMessage && (
-          <h1 className="text-red-600 text-sm text-center mb-4">
+          <p className="text-red-600 dark:text-red-400 text-sm text-center mb-4">
             {errorMessage}
-          </h1>
+          </p>
         )}
 
-        <div className="flex justify-end gap-4">
+        {/* Buttons */}
+        <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -101,29 +106,20 @@ const UserModalComponent: React.FC<ModalProps> = ({
               setValue("");
               setErrorMessage("");
             }}
-            className="px-4 py-2 bg-gray-400 text-white rounded"
+            className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-md transition"
           >
             Cancel
           </button>
-          {modalState === "role" || modalState === "status" ? (
-            <button
-              onClick={() => {
-                handleUpdateUserInfo(value, label);
-              }}
-              className="px-4 py-2 bg-red-600 text-white rounded"
-            >
-              Confirm
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                handleUpdateUserInfo("delete", "delete");
-              }}
-              className="px-4 py-2 bg-red-600 text-white rounded"
-            >
-              Confirm
-            </button>
-          )}
+          <button
+            onClick={() =>
+              modalState === "deleted"
+                ? handleUpdateUserInfo("delete", "delete")
+                : handleUpdateUserInfo(value, label)
+            }
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition"
+          >
+            Confirm
+          </button>
         </div>
       </div>
     </div>

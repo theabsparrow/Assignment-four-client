@@ -14,6 +14,9 @@ import Error from "@/pages/error/Error";
 import { dashboardRoutes } from "./dashboardRoute";
 import CarDetails from "@/pages/carDetails/CarDetails";
 import AllCars from "@/pages/allCars/AllCars";
+import AboutUs from "@/pages/about us/AboutUs";
+import Blogs from "@/pages/blogs/Blogs";
+import Contacts from "@/pages/contact/Contacts";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -59,6 +62,18 @@ export const router = createBrowserRouter([
       {
         path: "all-cars",
         element: <AllCars></AllCars>,
+      },
+      {
+        path: "about-us",
+        element: <AboutUs></AboutUs>,
+      },
+      {
+        path: "blogs",
+        element: <Blogs></Blogs>,
+      },
+      {
+        path: "contact",
+        element: <Contacts></Contacts>,
       },
     ],
   },

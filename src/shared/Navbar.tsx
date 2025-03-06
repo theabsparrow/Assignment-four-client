@@ -90,6 +90,36 @@ const Navbar = () => {
           >
             All cars
           </NavLink>
+          <NavLink
+            to="/blogs"
+            className={({ isActive }) =>
+              `transition-colors font-inter ${
+                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
+              }`
+            }
+          >
+            Blogs
+          </NavLink>
+          <NavLink
+            to="/about-us"
+            className={({ isActive }) =>
+              `transition-colors font-inter ${
+                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
+              }`
+            }
+          >
+            About us
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `transition-colors font-inter ${
+                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
+              }`
+            }
+          >
+            Contact
+          </NavLink>
         </div>
 
         <div className="hidden md:flex">

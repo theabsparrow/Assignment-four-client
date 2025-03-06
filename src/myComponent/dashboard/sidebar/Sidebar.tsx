@@ -11,6 +11,7 @@ import { useAppDispatch } from "@/redux/hooks";
 import UserItems from "./UserItems";
 import SharedItems from "./SharedItems";
 import { getDashboardNavlinks } from "@/utills/getDashboardNavLinks";
+import SidebarSceleton from "@/myComponent/loader/SidebarSceleton";
 
 const Sidebar = () => {
   const myprofile =
@@ -31,7 +32,11 @@ const Sidebar = () => {
   };
 
   const role = myprofile?.myProfile?.role;
+  const loading = myprofile.isLoading;
   const navLinks = getDashboardNavlinks(role);
+  if (loading) {
+    return <SidebarSceleton></SidebarSceleton>;
+  }
 
   return (
     <>
