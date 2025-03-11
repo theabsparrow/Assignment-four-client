@@ -311,7 +311,7 @@ const CarDetails = () => {
                     {car?.inStock ? "In Stock" : "Out of Stock"}
                   </p>
                   <Link
-                    to="/checkout"
+                    to={`/checkout/${car?._id}`}
                     className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center md:w-36 text-white font-bold p-2 rounded-md duration-500 transition"
                   >
                     Checkout

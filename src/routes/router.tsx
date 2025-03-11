@@ -17,6 +17,8 @@ import AllCars from "@/pages/allCars/AllCars";
 import AboutUs from "@/pages/about us/AboutUs";
 import Blogs from "@/pages/blogs/Blogs";
 import Contacts from "@/pages/contact/Contacts";
+import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
+import CheckOut from "@/pages/checkOut/CheckOut";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -74,6 +76,22 @@ export const router = createBrowserRouter([
       {
         path: "contact",
         element: <Contacts></Contacts>,
+      },
+      {
+        path: "profile/:id",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <UserProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "checkout/:id",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <CheckOut />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

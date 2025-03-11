@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { calculateAge } from "./myProfile.utills";
+import ProfileLoader from "@/myComponent/loader/ProfileLoader";
 
 const MyProfile = () => {
   const myprofile = useMyProfile();
@@ -22,6 +24,13 @@ const MyProfile = () => {
   const [currentAddress, setCurrentAddress] = useState<string | " ">(
     myprofile.myProfile?.currentAddress
   );
+  const [age, setAge] = useState(0);
+  useEffect(() => {
+    if (myprofile?.myProfile?.dateOfBirth) {
+      const age = calculateAge(myprofile?.myProfile.dateOfBirth);
+      setAge(age);
+    }
+  }, [myprofile?.myProfile?.dateOfBirth]);
 
   const methods = useForm({
     defaultValues: {
@@ -95,6 +104,9 @@ const MyProfile = () => {
     }
   };
 
+  if (myprofile.isLoading) {
+    return <ProfileLoader></ProfileLoader>;
+  }
   return (
     <div className="max-w-4xl mx-auto bg-gray-100 shadow-lg rounded-lg overflow-hidden font-inter pb-10 dark:bg-gray-800">
       <div className="relative h-40 md:h-60 bg-gray-200 ">
@@ -188,8 +200,7 @@ const MyProfile = () => {
               Date of Birth
             </label>
             <p className="mt-1 text-gray-600">
-              {myprofile.myProfile?.dateOfBirth}{" "}
-              <span>(Age: {myprofile.myProfile?.age})</span>
+              {myprofile.myProfile?.dateOfBirth} <span>(Age: {age})</span>
             </p>
           </div>
         </div>

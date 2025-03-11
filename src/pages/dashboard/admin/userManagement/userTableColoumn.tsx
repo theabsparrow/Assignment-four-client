@@ -122,7 +122,7 @@ export const userTableColumns = (
     cell: ({ row }) => (
       <div>
         <Link
-          to={`/user-details/${row.original?.email}`}
+          to={`/profile/${row.original?._id}`}
           className="px-2 py-1 bg-blue-500 text-white rounded font-inter"
         >
           details
