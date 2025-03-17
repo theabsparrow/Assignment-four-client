@@ -26,6 +26,8 @@ export type TGalleryImage = {
 };
 export type TSeatingCapacity = "2" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
 export type TCondition = "New" | "Used" | "Certified Pre-Owned";
+export type TPaymentMethod = "Cash on Delivery" | "Online Payment";
+export type TPaymentOption = "SSLCommerz" | "Stripe" | "SurjoPay";
 
 export type TCarInfo = {
   brand: TCarBrand;
@@ -41,4 +43,6 @@ export type TCarInfo = {
   country: string;
   image?: string;
   galleryImage?: TGalleryImage[];
+  paymentMethod: TPaymentMethod[];
+  paymentOption: TPaymentOption[];
 };

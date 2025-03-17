@@ -54,9 +54,23 @@ const CheckOut = () => {
   };
   const orderInfo = {
     paymentMethods: ["Cash on Delivery", "Online Payment"],
-    deliveryMethods: ["Home Delivery", "Pickup", "Express Delivery"],
-    estimatedDeliveryTime: "3-5 Business Days",
-    deliveryCost: 200,
+    deliveryMethods: [
+      {
+        method: "Home Delivery",
+        cost: 200,
+        estimatedTime: "3-5 Business Days",
+      },
+      {
+        method: "Pickup",
+        cost: 0,
+        estimatedTime: "Available Immediately",
+      },
+      {
+        method: "Express Delivery",
+        cost: 500,
+        estimatedTime: "1-2 Business Days",
+      },
+    ],
     onlinePaymentOptions: ["SSLCommerz", "Stripe", "SurjoPay"],
   };
 
@@ -76,6 +90,7 @@ const CheckOut = () => {
     Stripe: <FaStripe className="text-purple-500 text-2xl" />,
     SurjoPay: <RiBankCardFill className="text-green-500 text-2xl" />,
   };
+
   return (
     <div className=" mx-auto px-4 md:px-32 bg-gray-50 dark:bg-gray-900 shadow-lg rounded-lg min-h-[calc(100vh-80px)] font-inter">
       <section className="flex md:flex-row items-center justify-between bg-white dark:bg-gray-800 rounded-xl shadow-md py-8 px-4">
@@ -95,7 +110,7 @@ const CheckOut = () => {
                 {car?.brand} - {car?.model}
               </h3>
               <div className="space-y-3 text-gray-600 dark:text-gray-400">
-                <p className="text-gray-600 dark:text-gray-400 flex items-center flex gap-1">
+                <p className="text-gray-600 dark:text-gray-400 items-center flex gap-1">
                   Price:
                   <span className="font-semibold text-green-600 dark:text-gray-200 flex items-center gap-1">
                     <TbCurrencyTaka className="text-xl  font-bold" />{" "}
@@ -204,18 +219,22 @@ const CheckOut = () => {
               <div className=" space-y-3">
                 {orderInfo.deliveryMethods.map((method) => (
                   <div
-                    key={method}
-                    onClick={() => setSelectedDeliveryMethod(method)}
+                    key={method.method}
+                    onClick={() => setSelectedDeliveryMethod(method.method)}
                     className={`p-6 rounded-lg shadow-md cursor-pointer transition flex items-center gap-3
               ${
-                selectedDeliveryMethod === method
+                selectedDeliveryMethod === method.method
                   ? "border-2 border-green-500 bg-green-100 dark:bg-green-900"
                   : "border border-gray-300 bg-white dark:bg-gray-700 hover:scale-x-105 duration-500"
               }
               text-gray-900 dark:text-gray-100 hover:border-2 hover:border-green-500 hover:bg-green-100 dark:hover:bg-green-900  duration-500`}
                   >
-                    {deliveryIconMap[method as keyof typeof deliveryIconMap]}
-                    {method}
+                    {
+                      deliveryIconMap[
+                        method.method as keyof typeof deliveryIconMap
+                      ]
+                    }
+                    {method.method}
                   </div>
                 ))}
               </div>
@@ -427,7 +446,12 @@ const CheckOut = () => {
                           Estimated Delivery :
                         </span>
                         <span className="text-green-600 dark:text-green-400 font-semibold">
-                          {orderInfo.estimatedDeliveryTime}
+                          {
+                            orderInfo.deliveryMethods.find(
+                              (method) =>
+                                method.method === selectedDeliveryMethod
+                            )?.estimatedTime
+                          }
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -436,7 +460,12 @@ const CheckOut = () => {
                         </span>
                         <span className="text-green-600 dark:text-green-400 font-semibold flex items-center gap-1">
                           <TbCurrencyTaka className="text-xl  font-bold" />{" "}
-                          {orderInfo.deliveryCost.toFixed(2)}
+                          {orderInfo.deliveryMethods
+                            .find(
+                              (method) =>
+                                method.method === selectedDeliveryMethod
+                            )
+                            ?.cost.toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -449,7 +478,15 @@ const CheckOut = () => {
                       </span>
                       <span className="text-2xl font-bold text-green-600 dark:text-green-400 flex items-center gap-1">
                         <TbCurrencyTaka className="text-3xl  font-bold" />{" "}
-                        {(car?.price + orderInfo.deliveryCost).toLocaleString()}
+                        {(
+                          car?.price +
+                          orderInfo.deliveryMethods
+                            .find(
+                              (method) =>
+                                method.method === selectedDeliveryMethod
+                            )
+                            ?.cost.toFixed(2)
+                        ).toLocaleString()}
                       </span>
                     </div>
                   )}

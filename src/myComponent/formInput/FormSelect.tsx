@@ -8,10 +8,19 @@ const FormSelect = ({
   options,
   register,
   required,
+  setValue,
+  clearErrors,
 }: TFormSelectProps) => {
   const {
     formState: { errors },
   } = useFormContext();
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    if (setValue) setValue(name, value);
+    if (clearErrors) clearErrors(name);
+  };
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -21,10 +30,11 @@ const FormSelect = ({
         {...register(name, {
           ...(required && { required: `${label} is required` }),
         })}
+        onChange={handleChange}
         className="mt-1 w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white outline-none"
       >
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option key={option.value as string} value={option.value as string}>
             {option.label}
           </option>
         ))}

@@ -4,12 +4,14 @@ export type TValue = {
 };
 
 export const genders: TValue[] = [
+  { value: "", label: "Select your gender" },
   { value: "male", label: "Male" },
   { value: "female", label: "Female" },
   { value: "others", label: "Others" },
 ];
 
 export const conditions: TValue[] = [
+  { value: "", label: "select condition" },
   { value: "New", label: "New" },
   { value: "Used", label: "Used" },
   { value: "Certified Pre-Owned", label: "Certified Pre-Owned" },

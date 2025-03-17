@@ -17,7 +17,9 @@ const AddCarSelectInput = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
   const {
+    register,
     setValue,
     watch,
     clearErrors,
@@ -31,7 +33,7 @@ const AddCarSelectInput = ({
     );
 
   const handleSelect = (option: string) => {
-    setValue(name, option);
+    setValue(name, option, { shouldValidate: true });
     setSearchTerm("");
     setIsDropdownOpen(false);
     clearErrors(name);
@@ -55,6 +57,7 @@ const AddCarSelectInput = ({
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
   return (
     <>
       <div className="relative font-inter">
@@ -68,7 +71,6 @@ const AddCarSelectInput = ({
         >
           {watch(name) || `Select a ${label}`}
         </div>
-
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
@@ -99,7 +101,12 @@ const AddCarSelectInput = ({
             </ul>
           </div>
         )}
-
+        <input
+          type="hidden"
+          {...register(name, {
+            required: `${label} is required`,
+          })}
+        />
         {errors[name]?.message && (
           <span className="text-red-500 text-sm flex items-center gap-1">
             <AiFillWarning /> {errors[name]?.message as string}

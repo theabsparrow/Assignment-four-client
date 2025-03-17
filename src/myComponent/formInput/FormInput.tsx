@@ -14,6 +14,7 @@ const FormInput = ({
   maxLength,
   required,
   setValue,
+  clearErrors,
 }: TFormInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -28,8 +29,15 @@ const FormInput = ({
     if (file) {
       setImagePreview(URL.createObjectURL(file));
       setImageText(file?.name);
-      setValue(name, file);
+      if (setValue) setValue(name, file);
+      if (clearErrors) clearErrors(name);
     }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (setValue) setValue(name, value);
+    if (clearErrors) clearErrors(name);
   };
 
   return (
@@ -118,6 +126,7 @@ const FormInput = ({
             errors[name] ? "border-red-500" : "border-gray-300"
           }`}
           placeholder={placeholder}
+          onChange={handleChange}
         />
       )}
       {type === "password" && (
