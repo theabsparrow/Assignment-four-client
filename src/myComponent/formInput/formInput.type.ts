@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  FieldValues,
-  UseFormClearErrors,
-  UseFormRegister,
-} from "react-hook-form";
+import { FieldValues, UseFormRegister } from "react-hook-form";
 import { TValue } from "./formInput.const";
 
 export type TFormInputProps = {

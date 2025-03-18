@@ -1,30 +1,7 @@
 import { TValue } from "@/myComponent/formInput/formInput.const";
 import { getPastYears } from "@/utills/generateYears";
+import { TCarBrand, TCategory } from "./addcar.interface";
 
-export type TCarBrand =
-  | "Toyota"
-  | "Hyundai"
-  | "Nissan"
-  | "Audi"
-  | "Tesla"
-  | "Ford"
-  | "Land-rover"
-  | "Honda"
-  | "Suzuki"
-  | "Mitsubishi";
-
-export type TCategory =
-  | "Sedan"
-  | "SUV"
-  | "Coupe"
-  | "Convertible"
-  | "Electric"
-  | "Sports-car"
-  | "Hybrid"
-  | "Jeep"
-  | "Luxury";
-
-export type TSeatingCapacity = "2" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
 export const carBrands: TCarBrand[] = [
   "Toyota",
   "Hyundai",
@@ -32,21 +9,74 @@ export const carBrands: TCarBrand[] = [
   "Audi",
   "Tesla",
   "Ford",
-  "Land-rover",
+  "Land Rover",
   "Honda",
   "Suzuki",
   "Mitsubishi",
-];
+  "BMW",
+  "Mercedes Benz",
+  "Volkswagen",
+  "Porsche",
+  "Chevrolet",
+  "Lexus",
+  "Jaguar",
+  "Kia",
+  "Mazda",
+  "Subaru",
+  "Bentley",
+  "Peugeot",
+  "Renault",
+  "Volvo",
+  "Jeep",
+  "Chrysler",
+  "Dodge",
+  "Cadillac",
+  "GMC",
+  "Acura",
+  "Infiniti",
+  "Alfa Romeo",
+  "Maserati",
+  "Lincoln",
+  "Citroën",
+  "Fiat",
+  "Mini",
+  "Skoda",
+  "Genesis",
+  "RAM",
+  "Hummer",
+  "Saab",
+  "Seat",
+] as const;
 export const carCategories: TCategory[] = [
   "Sedan",
   "SUV",
   "Coupe",
   "Convertible",
   "Electric",
-  "Sports-car",
+  "Sports Car",
   "Hybrid",
   "Jeep",
   "Luxury",
+  "Hatchback",
+  "Pickup Truck",
+  "Van",
+  "Minivan",
+  "Wagon",
+  "Crossover",
+  "Muscle Car",
+  "Roadster",
+  "Diesel",
+  "Off-Road",
+  "Supercar",
+  "Classic Car",
+  "Limousine",
+  "Station Wagon",
+  "Microcar",
+  "Targa Top",
+  "Camper Van",
+  "Utility Vehicle",
+  "Compact Car",
+  "Pony Car",
 ];
 export const seatingCapacities: TValue[] = [
   { value: "", label: "Select seating capacity" },
@@ -114,11 +144,9 @@ export const deliveryMethod: string[] = [
   "Home Delivery",
   "Pickup",
   "Express Delivery",
-  "Overnight Delivery",
 ];
 export const estimatedTime: TValue[] = [
   { value: "24 hours", label: "Available Immediately" },
-  { value: "1 day", label: "Overnight" },
   { value: "2 days", label: "1-2 Business Days" },
   { value: "5 days", label: "3-5 Business Days" },
   { value: "6 days", label: "6 Business Days" },

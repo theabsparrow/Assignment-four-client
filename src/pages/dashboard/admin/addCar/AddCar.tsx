@@ -6,7 +6,6 @@ import carColors, {
   estimatedTime,
   paymentMethods,
   paymentOptions,
-  requiredFields,
   seatingCapacities,
   years,
 } from "./addcar.const";
@@ -19,12 +18,13 @@ import { countries } from "@/config/country.const";
 import MultipleImageUpload from "./MultipleImageUpload";
 import { imageUpload } from "@/utills/uploadImage";
 import { toast } from "sonner";
-import { TCarInfo } from "./carInfo.types";
 import { useAddCarMutation } from "@/redux/features/car/carApi";
 import MultiSelector from "@/myComponent/formInput/MultiSelector";
 import { useState } from "react";
-import GroupMultiSelector from "@/myComponent/formInput/GroupMultiSelector";
-import { DeliveryMethod } from "./addcar.interface";
+import GroupMultiSelector, {
+  DeliveryMethod,
+} from "@/myComponent/formInput/GroupMultiSelector";
+import { TCarInfo } from "./addcar.interface";
 
 const AddCar = () => {
   const methods = useForm({ mode: "all" });
@@ -32,14 +32,12 @@ const AddCar = () => {
     handleSubmit,
     setError,
     reset,
-    setValue,
-    getValues,
     clearErrors,
     formState: { isValid },
   } = methods;
   const [currentStep, setCurrentStep] = useState(1);
   const [addCar] = useAddCarMutation();
-  console.log(isValid);
+
   const onSubmit = async (data: any) => {
     if (currentStep === 2) {
       const fields = {
@@ -54,7 +52,6 @@ const AddCar = () => {
         }
       });
     }
-
     const {
       seatingCapacity,
       brand,
@@ -71,53 +68,58 @@ const AddCar = () => {
       year,
       paymentMethod,
       paymentOption,
+      deliveryMethod,
     } = data;
     const carPrice = Number(car);
-    // const toastId = toast.loading("car data uploading.....");
-    // try {
-    //   const basicInfo: TCarInfo = {
-    //     seatingCapacity,
-    //     brand,
-    //     category,
-    //     color,
-    //     condition,
-    //     country,
-    //     description,
-    //     madeIn,
-    //     model,
-    //     price: carPrice,
-    //     year,
-    //     paymentMethod: paymentMethod.map((method: string) => ({ method })),
-    //     paymentOption: paymentOption.map((option: string) => ({ option })),
-    //   };
-    //   const galleryImage = [];
-    //   if (photo && photo.length > 1) {
-    //     for (const image of photo) {
-    //       const result = { url: await imageUpload(image) };
-    //       galleryImage.push(result);
-    //     }
-    //   }
-    //   const image = await imageUpload(carImage);
-    //   if (image) {
-    //     basicInfo.image = image;
-    //   }
-    //   if (galleryImage.length > 1) {
-    //     basicInfo.galleryImage = galleryImage;
-    //   }
-    //   const res = await addCar({ basicInfo }).unwrap();
-    //   if (res.data) {
-    //     toast.success("car info uploaded successfully ", {
-    //       id: toastId,
-    //       duration: 3000,
-    //     });
-    //     reset();
-    //   }
-    // } catch (error: any) {
-    //   console.log(error);
-    //   const errorInfo =
-    //     error?.data?.message || error?.error || "Something went wrong!";
-    //   toast.error(errorInfo, { id: toastId, duration: 3000 });
-    // }
+    const toastId = toast.loading("car data uploading.....");
+    try {
+      const basicInfo: TCarInfo = {
+        seatingCapacity,
+        brand,
+        category,
+        color,
+        condition,
+        country,
+        description,
+        madeIn,
+        model,
+        price: carPrice,
+        year,
+        paymentMethod: paymentMethod.map((method: string) => ({ method })),
+        paymentOption: paymentOption.map((option: string) => ({ option })),
+        deliveryMethod,
+      };
+      const galleryImage = [];
+      if (photo && photo.length > 1) {
+        for (const image of photo) {
+          const result = { url: await imageUpload(image) };
+          galleryImage.push(result);
+        }
+      }
+      const image = await imageUpload(carImage);
+      if (image) {
+        basicInfo.image = image;
+      }
+      if (galleryImage.length > 1) {
+        basicInfo.galleryImage = galleryImage;
+      }
+      const res = await addCar({ basicInfo }).unwrap();
+      if (res.data) {
+        toast.success("car info uploaded successfully ", {
+          id: toastId,
+          duration: 3000,
+        });
+        setCurrentStep(1);
+        reset();
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.errorSource[0].message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
   };
 
   const handleNext = async () => {

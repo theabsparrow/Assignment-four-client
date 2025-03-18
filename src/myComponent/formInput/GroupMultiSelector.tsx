@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { TValue } from "./formInput.const";
 import { IoCloseSharp } from "react-icons/io5";
-import { DeliveryMethod } from "@/pages/dashboard/admin/addCar/addcar.interface";
+import { TbCurrencyTaka } from "react-icons/tb";
+
+export type DeliveryMethod = {
+  method: string;
+  estimatedTime: string;
+  deliveryCost: number;
+};
 
 type TGroupMultiSelectorProps = {
   methods: string[];
@@ -28,7 +34,7 @@ const GroupMultiSelector: React.FC<TGroupMultiSelectorProps> = ({
     if (selectedMethod && selectedCost !== null && selectedTime) {
       const newGroup = {
         method: selectedMethod,
-        cost: selectedCost,
+        deliveryCost: selectedCost,
         estimatedTime: selectedTime,
       };
 
@@ -70,9 +76,10 @@ const GroupMultiSelector: React.FC<TGroupMultiSelectorProps> = ({
                   <span className="font-medium text-gray-900">Method:</span>{" "}
                   {group.method}
                 </p>
-                <p className="text-gray-700 text-sm">
-                  <span className="font-medium text-gray-900">Cost:</span> $
-                  {group.cost}
+                <p className="text-gray-700 text-sm flex items-center gap-1">
+                  <span className="font-medium text-gray-900">Cost:</span>{" "}
+                  <TbCurrencyTaka />
+                  {group.deliveryCost}
                 </p>
                 <p className="text-gray-700 text-sm">
                   <span className="font-medium text-gray-900">
@@ -135,6 +142,7 @@ const GroupMultiSelector: React.FC<TGroupMultiSelectorProps> = ({
             <input
               type="number"
               value={selectedCost || ""}
+              max={50000}
               onChange={(e) => setSelectedCost(Number(e.target.value))}
               className="border rounded px-4 py-[6px] w-full outline-none"
               placeholder="Enter Cost"
