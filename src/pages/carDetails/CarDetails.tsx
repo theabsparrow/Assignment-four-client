@@ -399,12 +399,6 @@ const CarDetails = () => {
                         placeholder="Enter your text..."
                         register={methods.register}
                         errors={methods.formState.errors}
-                        validationRules={{
-                          minLength: {
-                            value: 10,
-                            message: "Must be at least 10 characters",
-                          },
-                        }}
                       />
                       <div className=" flex items-center justify-end">
                         <button
