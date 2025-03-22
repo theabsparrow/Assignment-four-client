@@ -76,6 +76,7 @@ const AllCars = () => {
     if (isLoading || !data?.data?.result) return {};
     return exTractModel(data.data.result);
   }, [isLoading, data]);
+
   const meta = data?.data?.meta;
 
   const handleFilterChange = (name: string, value: string) => {
@@ -388,6 +389,8 @@ const AllCars = () => {
                   onChange={(e) => {
                     const value = e.target.value;
                     setFilter((prev) => ({ ...prev, brand: value }));
+                    setFilter((prev) => ({ ...prev, model: "" }));
+
                     handleFilterChange("brand", value);
                   }}
                   className="px-5 rounded outline-none bg-transparent font-bold"

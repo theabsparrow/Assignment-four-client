@@ -7,6 +7,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import useGetAllCars from "@/hook/useGetAllCars";
 import { exTractModel, TCar } from "@/utills/extraxt.model";
 import { useNavigate } from "react-router-dom";
+import SearchAndSelect from "../searchAndSelect/SearchAndSelect";
 
 const Banner = () => {
   const { carData } = useGetAllCars(["brand", "model"]) || {};
@@ -17,13 +18,14 @@ const Banner = () => {
   const models: Record<string, string[]> =
     carData.length > 1 ? exTractModel(carData as TCar[]) : {};
 
-  const [selectedBrand, setSelectedBrand] = useState<string>("All");
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] =
     useState<string>("select brand first");
   const [priceRange, setPriceRange] = useState<[number, number]>([
     1, 100000000,
   ]);
   const navigate = useNavigate();
+  // const [brandName, setBrandName] = useState("");
 
   useEffect(() => {
     if (selectedBrand !== "All") {
@@ -66,37 +68,29 @@ const Banner = () => {
               onSubmit={handelSubmit}
               className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-20"
             >
-              <div className="flex flex-col lg:flex-row items-center gap-1 md:gap-20">
+              <div className="flex flex-col lg:flex-row items-center gap-1 md:gap-20 ">
                 <div>
-                  <h1 className="text-gray-500 font-semibold">BRAND</h1>
-                  <select
-                    value={selectedBrand}
-                    onChange={(e) => setSelectedBrand(e.target.value)}
-                    className="px-10 rounded outline-none bg-transparent font-bold"
-                  >
-                    <option value="All" disabled>
-                      Select brand
-                    </option>
-                    {brands.map((brand) => (
-                      <option key={brand} value={brand}>
-                        {brand}
-                      </option>
-                    ))}
-                  </select>
+                  <SearchAndSelect
+                    options={brands}
+                    label="BRAND"
+                    name="brand"
+                    setValue={setSelectedBrand}
+                    selectedBrand={selectedBrand}
+                  ></SearchAndSelect>
                 </div>
 
                 <div>
-                  <h1 className="text-gray-500 font-semibold">MODEL</h1>
+                  <h1 className="text-gray-500 font-semibold">* MODEL</h1>
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    className="px-10 rounded outline-none bg-transparent font-bold"
-                    disabled={selectedBrand === "All"}
+                    className="p-2 rounded outline-none bg-gray-50 dark:bg-gray-800 border cursor-pointer"
+                    disabled={!selectedBrand}
                   >
                     <option value="select brand first">
                       Select brand first
                     </option>
-                    {selectedBrand !== "All" &&
+                    {selectedBrand &&
                       models[selectedBrand]?.map((model) => (
                         <option key={model} value={model}>
                           {model}

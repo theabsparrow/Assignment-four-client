@@ -36,6 +36,9 @@ const AddCar = () => {
     formState: { isValid },
   } = methods;
   const [currentStep, setCurrentStep] = useState(1);
+  const [selectedGroup, setSelectedGroup] = useState<DeliveryMethod[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState<string[]>([]);
+  const [paymentOption, setPaymentOption] = useState<string[]>([]);
   const [addCar] = useAddCarMutation();
 
   const onSubmit = async (data: any) => {
@@ -62,7 +65,7 @@ const AddCar = () => {
       description,
       carImage,
       madeIn,
-      model,
+      model: carModel,
       photo,
       price: car,
       year,
@@ -71,6 +74,8 @@ const AddCar = () => {
       deliveryMethod,
     } = data;
     const carPrice = Number(car);
+    const model = carModel.charAt(0).toUpperCase() + carModel.slice(1);
+    console.log(data);
     const toastId = toast.loading("car data uploading.....");
     try {
       const basicInfo: TCarInfo = {
@@ -86,9 +91,13 @@ const AddCar = () => {
         price: carPrice,
         year,
         paymentMethod: paymentMethod.map((method: string) => ({ method })),
-        paymentOption: paymentOption.map((option: string) => ({ option })),
         deliveryMethod,
       };
+      if (paymentOption.length > 0) {
+        basicInfo.paymentOption = paymentOption.map((option: string) => ({
+          option,
+        }));
+      }
       const galleryImage = [];
       if (photo && photo.length > 1) {
         for (const image of photo) {
@@ -109,8 +118,11 @@ const AddCar = () => {
           id: toastId,
           duration: 3000,
         });
-        setCurrentStep(1);
         reset();
+        setCurrentStep(1);
+        setSelectedGroup([]);
+        setPaymentMethod([]);
+        setPaymentOption([]);
       }
     } catch (error: any) {
       const errorInfo =
@@ -273,11 +285,12 @@ const AddCar = () => {
                       <GroupMultiSelector
                         methods={deliveryMethod}
                         estimatedTimes={estimatedTime}
-                        selectedGroup={field.value}
+                        selectedGroup={selectedGroup}
                         setSelectedGroup={(value: DeliveryMethod[]) => {
                           field.onChange(value);
+                          setSelectedGroup(value);
                           if (value.length > 0) {
-                            clearErrors("deliveryMethods");
+                            clearErrors("deliveryMethod");
                           }
                         }}
                       ></GroupMultiSelector>
@@ -298,35 +311,6 @@ const AddCar = () => {
                   </h2>
                   <div className="grid grid-cols-3 gap-5">
                     <Controller
-                      name="paymentOption"
-                      control={methods.control}
-                      defaultValue={[]}
-                      rules={{ required: "select at least one payment option" }}
-                      render={({ field }) => (
-                        <div>
-                          <MultiSelector
-                            options={paymentOptions}
-                            label={"Select Payment Options"}
-                            option={field.value}
-                            setOptions={(value) => {
-                              field.onChange(value);
-                              if (value.length > 0) {
-                                clearErrors("paymentOption");
-                              }
-                            }}
-                          ></MultiSelector>
-                          {methods.formState.errors.paymentOption && (
-                            <p className="text-sm font-medium text-red-700">
-                              {
-                                methods.formState.errors.paymentOption
-                                  ?.message as string
-                              }
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    />
-                    <Controller
                       name="paymentMethod"
                       control={methods.control}
                       defaultValue={[]}
@@ -336,9 +320,10 @@ const AddCar = () => {
                           <MultiSelector
                             options={paymentMethods}
                             label={"Select Payment Methods"}
-                            option={field.value}
-                            setOptions={(value) => {
+                            selectedOption={paymentMethod}
+                            setSelectedOption={(value: string[]) => {
                               field.onChange(value);
+                              setPaymentMethod(value);
                               if (value.length > 0) {
                                 clearErrors("paymentMethod");
                               }
@@ -355,6 +340,40 @@ const AddCar = () => {
                         </div>
                       )}
                     />
+                    {paymentMethod.includes("Online Payment") && (
+                      <Controller
+                        name="paymentOption"
+                        control={methods.control}
+                        defaultValue={[]}
+                        rules={{
+                          required: "select at least one payment option",
+                        }}
+                        render={({ field }) => (
+                          <div>
+                            <MultiSelector
+                              options={paymentOptions}
+                              label={"Select Payment Options"}
+                              selectedOption={paymentOption}
+                              setSelectedOption={(value: string[]) => {
+                                field.onChange(value);
+                                setPaymentOption(value);
+                                if (value.length > 0) {
+                                  clearErrors("paymentOption");
+                                }
+                              }}
+                            ></MultiSelector>
+                            {methods.formState.errors.paymentOption && (
+                              <p className="text-sm font-medium text-red-700">
+                                {
+                                  methods.formState.errors.paymentOption
+                                    ?.message as string
+                                }
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

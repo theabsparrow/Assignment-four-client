@@ -1,34 +1,50 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 
 type MultiSelectorProps = {
   options: string[];
   label: string;
-  option: string[];
-  setOptions: (value: string[]) => void;
+  selectedOption: string[];
+  setSelectedOption: (value: string[]) => void;
 };
 
 const MultiSelector: React.FC<MultiSelectorProps> = ({
   options,
   label,
-  option,
-  setOptions,
+  selectedOption,
+  setSelectedOption,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (item: string) => {
-    if (!option.includes(item)) {
-      setOptions([...option, item]);
+    if (!selectedOption.includes(item)) {
+      setSelectedOption([...selectedOption, item]);
     }
     setIsOpen(false);
   };
 
   const handleRemove = (item: string) => {
-    setOptions(option.filter((i) => i !== item));
+    setSelectedOption(selectedOption.filter((i) => i !== item));
   };
 
-  const availableOptions = options.filter((items) => !option.includes(items));
+  const availableOptions = options.filter(
+    (items) => !selectedOption.includes(items)
+  );
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropDownRef.current &&
+        !dropDownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   return (
     <div className="relative w-full max-w-md">
@@ -36,12 +52,15 @@ const MultiSelector: React.FC<MultiSelectorProps> = ({
 
       {/* Dropdown Trigger */}
       <div
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          setIsOpen(!isOpen);
+          e.stopPropagation();
+        }}
         className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 flex justify-between items-center cursor-pointer bg-white dark:bg-gray-800 "
       >
-        {option.length > 0 ? (
+        {selectedOption.length > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {option.map((item) => (
+            {selectedOption.map((item) => (
               <div
                 key={item}
                 className="text-sm flex items-center gap-2 bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 px-3 py-1 rounded-full"
@@ -71,10 +90,12 @@ const MultiSelector: React.FC<MultiSelectorProps> = ({
         <div className="absolute z-10 mt-2 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {availableOptions.map((availableOption) => (
             <div
+              ref={dropDownRef}
               key={availableOption}
-              onClick={() => {
+              onClick={(e) => {
                 handleSelect(availableOption);
                 setIsOpen(false);
+                e.stopPropagation();
               }}
               className="px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-700 transition cursor-pointer text-gray-800 dark:text-gray-300"
             >

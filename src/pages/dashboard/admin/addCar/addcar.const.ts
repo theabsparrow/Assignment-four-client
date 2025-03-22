@@ -16,7 +16,6 @@ export const carBrands: TCarBrand[] = [
   "BMW",
   "Mercedes Benz",
   "Volkswagen",
-  "Porsche",
   "Chevrolet",
   "Lexus",
   "Jaguar",
@@ -46,6 +45,9 @@ export const carBrands: TCarBrand[] = [
   "Hummer",
   "Saab",
   "Seat",
+  "Proton",
+  "Tata",
+  "Opel",
 ] as const;
 export const carCategories: TCategory[] = [
   "Sedan",

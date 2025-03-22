@@ -19,6 +19,7 @@ import Blogs from "@/pages/blogs/Blogs";
 import Contacts from "@/pages/contact/Contacts";
 import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import CheckOut from "@/pages/checkOut/CheckOut";
+import AllBrands from "@/pages/allBrands/AllBrands";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -76,6 +77,10 @@ export const router = createBrowserRouter([
       {
         path: "contact",
         element: <Contacts></Contacts>,
+      },
+      {
+        path: "all-brands",
+        element: <AllBrands></AllBrands>,
       },
       {
         path: "profile/:id",

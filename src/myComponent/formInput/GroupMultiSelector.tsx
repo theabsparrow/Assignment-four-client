@@ -141,7 +141,7 @@ const GroupMultiSelector: React.FC<TGroupMultiSelectorProps> = ({
             <p className="text-sm text-gray-800 mb-2">Delivery cost</p>
             <input
               type="number"
-              value={selectedCost || ""}
+              value={selectedCost ?? ""}
               max={50000}
               onChange={(e) => setSelectedCost(Number(e.target.value))}
               className="border rounded px-4 py-[6px] w-full outline-none"

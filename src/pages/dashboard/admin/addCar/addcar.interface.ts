@@ -12,7 +12,6 @@ export type TCarBrand =
   | "BMW"
   | "Mercedes Benz"
   | "Volkswagen"
-  | "Porsche"
   | "Chevrolet"
   | "Lexus"
   | "Jaguar"
@@ -41,7 +40,10 @@ export type TCarBrand =
   | "RAM"
   | "Hummer"
   | "Saab"
-  | "Seat";
+  | "Seat"
+  | "Proton"
+  | "Tata"
+  | "Opel";
 
 export type TCategory =
   | "Sedan"
@@ -113,6 +115,6 @@ export type TCarInfo = {
   image?: string;
   galleryImage?: TGalleryImage[];
   paymentMethod: TPaymentMethod[];
-  paymentOption: TPaymentOption[];
+  paymentOption?: TPaymentOption[];
   deliveryMethod: TDeliveryMethod[];
 };
