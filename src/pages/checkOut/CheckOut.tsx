@@ -1,38 +1,25 @@
 import useMyProfile from "@/hook/useMyProfile";
 import { useGetSingleCarQuery } from "@/redux/features/car/carApi";
 import React, { useEffect, useState } from "react";
-import { TbCurrencyTaka } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaTruckFront } from "react-icons/fa6";
 import { SiCashapp } from "react-icons/si";
-import {
-  FaCcAmazonPay,
-  FaCreditCard,
-  FaHome,
-  FaMapMarkerAlt,
-  FaMoneyBillWave,
-  FaPhoneAlt,
-  FaShippingFast,
-  FaStore,
-  FaStripe,
-} from "react-icons/fa";
-import PhoneInput from "react-phone-input-2";
-import { RiBankCardFill } from "react-icons/ri";
+import { FaCcAmazonPay } from "react-icons/fa";
 import { TDeliveryMethod } from "../dashboard/admin/addCar/addcar.interface";
 import CheckOutCar from "./CheckOutCar";
 import CheckOutUser from "./CheckOutUser";
 import OrderSummery from "./OrderSummery";
-
-type TPaymentMethod = {
-  method: string;
-  isDeleted: boolean;
-  _id: string;
-};
-type TPaymentOption = {
-  option: string;
-  isDeleted: boolean;
-  _id: string;
-};
+import {
+  deliveryIconMap,
+  paymentIconMap,
+  paymentOptionIconMap,
+} from "./CheckOut.const";
+import {
+  TOrderInfo,
+  TPaymentMethod,
+  TPaymentOption,
+} from "./checkOutInterface";
+import { useCreateOrderMutation } from "@/redux/features/order/orderApi";
 
 const CheckOut = () => {
   const { id } = useParams();
@@ -56,6 +43,8 @@ const CheckOut = () => {
   const [nearestDealer, setNearestDealer] = useState("");
   const [useExistingNumber, setUseExistingNumber] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(userPhoneNumber);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [createOrder] = useCreateOrderMutation();
 
   useEffect(() => {
     if (!isLoading && car && !car.inStock) {
@@ -68,25 +57,46 @@ const CheckOut = () => {
     if (label === "dealer") setNearestDealer(value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  };
+    setErrorMessage("");
 
-  const deliveryIconMap = {
-    "Home Delivery": <FaHome className="text-2xl text-green-500" />,
-    Pickup: <FaStore className="text-2xl text-blue-500" />,
-    "Express Delivery": <FaShippingFast className="text-2xl text-red-500" />,
-  };
+    if (!nearestDealer && selectedDeliveryMethod === "Pickup") {
+      return setErrorMessage("nearest dealer information needed");
+    }
+    if (
+      !location &&
+      (selectedDeliveryMethod === "Home Delivery" ||
+        selectedDeliveryMethod === "Express Delivery")
+    ) {
+      return setErrorMessage("your address needed");
+    }
 
-  const paymentIconMap = {
-    "Cash on Delivery": <FaMoneyBillWave className="text-3xl text-green-500" />,
-    "Online Payment": <FaCreditCard className="text-3xl text-blue-500" />,
-  };
+    const estimatedDeliveryTime = car?.deliveryMethod.find(
+      (method: TDeliveryMethod) => method?.method === selectedDeliveryMethod
+    )?.estimatedTime;
 
-  const paymentOptionIconMap = {
-    SSLCommerz: <FaCreditCard className="text-blue-500 text-2xl" />,
-    Stripe: <FaStripe className="text-purple-500 text-2xl" />,
-    SurjoPay: <RiBankCardFill className="text-green-500 text-2xl" />,
+    const deliveryCost = car?.deliveryMethod.find(
+      (method: TDeliveryMethod) => method?.method === selectedDeliveryMethod
+    )?.deliveryCost;
+
+    const orderInfo: TOrderInfo = {
+      deliveryMethod: selectedDeliveryMethod as string,
+      estimatedDeliveryTime,
+      phoneNumber,
+      deliveryCost,
+      paymentMethod: selectedPaymentMethod as string,
+      paymentOption: selectedPaymentOption as string,
+    };
+    if (location) orderInfo.location = location;
+    if (nearestDealer) orderInfo.nearestDealer = nearestDealer;
+    const carId = car._id;
+
+    try {
+      const res = await createOrder({ orderInfo, carId });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -217,6 +227,7 @@ const CheckOut = () => {
               handleChange={handleChange}
               setPhoneNumber={setPhoneNumber}
               setUseExistingNumber={setUseExistingNumber}
+              errorMessage={errorMessage}
             />
           )}
         </main>

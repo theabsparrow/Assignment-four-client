@@ -6,7 +6,7 @@ type UserInfoProps = {
 
 const CheckOutUser = ({ user }: UserInfoProps) => {
   return (
-    <section>
+    <section className="font-inter">
       <h2 className="text-3xl font-extrabold mb-8 text-gray-800 dark:text-gray-200">
         User Information
       </h2>

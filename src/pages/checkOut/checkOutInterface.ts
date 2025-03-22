@@ -1,3 +1,14 @@
+export type TPaymentMethod = {
+  method: string;
+  isDeleted: boolean;
+  _id: string;
+};
+export type TPaymentOption = {
+  option: string;
+  isDeleted: boolean;
+  _id: string;
+};
+
 export type TCar = {
   image: string;
   brand: string;
@@ -39,4 +50,16 @@ export interface OrderSummaryProps {
   handleChange: (type: string, value: string) => void;
   setPhoneNumber: (value: string) => void;
   setUseExistingNumber: (value: boolean) => void;
+  errorMessage?: string;
 }
+
+export type TOrderInfo = {
+  deliveryMethod: string;
+  estimatedDeliveryTime: string;
+  phoneNumber: string;
+  deliveryCost: number;
+  paymentMethod: string;
+  paymentOption: string;
+  nearestDealer?: string;
+  location?: string;
+};

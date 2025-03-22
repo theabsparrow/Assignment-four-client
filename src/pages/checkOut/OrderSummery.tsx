@@ -3,6 +3,7 @@ import { OrderSummaryProps } from "./checkOutInterface";
 import PhoneInput from "react-phone-input-2";
 import { FaMapMarkerAlt, FaPhoneAlt, FaStore } from "react-icons/fa";
 import { TDeliveryMethod } from "../dashboard/admin/addCar/addcar.interface";
+import { AiFillWarning } from "react-icons/ai";
 
 const OrderSummery = ({
   selectedDeliveryMethod,
@@ -21,9 +22,10 @@ const OrderSummery = ({
   handleChange,
   setPhoneNumber,
   setUseExistingNumber,
+  errorMessage,
 }: OrderSummaryProps) => {
   return (
-    <section className="md:w-[40vw]">
+    <section className="md:w-[40vw] font-inter">
       {selectedDeliveryMethod && (
         <div className="mb-6 bg-white dark:bg-gray-800 px-6 py-4 rounded-lg border-2 border-green-500">
           <p className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-2xl flex items-center gap-4">
@@ -199,15 +201,28 @@ const OrderSummery = ({
       </div>
 
       {selectedPaymentOption && (
-        <div className="mt-5 flex justify-end">
-          <button
-            className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center md:w-36 text-white font-bold py-2 px-1 rounded-md duration-500 transition"
-            type="submit"
-            form="myForm"
-          >
-            Place Order
-          </button>
-        </div>
+        <>
+          {errorMessage && (
+            <div className=" mt-2">
+              <h1 className="text-center text-red-500 font-semibold flex items-center justify-center gap-1">
+                {" "}
+                <span>
+                  <AiFillWarning />
+                </span>{" "}
+                {errorMessage}
+              </h1>
+            </div>
+          )}
+          <div className="mt-5 flex justify-end">
+            <button
+              className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center md:w-36 text-white font-bold py-2 px-1 rounded-md duration-500 transition"
+              type="submit"
+              form="myForm"
+            >
+              Place Order
+            </button>
+          </div>
+        </>
       )}
     </section>
   );
