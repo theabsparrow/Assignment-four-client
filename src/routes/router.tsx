@@ -93,7 +93,9 @@ export const router = createBrowserRouter([
       {
         path: "checkout/:id",
         element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
+          <ProtectedRoute
+            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+          >
             <CheckOut />
           </ProtectedRoute>
         ),

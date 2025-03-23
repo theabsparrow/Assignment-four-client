@@ -200,7 +200,7 @@ const OrderSummery = ({
         </div>
       </div>
 
-      {selectedPaymentOption && (
+      {selectedPaymentMethod && (
         <>
           {errorMessage && (
             <div className=" mt-2">

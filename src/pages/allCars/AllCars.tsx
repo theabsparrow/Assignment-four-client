@@ -347,39 +347,37 @@ const AllCars = () => {
             />
           </div>
         </div>
-
         {/* mobile responsive ends */}
 
         <div className="flex justify-center md:justify-between md:items-start md:gap-5">
           {/* left side starts */}
-
-          <div>
-            <div className="md:flex justify-end px-4 mb-2 hidden">
+          <div className=" sticky top-40">
+            <div className="md:flex justify-end px-4 hidden bg-white pt-2">
               <button
                 onClick={() => handleSoldCars("inStock", false)}
-                className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition "
+                className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold px-2 py-1 rounded-md duration-500 transition "
               >
-                see sold cars
+                sold cars
               </button>
             </div>
-            <div className="hidden md:block sticky top-32 z-10 bg-white dark:bg-gray-900 shadow-lg px-4 py-4 space-y-4 max-h-[80vh] overflow-y-auto">
+            <div className="hidden md:block sticky top-32 z-10 bg-white dark:bg-gray-900 shadow-lg px-4 py-4 space-y-3 max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between">
                 <input
                   type="text"
                   placeholder="Search items"
-                  className="p-2 border rounded-lg shadow-sm bg-[#f0f3f8] dark:bg-gray-700 outline-cyan-400"
+                  className="px-2 py-1 border rounded-lg shadow-sm bg-[#f0f3f8] dark:bg-gray-700 outline-cyan-400"
                   value={searchTerm}
                   onChange={(e) => setSearch(e.target.value)}
                 />
                 <button
                   onClick={handelReset}
-                  className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition "
+                  className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold px-2 py-1 rounded-md duration-500 transition "
                 >
                   Reset
                 </button>
               </div>
 
-              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-4">
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
                 <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
                   {" "}
                   Filter by Brand :
@@ -408,7 +406,7 @@ const AllCars = () => {
                 </select>
               </div>
 
-              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-4">
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
                 <h1 className="text-gray-500 dark:text-gray-300 font-medium ">
                   Filter by Model :
                 </h1>
@@ -434,7 +432,7 @@ const AllCars = () => {
                 </select>
               </div>
 
-              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-4">
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
                 <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
                   {" "}
                   Filter by Year :
@@ -461,7 +459,7 @@ const AllCars = () => {
                 </select>
               </div>
 
-              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-4">
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
                 <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
                   {" "}
                   Filter by Category :
@@ -488,7 +486,7 @@ const AllCars = () => {
                 </select>
               </div>
 
-              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-4">
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
                 <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
                   {" "}
                   Filter by Conditon :
@@ -515,7 +513,7 @@ const AllCars = () => {
                 </select>
               </div>
 
-              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-4">
+              <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
                 <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
                   {" "}
                   Sort by :
@@ -538,7 +536,7 @@ const AllCars = () => {
                 </select>
               </div>
 
-              <div className="md:w-full text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-4">
+              <div className="md:w-full text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-3">
                 <div className="flex items-center mb-3 md:gap-3">
                   <h2 className="text-sm md:font-semibold">PRICE RANGE : </h2>
                   <p className="font-bold text-black dark:text-white flex items-center">
@@ -562,7 +560,7 @@ const AllCars = () => {
               </div>
             </div>
           </div>
-          {/* right side ends*/}
+          {/* left side ends*/}
           <div className=" space-y-4 ">
             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
               {cars.map((car: Partial<TCarInfo>) => (

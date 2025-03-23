@@ -20,6 +20,7 @@ import {
   TPaymentOption,
 } from "./checkOutInterface";
 import { useCreateOrderMutation } from "@/redux/features/order/orderApi";
+import { toast } from "sonner";
 
 const CheckOut = () => {
   const { id } = useParams();
@@ -60,6 +61,23 @@ const CheckOut = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
+    const toastId = "order";
+    if (selectedPaymentMethod === "Cash on Delivery") {
+      return toast.error(
+        "cash on delivery will no work yet! please select online payment",
+        { id: toastId }
+      );
+    }
+
+    if (
+      selectedPaymentOption === "SSLCommerz" ||
+      selectedPaymentOption === "Stripe"
+    ) {
+      return toast.error(
+        `${selectedPaymentOption} payment method is unavailable. select surjoPay`,
+        { id: toastId }
+      );
+    }
 
     if (!nearestDealer && selectedDeliveryMethod === "Pickup") {
       return setErrorMessage("nearest dealer information needed");
@@ -93,9 +111,19 @@ const CheckOut = () => {
     const carId = car._id;
 
     try {
-      const res = await createOrder({ orderInfo, carId });
-    } catch (error) {
-      console.log(error);
+      toast.loading("order processing....", { id: toastId });
+      const res = await createOrder({ orderInfo, carId }).unwrap();
+      if (res?.success) {
+        toast.success(res?.message, { id: toastId });
+        window.location.href = res.data;
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.errorSource[0].message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
 

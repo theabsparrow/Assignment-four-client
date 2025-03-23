@@ -10,7 +10,7 @@ const AllCarsCard = (car: Partial<TCarInfo>) => {
       <img
         src={image}
         alt={`${brand} ${model}`}
-        className="w-full h-48 object-cover rounded-lg"
+        className="w-[30vw] object-cover rounded-lg"
       />
       <div className="mt-4">
         <h2 className="text-lg font-bold text-gray-900 dark:text-white">
