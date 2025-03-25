@@ -20,6 +20,7 @@ import Contacts from "@/pages/contact/Contacts";
 import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import CheckOut from "@/pages/checkOut/CheckOut";
 import AllBrands from "@/pages/allBrands/AllBrands";
+import VerifyOrder from "@/pages/verifyOrder/VerifyOrder";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -97,6 +98,14 @@ export const router = createBrowserRouter([
             roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
           >
             <CheckOut />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "order/verify",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <VerifyOrder />
           </ProtectedRoute>
         ),
       },
