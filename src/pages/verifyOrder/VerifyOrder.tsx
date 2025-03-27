@@ -5,12 +5,9 @@ import { Link, useSearchParams } from "react-router-dom";
 
 const VerifyOrder = () => {
   const [searchParams] = useSearchParams();
-  const { data, isLoading, isError } = useVerifyOrderQuery(
-    searchParams.get("order_id")
-  );
+  const { data, isLoading } = useVerifyOrderQuery(searchParams.get("order_id"));
 
   const orderData = data?.data?.[0];
-  console.log(orderData);
   const statusColor =
     orderData?.sp_message === "Success"
       ? "bg-green-100 text-green-700 border-green-300 dark:bg-green-800 dark:text-green-300"
@@ -175,7 +172,7 @@ const VerifyOrder = () => {
       <div className="mt-4 flex justify-center">
         <Link
           className="bg-primary p-2 rounded-lg text-white font-semibold  hover:bg-secondary  duration-500 "
-          to="/order"
+          to={`/order/${orderData?.customer_order_id}`}
         >
           View Order
         </Link>

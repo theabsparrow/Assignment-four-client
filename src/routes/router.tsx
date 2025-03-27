@@ -21,6 +21,7 @@ import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import CheckOut from "@/pages/checkOut/CheckOut";
 import AllBrands from "@/pages/allBrands/AllBrands";
 import VerifyOrder from "@/pages/verifyOrder/VerifyOrder";
+import OrderDetails from "@/pages/orderDetails/OrderDetails";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -106,6 +107,16 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute roles={[USER_ROLE.user]}>
             <VerifyOrder />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "order/:id",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+          >
+            <OrderDetails />
           </ProtectedRoute>
         ),
       },
