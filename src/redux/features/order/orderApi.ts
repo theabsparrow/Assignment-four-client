@@ -17,13 +17,10 @@ const orderApi = baseApi.injectEndpoints({
       }),
     }),
     orderDetails: builder.query({
-      query: (orderId) => (
-        console.log(orderId),
-        {
-          url: `/order/${orderId}`,
-          method: "GET",
-        }
-      ),
+      query: (orderId) => ({
+        url: `/order/${orderId}`,
+        method: "GET",
+      }),
     }),
   }),
 });
