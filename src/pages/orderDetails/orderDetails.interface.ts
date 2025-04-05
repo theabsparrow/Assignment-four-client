@@ -1,10 +1,10 @@
 export type TOrderStatus = "Pending" | "Paid" | "Completed" | "Cancelled";
 export type TTrackingStatus =
   | "Processing"
-  | "Pending"
   | "Shipped"
   | "Out for Delivery"
-  | "Delivered";
+  | "Delivered"
+  | "Order Placed";
 
 export type TOrderStatusColor = {
   Pending: string;
@@ -14,7 +14,7 @@ export type TOrderStatusColor = {
 };
 export type TTrackingStatusColor = {
   Processing: string;
-  Pending: string;
+  "Order Placed": string;
   Shipped: string;
   "Out for Delivery": string;
   Delivered: string;
@@ -66,4 +66,11 @@ export type TOrderInfoProps = {
   paymentOption?: string;
   deliveryCost: number;
   totalPrice: number;
+};
+
+export type TTrackingInfoProps = {
+  trackingID: string;
+  trackingStatus: string;
+  isTracking: boolean;
+  _id: string;
 };

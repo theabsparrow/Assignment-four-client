@@ -6,18 +6,20 @@ import { useOrderDetailsQuery } from "@/redux/features/order/orderApi";
 import { useGetASingleUSerQuery } from "@/redux/features/user/userApi";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "react-router-dom";
-import { progressPercentage, trackingstatusColors } from "./orderDetails.const";
-import { TTrackingStatus } from "./orderDetails.interface";
 import UserInfoSection from "./UserInfoSection";
 import CarInfoSection from "./CarInfoSection";
 import OrderInfoSection from "./OrderInfoSection";
 import DelioveryInfoSection from "./DelioveryInfoSection";
+import CountTime from "./CountTime";
+import Tracking from "./Tracking";
+import { useState } from "react";
+import { FiMapPin, FiEyeOff } from "react-icons/fi";
 
 const OrderDetails = () => {
   const user = useAppSelector(currentUser);
   const { id } = useParams();
   const { data, isLoading } = useOrderDetailsQuery(id);
-
+  const [isEnable, setIsEnable] = useState(false);
   const order = data?.data;
   const carId = data?.data?.car;
   const userId = data?.data?.userID;
@@ -70,6 +72,11 @@ const OrderDetails = () => {
           id: myprofile?.myProfile?._id || "",
         };
 
+  const switchTracking = async (isTracking: boolean) => {
+    setIsEnable(isTracking);
+    console.log(isTracking);
+  };
+
   if (isLoading || loading || userLoading || myprofile?.isLoading) {
     return <p>loading........</p>;
   }
@@ -88,47 +95,35 @@ const OrderDetails = () => {
       </section>
 
       {/* Tracking Info */}
-      <div className="mb-6 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
-        <h2 className="text-lg font-semibold mb-2">Tracking Information</h2>
-        <div>
-          <span className="font-semibold">Tracking ID:</span>{" "}
-          {order?.tracking?.trackingID}
-        </div>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="font-semibold">Tracking Status:</span>
-          <div
-            className={`px-3 py-1 rounded-full ${
-              trackingstatusColors[
-                order?.tracking.trackingStatus as TTrackingStatus
-              ]
+      <section className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-800 shadow-lg rounded-xl px-2 py-3">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => switchTracking(false)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
+              !isEnable
+                ? "bg-red-600 text-white"
+                : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
             }`}
           >
-            {order?.tracking.trackingStatus}{" "}
-            {
-              progressPercentage[
-                order?.tracking?.trackingStatus as TTrackingStatus
-              ]
-            }
-            %`
-          </div>
-        </div>
-        <div className="mt-4 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-          <div
-            className={`h-2 rounded-full order?.status ? ${
-              trackingstatusColors[
-                order?.tracking.trackingStatus as TTrackingStatus
-              ]
+            <FiEyeOff className="text-lg" />
+            Tracking Off
+          </button>
+          <button
+            onClick={() => switchTracking(true)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
+              isEnable
+                ? "bg-green-600 text-white"
+                : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
             }`}
-            style={{
-              width: `${
-                progressPercentage[
-                  order?.tracking?.trackingStatus as TTrackingStatus
-                ]
-              }%`,
-            }}
-          ></div>
+          >
+            <FiMapPin className="text-lg" />
+            Tracking On
+          </button>
         </div>
-      </div>
+
+        <CountTime estimatedTime={order?.estimatedDeliveryTime}></CountTime>
+        <Tracking tracking={order?.tracking}></Tracking>
+      </section>
     </div>
   );
 };

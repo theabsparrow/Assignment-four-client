@@ -1,3 +1,4 @@
+import { Clock, MapPin, Package, Settings, Truck } from "lucide-react";
 import {
   TOrderStatusColor,
   TTrackingStatusColor,
@@ -13,8 +14,8 @@ export const statusColors: TOrderStatusColor = {
 };
 
 export const trackingstatusColors: TTrackingStatusColor = {
-  Pending:
-    "bg-yellow-400 text-yellow-900 dark:bg-yellow-500 dark:text-yellow-950",
+  "Order Placed":
+    "bg-orange-400 text-orange-900 dark:bg-orange-500 dark:text-orange-950",
   Processing: "bg-blue-400 text-blue-900 dark:bg-blue-500 dark:text-blue-950",
   Shipped:
     "bg-indigo-400 text-indigo-900 dark:bg-indigo-500 dark:text-indigo-950",
@@ -25,9 +26,17 @@ export const trackingstatusColors: TTrackingStatusColor = {
 };
 
 export const progressPercentage: Record<string, number> = {
-  Pending: 10,
-  Processing: 20,
-  "Out for Delivery": 40,
+  "Order Placed": 20,
+  Processing: 40,
   Shipped: 60,
+  "Out for Delivery": 80,
   Delivered: 100,
 };
+
+export const steps = [
+  { status: "Order Placed", icon: Clock },
+  { status: "Processing", icon: Settings },
+  { status: "Shipped", icon: Truck },
+  { status: "Out for Delivery", icon: MapPin },
+  { status: "Delivered", icon: Package },
+];
