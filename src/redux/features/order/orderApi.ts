@@ -15,12 +15,22 @@ const orderApi = baseApi.injectEndpoints({
         method: "GET",
         params: { order_id },
       }),
+      providesTags: ["tracking"],
     }),
     orderDetails: builder.query({
       query: (orderId) => ({
         url: `/order/${orderId}`,
         method: "GET",
       }),
+      providesTags: ["tracking"],
+    }),
+    orderTracking: builder.mutation({
+      query: (trackingInfo) => ({
+        url: `/order/tracking/${trackingInfo.orderId}`,
+        method: "PATCH",
+        body: { isTracking: trackingInfo.isTracking },
+      }),
+      invalidatesTags: ["tracking"],
     }),
   }),
 });
@@ -28,3 +38,4 @@ const orderApi = baseApi.injectEndpoints({
 export const { useCreateOrderMutation } = orderApi;
 export const { useVerifyOrderQuery } = orderApi;
 export const { useOrderDetailsQuery } = orderApi;
+export const { useOrderTrackingMutation } = orderApi;

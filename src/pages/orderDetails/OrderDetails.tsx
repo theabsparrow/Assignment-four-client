@@ -2,7 +2,10 @@ import { USER_ROLE } from "@/config/role.const";
 import useMyProfile from "@/hook/useMyProfile";
 import { currentUser, TUser } from "@/redux/features/auth/authSlice";
 import { useGetSingleCarQuery } from "@/redux/features/car/carApi";
-import { useOrderDetailsQuery } from "@/redux/features/order/orderApi";
+import {
+  useOrderDetailsQuery,
+  useOrderTrackingMutation,
+} from "@/redux/features/order/orderApi";
 import { useGetASingleUSerQuery } from "@/redux/features/user/userApi";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "react-router-dom";
@@ -12,21 +15,22 @@ import OrderInfoSection from "./OrderInfoSection";
 import DelioveryInfoSection from "./DelioveryInfoSection";
 import CountTime from "./CountTime";
 import Tracking from "./Tracking";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiMapPin, FiEyeOff } from "react-icons/fi";
+import { toast } from "sonner";
+import OrderDetailsLoader from "@/myComponent/loader/orderDetailsLoader/OrderDetailsLoader";
 
 const OrderDetails = () => {
   const user = useAppSelector(currentUser);
   const { id } = useParams();
   const { data, isLoading } = useOrderDetailsQuery(id);
-  const [isEnable, setIsEnable] = useState(false);
   const order = data?.data;
+  const [isEnable, setIsEnable] = useState(false);
   const carId = data?.data?.car;
   const userId = data?.data?.userID;
-
+  const [trackingOrder] = useOrderTrackingMutation();
   const { data: carData, isLoading: loading } = useGetSingleCarQuery(carId);
   const car = carData?.data;
-
   const { data: userData, isLoading: userLoading } = useGetASingleUSerQuery(
     userId,
     {
@@ -35,7 +39,6 @@ const OrderDetails = () => {
         user?.userRole !== USER_ROLE.superAdmin,
     }
   );
-
   const myprofile =
     useMyProfile([
       "name",
@@ -72,13 +75,47 @@ const OrderDetails = () => {
           id: myprofile?.myProfile?._id || "",
         };
 
-  const switchTracking = async (isTracking: boolean) => {
-    setIsEnable(isTracking);
-    console.log(isTracking);
+  useEffect(() => {
+    if (order?.tracking?.isTracking !== undefined) {
+      setIsEnable(order.tracking.isTracking);
+    }
+  }, [order?.tracking?.isTracking]);
+
+  const switchTracking = async (tracking: boolean) => {
+    const trackingInfo = {
+      orderId: order?._id,
+      isTracking: tracking,
+    };
+    const toastId = "order";
+    try {
+      toast.loading(
+        `processing to ${
+          tracking === true ? "activate" : "deactivate"
+        } the tracking....`,
+        { id: toastId }
+      );
+      const res = await trackingOrder(trackingInfo).unwrap();
+      if (res?.data) {
+        toast.success(
+          `tracking system has been ${
+            tracking === true ? "activated" : "deactivated"
+          }`,
+          { id: toastId }
+        );
+        setIsEnable(tracking);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.errorSource[0].message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
   };
 
   if (isLoading || loading || userLoading || myprofile?.isLoading) {
-    return <p>loading........</p>;
+    return <OrderDetailsLoader></OrderDetailsLoader>;
   }
   return (
     <div className="px-4 md:px-32 md:p-8 bg-gray-100 dark:bg-gray-900 text-black dark:text-white min-h-screen font-inter">
@@ -96,7 +133,7 @@ const OrderDetails = () => {
 
       {/* Tracking Info */}
       <section className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-800 shadow-lg rounded-xl px-2 py-3">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-center space-x-2">
           <button
             onClick={() => switchTracking(false)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
@@ -120,9 +157,12 @@ const OrderDetails = () => {
             Tracking On
           </button>
         </div>
-
-        <CountTime estimatedTime={order?.estimatedDeliveryTime}></CountTime>
-        <Tracking tracking={order?.tracking}></Tracking>
+        {order?.tracking?.isTracking === true && (
+          <>
+            <CountTime estimatedTime={order?.estimatedDeliveryTime}></CountTime>
+            <Tracking tracking={order?.tracking}></Tracking>
+          </>
+        )}
       </section>
     </div>
   );
