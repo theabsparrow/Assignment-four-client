@@ -1,12 +1,10 @@
 import { USER_ROLE } from "@/config/role.const";
 import useMyProfile from "@/hook/useMyProfile";
 import { currentUser, TUser } from "@/redux/features/auth/authSlice";
-import { useGetSingleCarQuery } from "@/redux/features/car/carApi";
 import {
   useOrderDetailsQuery,
   useOrderTrackingMutation,
 } from "@/redux/features/order/orderApi";
-import { useGetASingleUSerQuery } from "@/redux/features/user/userApi";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "react-router-dom";
 import UserInfoSection from "./UserInfoSection";
@@ -26,19 +24,9 @@ const OrderDetails = () => {
   const { data, isLoading } = useOrderDetailsQuery(id);
   const order = data?.data;
   const [isEnable, setIsEnable] = useState(false);
-  const carId = data?.data?.car;
-  const userId = data?.data?.userID;
+  const car = data?.data?.car;
+  const userData = data?.data?.userID;
   const [trackingOrder] = useOrderTrackingMutation();
-  const { data: carData, isLoading: loading } = useGetSingleCarQuery(carId);
-  const car = carData?.data;
-  const { data: userData, isLoading: userLoading } = useGetASingleUSerQuery(
-    userId,
-    {
-      skip:
-        user?.userRole !== USER_ROLE.admin ||
-        user?.userRole !== USER_ROLE.superAdmin,
-    }
-  );
   const myprofile =
     useMyProfile([
       "name",
@@ -114,7 +102,7 @@ const OrderDetails = () => {
     }
   };
 
-  if (isLoading || loading || userLoading || myprofile?.isLoading) {
+  if (isLoading || myprofile?.isLoading) {
     return <OrderDetailsLoader></OrderDetailsLoader>;
   }
   return (
@@ -157,12 +145,15 @@ const OrderDetails = () => {
             Tracking On
           </button>
         </div>
-        {order?.tracking?.isTracking === true && (
-          <>
-            <CountTime estimatedTime={order?.estimatedDeliveryTime}></CountTime>
-            <Tracking tracking={order?.tracking}></Tracking>
-          </>
-        )}
+        {["Paid", "Cash on Delivery"].includes(order?.status) &&
+          order?.tracking?.isTracking === true && (
+            <>
+              <CountTime
+                estimatedTime={order?.estimatedDeliveryTime}
+              ></CountTime>
+              <Tracking tracking={order?.tracking}></Tracking>
+            </>
+          )}
       </section>
     </div>
   );

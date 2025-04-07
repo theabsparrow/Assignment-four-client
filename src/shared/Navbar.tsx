@@ -122,24 +122,30 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        <div className="hidden md:flex">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setDisplay(!display);
-            }}
-            className="text-5xl"
-          >
-            {myprofile.myProfile?.profileImage ? (
-              <img
-                className="w-11 h-11 rounded-full border border-secondary"
-                src={myprofile.myProfile?.profileImage}
-              />
-            ) : (
-              <CgProfile className="hover:text-primary" />
-            )}
-          </button>
-        </div>
+        {myprofile?.isLoading ? (
+          <div className="hidden md:flex">
+            <div className="w-11 h-11 rounded-full border border-secondary bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+          </div>
+        ) : (
+          <div className="hidden md:flex">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setDisplay(!display);
+              }}
+              className="text-5xl"
+            >
+              {myprofile.myProfile?.profileImage ? (
+                <img
+                  className="w-11 h-11 rounded-full border border-secondary"
+                  src={myprofile.myProfile?.profileImage}
+                />
+              ) : (
+                <CgProfile className="hover:text-primary" />
+              )}
+            </button>
+          </div>
+        )}
 
         {display && <div className="fixed inset-0 bg-transparent z-40"></div>}
 

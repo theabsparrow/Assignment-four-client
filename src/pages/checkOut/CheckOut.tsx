@@ -114,8 +114,8 @@ const CheckOut = () => {
       toast.loading("order processing....", { id: toastId });
       const res = await createOrder({ orderInfo, carId }).unwrap();
       if (res?.success) {
-        toast.success(res?.message, { id: toastId });
         window.location.href = res.data;
+        toast.success(res?.message, { id: toastId });
       }
     } catch (error: any) {
       const errorInfo =

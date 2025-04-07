@@ -6,7 +6,6 @@ import { Link, useSearchParams } from "react-router-dom";
 const VerifyOrder = () => {
   const [searchParams] = useSearchParams();
   const { data, isLoading } = useVerifyOrderQuery(searchParams.get("order_id"));
-
   const orderData = data?.data?.[0];
   const statusColor =
     orderData?.sp_message === "Success"

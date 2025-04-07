@@ -7,7 +7,7 @@ import OrderHistory from "@/pages/dashboard/admin/orderHistory/OrderHistory";
 import SalesReport from "@/pages/dashboard/admin/salesReport/SalesReport";
 import UserManagement from "@/pages/dashboard/admin/userManagement/UserManagement";
 import Dashboard from "@/pages/dashboard/Dashboard";
-import MyOrders from "@/pages/dashboard/user/MyOrders";
+import MyOrders from "@/pages/dashboard/user/myOrders/MyOrders";
 import PaymentHistory from "@/pages/dashboard/user/PaymentHistory";
 import Wishlist from "@/pages/dashboard/user/Wishlist";
 

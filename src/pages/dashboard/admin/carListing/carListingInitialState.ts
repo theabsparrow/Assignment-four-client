@@ -8,6 +8,7 @@ type TCarListingInitial = {
   condition: string;
   inStock: null | boolean | string;
 };
+
 export const carListingInitalState: TCarListingInitial = {
   brand: "",
   model: "",
