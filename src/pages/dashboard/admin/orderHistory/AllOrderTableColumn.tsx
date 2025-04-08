@@ -1,35 +1,34 @@
-import {
-  TOrderStatus,
-  TTrackingStatus,
-} from "@/pages/orderDetails/orderDetails.interface";
+import { TOrderStatus } from "@/pages/orderDetails/orderDetails.interface";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   TDeliveryMethod,
   TOrderInfo,
   TPaymentMethod,
   TPaymentOption,
+  TTrackingStatus,
   TTransactionStatus,
 } from "../../user/myOrders/myOrder.interface";
 import {
   deliveryMethodStyles,
-  orderStatus,
-  orderStatusStyles,
   paymentMethodStyles,
   paymentOptionStyles,
-  trackingStatusStyles,
   transactionStatusStyles,
 } from "../../user/myOrders/myOrder.const";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+
+import ChangeOrderStatus from "./ChangeOrderStatus";
+import ChangeTrackingStatus from "./ChangeTrackingStatus";
 
 type TColumnProps = {
   handleDelete: (id: string) => void;
   changeOrderStatus: (id: string, newStatus: TOrderStatus) => void;
+  changeTrackingStatus: (id: string, newStatus: TTrackingStatus) => void;
 };
 
 export const allOrderTableComumn = ({
   handleDelete,
   changeOrderStatus,
+  changeTrackingStatus,
 }: TColumnProps): ColumnDef<TOrderInfo>[] => [
   { accessorKey: "orderID", header: "Order ID" },
   { accessorKey: "userEmail", header: "Email" },
@@ -37,51 +36,15 @@ export const allOrderTableComumn = ({
     accessorKey: "status",
     header: "Order Status",
     cell: ({ row }) => {
-      const [isOpen, setIsOpen] = useState(false);
       const value = row?.original?.status as TOrderStatus;
-      const [status, setStatus] = useState<TOrderStatus>(value);
-
-      const handleChange = (newStatus: TOrderStatus) => {
-        setStatus(newStatus);
-        changeOrderStatus(row?.original?._id, newStatus);
-        setIsOpen(false);
-      };
+      const id = row?.original?._id as string;
       return (
         <>
-          <div className="relative">
-            <span
-              onClick={() => {
-                if (value !== "Cancelled") {
-                  setIsOpen(!isOpen);
-                }
-              }}
-              className={`px-2 py-1 rounded font-medium text-sm ${
-                value !== "Cancelled"
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed opacity-60"
-              } ${orderStatusStyles[value]}`}
-            >
-              {value as TOrderStatus}
-            </span>
-
-            {isOpen && value !== "Cancelled" && (
-              <div className="absolute z-50 mt-1 bg-white shadow-lg border rounded w-32 ">
-                {orderStatus.map((item) => (
-                  <div
-                    key={item}
-                    onClick={() => handleChange(item)}
-                    className={`px-3 py-1 text-sm cursor-pointer hover:bg-gray-100  ${
-                      item === status
-                        ? "font-semibold text-blue-600"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ChangeOrderStatus
+            value={value}
+            id={id}
+            changeOrderStatus={changeOrderStatus}
+          ></ChangeOrderStatus>
         </>
       );
     },
@@ -149,12 +112,14 @@ export const allOrderTableComumn = ({
     header: "Tracking status",
     cell: ({ row }) => {
       const value = row.original.tracking?.trackingStatus as TTrackingStatus;
+      const id = row?.original?._id as string;
+
       return value ? (
-        <span
-          className={`px-2 py-1 rounded font-medium text-sm ${trackingStatusStyles[value]}`}
-        >
-          {value}
-        </span>
+        <ChangeTrackingStatus
+          value={value}
+          id={id}
+          changeTrackingStatus={changeTrackingStatus}
+        />
       ) : (
         <span className="text-gray-500 italic">—</span>
       );

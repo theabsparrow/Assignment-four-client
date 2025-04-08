@@ -108,7 +108,14 @@ const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["orders"],
     }),
-
+    trackingStatus: builder.mutation({
+      query: (info) => ({
+        url: `/order/change-trackingStatus/${info?.id}`,
+        method: "PATCH",
+        body: { trackingStatus: info?.status },
+      }),
+      invalidatesTags: ["orders"],
+    }),
     deleteMyOrder: builder.mutation({
       query: (id) => ({
         url: `/order/delete-myOrder/${id}`,
@@ -127,3 +134,4 @@ export const { useGetMyOrdersQuery } = orderApi;
 export const { useDeleteMyOrderMutation } = orderApi;
 export const { useGetAllOrdersQuery } = orderApi;
 export const { useOrderStatusMutation } = orderApi;
+export const { useTrackingStatusMutation } = orderApi;

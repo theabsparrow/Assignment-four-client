@@ -1,4 +1,9 @@
-export type TOrderStatus = "Pending" | "Paid" | "Completed" | "Cancelled";
+export type TOrderStatus =
+  | "Pending"
+  | "Paid"
+  | "Cash on Delivery"
+  | "Completed"
+  | "Cancelled";
 export type TTrackingStatus =
   | "Processing"
   | "Shipped"

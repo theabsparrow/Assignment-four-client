@@ -3,6 +3,7 @@ import { myOrderInitialState } from "../../user/myOrders/myOrder.initailState";
 import {
   useGetAllOrdersQuery,
   useOrderStatusMutation,
+  useTrackingStatusMutation,
 } from "@/redux/features/order/orderApi";
 import TableSceleton from "@/myComponent/loader/TableSceleton";
 import {
@@ -22,6 +23,7 @@ import {
   TValue,
 } from "@/myComponent/formInput/formInput.const";
 import { toast } from "sonner";
+import { TTrackingStatus } from "../../user/myOrders/myOrder.interface";
 
 const OrderHistory = () => {
   const [filter, setFilter] = useState(myOrderInitialState);
@@ -33,6 +35,7 @@ const OrderHistory = () => {
   const [deleteOrderId, setDeleteOrderId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [orderStatusChange] = useOrderStatusMutation();
+  const [trackingStatusChange] = useTrackingStatusMutation();
 
   const queryParams = {
     fields: [
@@ -58,7 +61,6 @@ const OrderHistory = () => {
   const allOrders = data?.data?.result;
   const meta = data?.data?.meta;
   const pageNumbers = Array.from({ length: meta?.totalPage }, (_, i) => i + 1);
-  console.log(allOrders);
 
   const handleFilterChange = (name: string, value: string) => {
     setFilter((prev) => ({ ...prev, [name]: value }));
@@ -112,7 +114,6 @@ const OrderHistory = () => {
   };
 
   const changeOrderStatus = async (id: string, status: string) => {
-    console.log(id, status);
     const orderInfo = {
       id,
       status,
@@ -134,9 +135,35 @@ const OrderHistory = () => {
     }
   };
 
+  const changeTrackingStatus = async (id: string, status: TTrackingStatus) => {
+    const info = {
+      id,
+      status,
+    };
+    const toastID = "trackingStatus";
+    try {
+      toast.loading("updating tracking status", { id: toastID });
+      const res = await trackingStatusChange(info).unwrap();
+      if (res?.data) {
+        toast.success(res?.message, { id: toastID });
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.errorSource[0].message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
+      toast.error(errorInfo, { id: toastID, duration: 3000 });
+    }
+  };
+
   const table = useReactTable({
     data: allOrders,
-    columns: allOrderTableComumn({ handleDelete, changeOrderStatus }),
+    columns: allOrderTableComumn({
+      handleDelete,
+      changeOrderStatus,
+      changeTrackingStatus,
+    }),
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -281,7 +308,7 @@ const OrderHistory = () => {
           </button>
         </div>
       </div>
-      <div className="overflow-x-auto overflow-y-visible md:w-[75vw] pb-[100px]">
+      <div className="overflow-x-auto overflow-y-visible md:w-[75vw] pb-[122px]">
         <table className=" border-collapse border border-gray-300 w-full  ">
           <thead className="bg-gray-200">
             {table.getHeaderGroups().map((headerGroup) => (

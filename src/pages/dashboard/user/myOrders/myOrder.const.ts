@@ -1,10 +1,20 @@
-import { TOrderStatus } from "./myOrder.interface";
+import { TOrderStatus } from "@/pages/orderDetails/orderDetails.interface";
+import { TTrackingStatus } from "./myOrder.interface";
 
 export const orderStatus: TOrderStatus[] = [
   "Pending",
   "Paid",
+  "Cash on Delivery",
   "Completed",
   "Cancelled",
+];
+
+export const trackingStatus: TTrackingStatus[] = [
+  "Processing",
+  "Shipped",
+  "Out for Delivery",
+  "Delivered",
+  "Order Placed",
 ];
 
 export const deliveryMethod: string[] = [
@@ -38,6 +48,7 @@ export const orderStatusStyles = {
   Paid: "bg-green-100 text-green-800",
   Completed: "bg-blue-100 text-blue-800",
   Cancelled: "bg-red-100 text-red-800",
+  "Cash on Delivery": "bg-purple-100 text-purple-800",
 };
 
 export const transactionStatusStyles = {

@@ -14,7 +14,6 @@ export type TOrderInfo = {
   tracking?: TTrackingInfoProps;
 };
 
-export type TOrderStatus = "Pending" | "Paid" | "Completed" | "Cancelled";
 export type TTransactionStatus = "Success" | "Failed" | "Cancel";
 export type TDeliveryMethod = "Home Delivery" | "Pickup" | "Express Delivery";
 export type TPaymentMethod = "Cash on Delivery" | "Online Payment";
@@ -24,4 +23,5 @@ export type TTrackingStatus =
   | "Shipped"
   | "Out for Delivery"
   | "Delivered"
-  | "Order Placed";
+  | "Order Placed"
+  | "Cancelled";
