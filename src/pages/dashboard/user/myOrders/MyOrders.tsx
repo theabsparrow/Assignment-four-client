@@ -111,7 +111,7 @@ const MyOrders = () => {
       {isModalOpen && (
         <div
           onClick={closeModal}
-          className="fixed inset-0 flex items-center justify-center "
+          className="fixed inset-0 flex items-center justify-center font-inter"
         >
           <div
             onClick={(e) => e.stopPropagation()}

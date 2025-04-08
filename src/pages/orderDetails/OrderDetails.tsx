@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { FiMapPin, FiEyeOff } from "react-icons/fi";
 import { toast } from "sonner";
 import OrderDetailsLoader from "@/myComponent/loader/orderDetailsLoader/OrderDetailsLoader";
+import FinishedCounter from "./FinishedCounter";
 
 const OrderDetails = () => {
   const user = useAppSelector(currentUser);
@@ -43,14 +44,14 @@ const OrderDetails = () => {
     user?.userRole === USER_ROLE.admin ||
     user?.userRole === USER_ROLE.superAdmin
       ? {
-          name: userData?.data?.name || {},
-          profileImage: userData?.data?.profileImage || "",
-          email: userData?.data?.email || "",
-          phoneNumber: userData?.data?.phoneNumber || "",
-          currentAddress: userData?.data?.currentAddress || "",
-          gender: userData?.data?.gender || "",
-          homeTown: userData?.data?.homeTown || "",
-          id: userData?.data?._id || "",
+          name: userData?.name || {},
+          profileImage: userData?.profileImage || "",
+          email: userData?.email || "",
+          phoneNumber: userData?.phoneNumber || "",
+          currentAddress: userData?.currentAddress || "",
+          gender: userData?.gender || "",
+          homeTown: userData?.homeTown || "",
+          id: userData?._id || "",
         }
       : {
           name: myprofile?.myProfile?.name || {},
@@ -62,7 +63,6 @@ const OrderDetails = () => {
           homeTown: myprofile?.myProfile?.homeTown || "",
           id: myprofile?.myProfile?._id || "",
         };
-
   useEffect(() => {
     if (order?.tracking?.isTracking !== undefined) {
       setIsEnable(order.tracking.isTracking);
@@ -120,41 +120,50 @@ const OrderDetails = () => {
       </section>
 
       {/* Tracking Info */}
-      <section className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-800 shadow-lg rounded-xl px-2 py-3">
-        <div className="flex items-center justify-center space-x-2">
-          <button
-            onClick={() => switchTracking(false)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
-              !isEnable
-                ? "bg-red-600 text-white"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
-            }`}
-          >
-            <FiEyeOff className="text-lg" />
-            Tracking Off
-          </button>
-          <button
-            onClick={() => switchTracking(true)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
-              isEnable
-                ? "bg-green-600 text-white"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
-            }`}
-          >
-            <FiMapPin className="text-lg" />
-            Tracking On
-          </button>
-        </div>
-        {["Paid", "Cash on Delivery"].includes(order?.status) &&
-          order?.tracking?.isTracking === true && (
-            <>
-              <CountTime
-                estimatedTime={order?.estimatedDeliveryTime}
-              ></CountTime>
-              <Tracking tracking={order?.tracking}></Tracking>
-            </>
-          )}
-      </section>
+      {order?.tracking?.trackingStatus !== "Cancelled" && (
+        <section className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-800 shadow-lg rounded-xl px-2 py-3">
+          <div className="flex items-center justify-center space-x-2">
+            <button
+              onClick={() => switchTracking(false)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
+                !isEnable
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+              }`}
+            >
+              <FiEyeOff className="text-lg" />
+              Tracking Off
+            </button>
+            <button
+              onClick={() => switchTracking(true)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
+                isEnable
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+              }`}
+            >
+              <FiMapPin className="text-lg" />
+              Tracking On
+            </button>
+          </div>
+
+          {["Paid", "Cash on Delivery", "Completed"].includes(order?.status) &&
+            order?.tracking?.isTracking === true &&
+            order?.tracking?.trackingStatus !== "Cancelled" && (
+              <>
+                {order?.tracking?.trackingStatus === "Delivered" ? (
+                  <FinishedCounter />
+                ) : (
+                  <CountTime
+                    estimatedTime={order?.estimatedDeliveryTime}
+                  ></CountTime>
+                )}
+
+                <Tracking tracking={order?.tracking}></Tracking>
+              </>
+            )}
+        </section>
+      )}
     </div>
   );
 };

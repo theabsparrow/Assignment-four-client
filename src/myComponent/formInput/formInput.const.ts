@@ -26,6 +26,13 @@ export const sortingOrders: TValue[] = [
   { value: "brand", label: "Brand" },
 ];
 
+export const sortingOrderInfo: TValue[] = [
+  { value: "-deliveryCost", label: "Delivery Cost(desc)" },
+  { value: "-totalPrice", label: "Total Price(desc)" },
+  { value: "deliveryCost", label: "Delivery Cost" },
+  { value: "totalPrice", label: "Total Price" },
+];
+
 export const userSortingOrder: TValue[] = [
   { value: "-firstName", label: "Name (desc)" },
   { value: "-email", label: "Email (desc)" },
