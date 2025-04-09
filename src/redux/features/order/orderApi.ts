@@ -16,7 +16,7 @@ const orderApi = baseApi.injectEndpoints({
         method: "GET",
         params: { order_id },
       }),
-      providesTags: ["tracking"],
+      providesTags: ["orders"],
     }),
 
     getMyOrders: builder.query({
@@ -48,7 +48,7 @@ const orderApi = baseApi.injectEndpoints({
           params: params,
         };
       },
-      providesTags: ["tracking"],
+      providesTags: ["orders"],
     }),
 
     getAllOrders: builder.query({
@@ -88,7 +88,7 @@ const orderApi = baseApi.injectEndpoints({
         url: `/order/${id}`,
         method: "GET",
       }),
-      providesTags: ["tracking"],
+      providesTags: ["orders"],
     }),
 
     orderTracking: builder.mutation({
@@ -97,7 +97,7 @@ const orderApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: { isTracking: trackingInfo.isTracking },
       }),
-      invalidatesTags: ["tracking"],
+      invalidatesTags: ["orders"],
     }),
 
     orderStatus: builder.mutation({
@@ -108,6 +108,15 @@ const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["orders"],
     }),
+
+    cancellMyOrder: builder.mutation({
+      query: (id) => ({
+        url: `/order/cancell-order/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["orders"],
+    }),
+
     trackingStatus: builder.mutation({
       query: (info) => ({
         url: `/order/change-trackingStatus/${info?.id}`,
@@ -116,12 +125,21 @@ const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["orders"],
     }),
+
     deleteMyOrder: builder.mutation({
       query: (id) => ({
         url: `/order/delete-myOrder/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["tracking"],
+      invalidatesTags: ["orders"],
+    }),
+
+    deleteOrder: builder.mutation({
+      query: (id) => ({
+        url: `/order/delete-order/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["orders"],
     }),
   }),
 });
@@ -135,3 +153,5 @@ export const { useDeleteMyOrderMutation } = orderApi;
 export const { useGetAllOrdersQuery } = orderApi;
 export const { useOrderStatusMutation } = orderApi;
 export const { useTrackingStatusMutation } = orderApi;
+export const { useCancellMyOrderMutation } = orderApi;
+export const { useDeleteOrderMutation } = orderApi;

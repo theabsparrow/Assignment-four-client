@@ -17,12 +17,12 @@ const CarInfoSection = ({ car }: { car: TCarInfoSection }) => {
           />
         </div>
       </div>
-      <div className="flex flex-col md:flex-row items-center gap-2">
+      <div className="flex flex-col md:flex-row md:items-center gap-2">
         <div className="relative w-full md:w-48">
           <img
             src={car?.image}
             alt={`${car?.brand} ${car?.model}`}
-            className="w-[15vw] h-[9vw] rounded-lg shadow-md border border-gray-300 dark:border-gray-600"
+            className="md:w-[15vw] md:h-[9vw] rounded-lg shadow-md border border-gray-300 dark:border-gray-600"
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">

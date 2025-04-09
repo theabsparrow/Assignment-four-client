@@ -54,6 +54,7 @@ export type TCarInfoSection = {
 };
 
 export type TOrderInfoProps = {
+  _id: string;
   orderID: string;
   bank_status: string;
   date_time: string;

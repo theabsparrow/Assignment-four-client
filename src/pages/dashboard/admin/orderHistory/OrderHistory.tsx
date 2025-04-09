@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { myOrderInitialState } from "../../user/myOrders/myOrder.initailState";
 import {
+  useDeleteOrderMutation,
   useGetAllOrdersQuery,
   useOrderStatusMutation,
   useTrackingStatusMutation,
@@ -36,6 +37,7 @@ const OrderHistory = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [orderStatusChange] = useOrderStatusMutation();
   const [trackingStatusChange] = useTrackingStatusMutation();
+  const [deleteOrder] = useDeleteOrderMutation();
 
   const queryParams = {
     fields: [
@@ -91,26 +93,26 @@ const OrderHistory = () => {
     if (!deleteOrderId) {
       return setErrorMessage("Faild to delete. Please try again letter");
     }
-    console.log(deleteOrderId);
-    // const toastId = toast.loading("car data deleting.....");
-    // try {
-    //   const id = deleteOrderId;
-    //   const res = await deleteMyOrder(id).unwrap();
-    //   if (res?.success) {
-    //     toast.success("order deleted successfully ", {
-    //       id: toastId,
-    //       duration: 3000,
-    //     });
-    //     setIsModalOpen(false);
-    //   }
-    // } catch (error: any) {
-    //   const errorInfo =
-    //     error?.data?.errorSource[0].message ||
-    //     error?.data?.message ||
-    //     error?.error ||
-    //     "Something went wrong!";
-    //   toast.error(errorInfo, { id: toastId, duration: 3000 });
-    // }
+
+    const toastId = toast.loading("car data deleting.....");
+    try {
+      const id = deleteOrderId;
+      const res = await deleteOrder(id).unwrap();
+      if (res?.success) {
+        toast.success("order deleted successfully ", {
+          id: toastId,
+          duration: 3000,
+        });
+        setIsModalOpen(false);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.errorSource[0].message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
   };
 
   const changeOrderStatus = async (id: string, status: string) => {
@@ -210,7 +212,7 @@ const OrderHistory = () => {
       )}
       <div className="mb-4 font-inter">
         <h2 className="text-2xl font-bold mb-4">Order listing</h2>
-        <h1 className="text-xl">Total Orders: {allOrders.length}</h1>
+        <h1 className="text-xl">Total Orders: {allOrders?.length}</h1>
       </div>
 
       <div className="flex flex-wrap gap-4 mb-4 font-inter">
@@ -309,7 +311,7 @@ const OrderHistory = () => {
         </div>
       </div>
       <div className="overflow-x-auto overflow-y-visible md:w-[75vw] pb-[122px]">
-        <table className=" border-collapse border border-gray-300 w-full  ">
+        <table className=" border-collapse border border-gray-300 w-full">
           <thead className="bg-gray-200">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b">

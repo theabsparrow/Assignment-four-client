@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { myOrderInitialState } from "./myOrder.initailState";
 import {
+  useCancellMyOrderMutation,
   useDeleteMyOrderMutation,
   useGetMyOrdersQuery,
 } from "@/redux/features/order/orderApi";
@@ -28,6 +29,7 @@ const MyOrders = () => {
   const [deleteOrderId, setDeleteOrderId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [deleteMyOrder] = useDeleteMyOrderMutation();
+  const [cancellMyOrder] = useCancellMyOrderMutation();
 
   const queryParams = {
     fields: [
@@ -79,7 +81,7 @@ const MyOrders = () => {
     if (!deleteOrderId) {
       return setErrorMessage("Faild to delete. Please try again letter");
     }
-    const toastId = toast.loading("car data deleting.....");
+    const toastId = toast.loading("order data deleting.....");
     try {
       const id = deleteOrderId;
       const res = await deleteMyOrder(id).unwrap();
@@ -99,9 +101,37 @@ const MyOrders = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+
+  const confirmCancell = async (
+    id: string,
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    if (!id) {
+      toast.error("faild to cancell the order");
+      return;
+    }
+    const toastId = toast.loading("order cancelling.....");
+    try {
+      const res = await cancellMyOrder(id).unwrap();
+      if (res?.data) {
+        toast.success("order cancelled successfully ", {
+          id: toastId,
+          duration: 3000,
+        });
+        setIsModalOpen(false);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.errorSource[0].message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
   const table = useReactTable({
     data: myOrders,
-    columns: myOrderTableColumn(handleDelete),
+    columns: myOrderTableColumn({ handleDelete, confirmCancell }),
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -147,7 +177,7 @@ const MyOrders = () => {
       )}
       <div className="mb-4">
         <h2 className="text-2xl font-bold mb-4">Order listing</h2>
-        <h1 className="text-xl">Total Orders: {myOrders.length}</h1>
+        <h1 className="text-xl">Total Orders: {myOrders?.length}</h1>
       </div>
 
       <div className="flex flex-wrap gap-4 mb-4 font-inter">

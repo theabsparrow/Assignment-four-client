@@ -102,23 +102,23 @@ const Tracking = ({ tracking }: { tracking: TTrackingInfoProps }) => {
         </div>
       </section>
 
-      <section className="font-inter">
-        <div className="flex items-center justify-between w-full max-w-5xl mx-auto p-6 overflow-x-auto">
+      <section className="font-inter ">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-0 justify-center md:items-center md:justify-between w-full max-w-5xl mx-auto p-6 overflow-x-auto">
           {trackingStepsWithState.map((step) => (
             <div
               key={step.status}
-              className="relative flex-1 flex flex-col items-center min-w-[100px] group"
+              className="relative flex-1 flex gap-2 md:flex-col items-center min-w-[100px] group "
             >
               {/* Connector line */}
               {step.showConnector && (
                 <div
-                  className={`absolute top-6 left-1/2 h-2 w-full z-0 ${step.connectorClass}`}
+                  className={`absolute top-20 md:top-7 -left-5 md:left-1/2 h-2 w-28 md:w-full z-0 ${step.connectorClass} rotate-90 md:rotate-0 `}
                 />
               )}
 
               {/* Icon bubble */}
               <div
-                className={`z-10 w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl shadow-lg mb-2 transition-all duration-300 ${step.iconClass}`}
+                className={`z-10 w-16 h-16 rounded-full flex flex-col md:flex-row items-center justify-center text-white text-2xl shadow-lg mb-2 transition-all duration-300 ${step.iconClass}`}
               >
                 {step.isCompleted ? (
                   <CheckCircle className="w-8 h-8" />
@@ -137,6 +137,39 @@ const Tracking = ({ tracking }: { tracking: TTrackingInfoProps }) => {
           ))}
         </div>
       </section>
+
+      {/* <section className="font-inter block md:hidden">
+        <div className="flex flex-col items-start gap-6 w-full max-w-sm mx-auto p-4">
+          {trackingStepsWithState.map((step, index) => (
+            <div
+              key={step.status}
+              className="relative flex items-center gap-4 w-full"
+            >
+              <div className="flex flex-col items-center">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-xl shadow-md ${step.iconClass}`}
+                >
+                  {step.isCompleted ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
+                    <step.Icon className="w-5 h-5" />
+                  )}
+                </div>
+                {index !== trackingStepsWithState.length - 1 && (
+                  <div
+                    className={`w-[2px] flex-1 bg-gray-300 mt-1 ${step.connectorClass}`}
+                  />
+                )}
+              </div>
+              <div>
+                <p className={`text-sm font-medium ${step.labelClass}`}>
+                  {step.status}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section> */}
     </>
   );
 };

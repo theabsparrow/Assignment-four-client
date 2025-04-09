@@ -7,15 +7,15 @@ type UserInfoProps = {
 const CheckOutUser = ({ user }: UserInfoProps) => {
   return (
     <section className="font-inter">
-      <h2 className="text-3xl font-extrabold mb-8 text-gray-800 dark:text-gray-200">
+      <h2 className="text-3xl font-extrabold mb-4 md:mb-8 text-gray-800 dark:text-gray-200">
         User Information
       </h2>
-      <div className="flex flex-col md:flex-row gap-8 items-center">
+      <div className="flex flex-col md:flex-row gap-2 md:gap-8 md:items-center">
         <div className="shrink-0">
           <img
             src={user?.profileImage}
             alt="User"
-            className="w-72 h-52 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 shadow-lg"
+            className="md:w-72 md:h-52 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 shadow-lg"
           />
         </div>
         <div className="flex-1 space-y-4">

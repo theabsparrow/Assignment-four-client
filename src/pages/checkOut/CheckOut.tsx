@@ -128,9 +128,9 @@ const CheckOut = () => {
   };
 
   return (
-    <div className=" mx-auto px-4 md:px-32 bg-gray-50 dark:bg-gray-900 shadow-lg rounded-lg min-h-[calc(100vh-80px)] font-inter">
+    <div className=" mx-auto px-4 pb-4 md:pb-0 md:px-32 bg-gray-50 dark:bg-gray-900 shadow-lg rounded-lg min-h-[calc(100vh-80px)] font-inter">
       {/* car and user information */}
-      <section className="flex md:flex-row items-center justify-between bg-white dark:bg-gray-800 rounded-xl shadow-md py-8 px-4">
+      <section className="flex flex-col gap-8 md:gap-0 md:flex-row items-center justify-between bg-white dark:bg-gray-800 rounded-xl shadow-md py-8 px-4">
         <CheckOutCar car={car} />
         <CheckOutUser user={myprofile?.myProfile} />
       </section>
@@ -140,7 +140,7 @@ const CheckOut = () => {
         <h2 className="text-3xl font-extrabold mb-8 text-gray-800 dark:text-gray-200">
           Order Details
         </h2>
-        <main className="flex justify-between">
+        <main className="flex flex-col md:flex-row justify-between">
           <section className="md:w-[40vw]">
             {/* Delivery Method Selection */}
             <div className="mb-6 bg-white dark:bg-gray-800 px-6 py-4 rounded-lg  border-2 border-green-500">

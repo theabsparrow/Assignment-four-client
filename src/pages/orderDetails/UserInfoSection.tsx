@@ -14,11 +14,11 @@ const UserInfoSection = ({ userInfo, user }: TUserSectionProps) => {
       <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-400 mb-4 border-b-2 border-indigo-300 dark:border-indigo-600 pb-2">
         👩‍🦰 User Information
       </h2>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col md:flex-row md:items-center gap-2">
         <img
           src={userInfo?.profileImage}
           alt={`${userInfo?.name?.firstName} ${userInfo?.name?.lastName}`}
-          className="w-[10vw] rounded-lg shadow-md border border-gray-300 dark:border-gray-600"
+          className="md:w-[10vw] rounded-lg shadow-md border border-gray-300 dark:border-gray-600"
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
           <p className="mt-1">

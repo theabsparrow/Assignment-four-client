@@ -55,6 +55,7 @@ export const transactionStatusStyles = {
   Success: "bg-green-100 text-green-800",
   Failed: "bg-red-100 text-red-800",
   Cancel: "bg-gray-200 text-gray-700",
+  Initiated: "bg-amber-100 text-amber-800",
 };
 
 export const trackingStatusStyles = {

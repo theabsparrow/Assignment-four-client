@@ -8,14 +8,14 @@ type CarInfoProps = {
 const CheckOutCar = ({ car }: CarInfoProps) => {
   return (
     <section className="font-inter">
-      <h2 className="text-3xl font-extrabold mb-8 text-gray-800 dark:text-gray-200">
+      <h2 className="text-3xl font-extrabold mb-4 md:mb-8 text-gray-800 dark:text-gray-200">
         Car Information
       </h2>
-      <div className="flex flex-col md:flex-row gap-8 items-center">
+      <div className="flex flex-col md:flex-row gap-2 md:gap-8 md:items-center">
         <img
           src={car?.image}
           alt={car?.brand}
-          className="w-72 h-52 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 shadow-lg"
+          className="md:w-72 md:h-52 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 shadow-lg"
         />
         <div className="flex-1 space-y-4">
           <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
