@@ -1,8 +1,47 @@
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import emailjs from "@emailjs/browser";
+import { config } from "@/config";
+
 const Contacts = () => {
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data: any) => {
+    const message = data?.message;
+    const name = data?.fullName;
+    const email = data?.email;
+
+    const templateParams = {
+      user_name: name,
+      user_email: email,
+      message,
+    };
+    const toastID = "email";
+    try {
+      toast.loading("message sending", { id: toastID });
+      const res = await emailjs.send(
+        config.service_id,
+        config.template_id,
+        templateParams,
+        config.public_key
+      );
+      if (res.status === 200) {
+        toast.success("Message sent successfully!", { id: toastID });
+        reset();
+      }
+    } catch (error: any) {
+      toast.error(error, { id: toastID });
+    }
+  };
+
   return (
     <section className="font-inter bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 py-16 px-6">
       <div className="max-w-7xl mx-auto space-y-14">
-        {/* Heading */}
         <div className="text-center">
           <h1 className="text-4xl sm:text-5xl font-bold text-blue-600 dark:text-blue-400">
             Get In Touch
@@ -13,9 +52,7 @@ const Contacts = () => {
           </p>
         </div>
 
-        {/* Main Grid */}
         <div className="grid lg:grid-cols-2 gap-10">
-          {/* Contact Info Cards */}
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-blue-100 dark:border-blue-800">
               <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-2">
@@ -43,9 +80,8 @@ const Contacts = () => {
             </div>
           </div>
 
-          {/* Contact Form */}
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 border border-blue-100 dark:border-gray-700">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
                 <label className="block mb-1 text-sm font-medium">
                   Full Name
@@ -53,8 +89,20 @@ const Contacts = () => {
                 <input
                   type="text"
                   placeholder="Your Name"
-                  className="w-full px-4 py-3 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  {...register("fullName", {
+                    required: "Type you full name here",
+                  })}
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 ${
+                    errors?.fullName
+                      ? "focus:ring-red-500"
+                      : "focus:ring-blue-400"
+                  }`}
                 />
+                {errors?.fullName && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors?.fullName?.message as string}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block mb-1 text-sm font-medium">
@@ -62,9 +110,19 @@ const Contacts = () => {
                 </label>
                 <input
                   type="email"
-                  placeholder="you@example.com"
-                  className="w-full px-4 py-3 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  placeholder="your email address"
+                  {...register("email", {
+                    required: "type your email address",
+                  })}
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 ${
+                    errors?.email ? "focus:ring-red-500" : "focus:ring-blue-400"
+                  }`}
                 />
+                {errors?.email && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors?.email?.message as string}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block mb-1 text-sm font-medium">
@@ -73,8 +131,24 @@ const Contacts = () => {
                 <textarea
                   rows={5}
                   placeholder="Your message here..."
-                  className="w-full px-4 py-3 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+                  {...register("message", {
+                    required: "type your message here",
+                    minLength: {
+                      value: 15,
+                      message: "Message must be at least 15 characters",
+                    },
+                  })}
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 ${
+                    errors?.message
+                      ? "focus:ring-red-500"
+                      : "focus:ring-blue-400"
+                  }`}
                 ></textarea>
+                {errors?.message && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors?.message?.message as string}
+                  </p>
+                )}
               </div>
               <button
                 type="submit"
@@ -86,7 +160,6 @@ const Contacts = () => {
           </div>
         </div>
 
-        {/* Map Placeholder */}
         <div className="rounded-xl overflow-hidden shadow-md border border-gray-300 dark:border-gray-700 mt-8">
           <iframe
             title="Google Map"

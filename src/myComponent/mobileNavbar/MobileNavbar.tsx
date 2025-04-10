@@ -71,7 +71,7 @@ const MobileNavbar = ({
             {name && (
               <div className="px-4">
                 <h1 className="font-bold text-lg text">
-                  {name.firstName} {name.lastName}
+                  {name?.firstName} {name?.lastName}
                 </h1>
               </div>
             )}

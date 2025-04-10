@@ -2,6 +2,7 @@
 
 import useMyProfile from "@/hook/useMyProfile";
 import SignInFormInput from "@/myComponent/formInput/SignInFormInput";
+import Loader from "@/myComponent/loader/Loader";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { setUser } from "@/redux/features/auth/authSlice";
 
@@ -45,7 +46,7 @@ const SignIn = () => {
   }, [myProfile, navigate]);
 
   if (isLoading) {
-    return <h1>loading..........</h1>;
+    return <Loader></Loader>;
   }
 
   return (

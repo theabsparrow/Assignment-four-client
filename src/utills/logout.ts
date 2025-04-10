@@ -43,8 +43,8 @@ export const LogoutFunc = async ({
     const res = await logout(email);
     if (res.data?.success) {
       dispatch(logOut());
-      toast.success("Successfully signed out", { id: toastId, duration: 3000 });
       dispatch(baseApi.util.resetApiState());
+      toast.success("Successfully signed out", { id: toastId, duration: 3000 });
       navigate("/sign-in");
     }
   } catch (error: any) {

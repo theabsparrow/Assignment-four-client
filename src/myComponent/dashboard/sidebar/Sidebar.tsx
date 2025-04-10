@@ -7,15 +7,17 @@ import { USER_ROLE } from "@/config/role.const";
 import { MdOutlineLogout } from "react-icons/md";
 import { LogoutFunc } from "@/utills/logout";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import UserItems from "./UserItems";
 import SharedItems from "./SharedItems";
 import { getDashboardNavlinks } from "@/utills/getDashboardNavLinks";
 import SidebarSceleton from "@/myComponent/loader/SidebarSceleton";
+import { currentUser } from "@/redux/features/auth/authSlice";
 
 const Sidebar = () => {
+  const user = useAppSelector(currentUser);
   const myprofile =
-    useMyProfile(["name", "profileImage", "role", "email"]) || undefined;
+    useMyProfile(["name", "profileImage", "email"]) || undefined;
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -32,7 +34,7 @@ const Sidebar = () => {
   };
 
   const role = myprofile?.myProfile?.role;
-  const loading = myprofile.isLoading;
+  const loading = myprofile?.isLoading;
   const navLinks = getDashboardNavlinks(role);
   if (loading) {
     return <SidebarSceleton></SidebarSceleton>;
@@ -48,9 +50,9 @@ const Sidebar = () => {
         </div>
         <MobileNavbar
           navLinks={navLinks}
-          userInfo={myprofile.myProfile}
-          name={myprofile.myProfile?.name}
-          profile={myprofile.myProfile?.profileImage}
+          userInfo={myprofile?.myProfile}
+          name={myprofile?.myProfile?.name}
+          profile={myprofile?.myProfile?.profileImage}
         ></MobileNavbar>
       </nav>
       <div className="dark:bg-gray-900 bg-white dark:text-gray-200 hidden md:block  transition-all duration-500 w-64 shadow-lg min-h-screen sticky top-0 z-50">
@@ -67,14 +69,12 @@ const Sidebar = () => {
         </div>
         <nav className="mt-6">
           {/* admin */}
-          {(myprofile.myProfile?.role === USER_ROLE.admin ||
-            myprofile.myProfile?.role === USER_ROLE.superAdmin) && (
+          {(user?.userRole === USER_ROLE.admin ||
+            user?.userRole === USER_ROLE.superAdmin) && (
             <AdminItems></AdminItems>
           )}
           {/* user */}
-          {myprofile.myProfile?.role === USER_ROLE.user && (
-            <UserItems></UserItems>
-          )}
+          {user?.userRole === USER_ROLE.user && <UserItems></UserItems>}
           {/* shared */}
           <SharedItems></SharedItems>
           <div className="flex items-center justify-between px-8 gap-1 font-inter font-semibold hover:bg-[#f0f3f8] duration-500 p-3 dark:hover:bg-gray-800 border-y cursor-pointer">

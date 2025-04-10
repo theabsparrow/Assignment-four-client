@@ -1,15 +1,17 @@
 import { USER_ROLE } from "@/config/role.const";
-import useMyProfile from "@/hook/useMyProfile";
+import { currentUser } from "@/redux/features/auth/authSlice";
+import { useAppSelector } from "@/redux/hooks";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const myprofile = useMyProfile(["role"]) || undefined;
+  const user = useAppSelector(currentUser);
+
   const navigate = useNavigate();
   useEffect(() => {
     if (
-      myprofile.myProfile?.role === USER_ROLE.admin ||
-      myprofile.myProfile?.role === USER_ROLE.superAdmin
+      user?.userRole === USER_ROLE.admin ||
+      user?.userRole === USER_ROLE.superAdmin
     ) {
       navigate("/dashboard/manage-users");
     } else {
