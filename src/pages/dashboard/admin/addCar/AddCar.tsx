@@ -75,7 +75,6 @@ const AddCar = () => {
     } = data;
     const carPrice = Number(car);
     const model = carModel.charAt(0).toUpperCase() + carModel.slice(1);
-    console.log(data);
     const toastId = toast.loading("car data uploading.....");
     try {
       const basicInfo: TCarInfo = {

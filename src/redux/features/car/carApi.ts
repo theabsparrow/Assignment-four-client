@@ -36,7 +36,7 @@ const carApi = baseApi.injectEndpoints({
     }),
     addCar: builder.mutation({
       query: (carInfo) => ({
-        url: "/cars//create-car",
+        url: "/cars/create-car",
         method: "POST",
         body: carInfo,
       }),
