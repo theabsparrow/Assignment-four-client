@@ -8,7 +8,6 @@ import {
   useReactionCountMutation,
 } from "@/redux/features/blog/blogApi";
 import { toast } from "sonner";
-import BlogSceleton from "@/components/loader/BlogSceleton";
 
 export type TBlogReaction = {
   like: number;

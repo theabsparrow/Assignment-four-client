@@ -1,9 +1,5 @@
 import { useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import {
-  TCarBrand,
-  TCategory,
-} from "../dashboard/admin/addCar/addcar.interface";
+import { FormProvider, useForm } from "react-hook-form";
 import FormInput from "@/myComponent/formInput/FormInput";
 import AddCarSelectInput from "../dashboard/admin/addCar/AddCarSelectInput";
 import {
@@ -16,17 +12,6 @@ import { toast } from "sonner";
 import { useAddBlogMutation } from "@/redux/features/blog/blogApi";
 
 export type TBlogStatus = "draft" | "published";
-type FormValues = {
-  name: string;
-  title: string;
-  content: string;
-  image?: string;
-  tags?: string[];
-  brand: TCarBrand;
-  model?: string;
-  category: TCategory;
-  status: TBlogStatus;
-};
 
 const CreateBlog = () => {
   const [open, setOpen] = useState(false);
