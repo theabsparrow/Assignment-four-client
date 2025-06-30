@@ -44,7 +44,6 @@ const CarDetails = () => {
   const methods = useForm();
   const { handleSubmit, reset } = methods;
   const [errorMessage, setErrorMessage] = useState("");
-
   useEffect(() => {
     if (car?.image) {
       setSelectedImage(car.image);
@@ -487,8 +486,8 @@ const CarDetails = () => {
         </div>
         {/* sideber image section for large device ends */}
       </div>
-      <SameBrandCar brand={car?.brand} />
-      <SameCategoryCar category={car?.category} />
+      <SameBrandCar brand={car?.brand} carId={id as string} />
+      <SameCategoryCar category={car?.category} carId={id as string} />
     </section>
   );
 };

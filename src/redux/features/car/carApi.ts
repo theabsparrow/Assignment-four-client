@@ -5,7 +5,6 @@ const carApi = baseApi.injectEndpoints({
     getCar: builder.query({
       query: (args) => {
         const params = new URLSearchParams();
-
         if (args) {
           Object.entries(args).forEach(([key, value]) => {
             if (Array.isArray(value)) {
