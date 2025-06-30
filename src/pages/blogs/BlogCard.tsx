@@ -8,6 +8,9 @@ import {
   useReactionCountMutation,
 } from "@/redux/features/blog/blogApi";
 import { toast } from "sonner";
+import { useAppSelector } from "@/redux/hooks";
+import { currentUser } from "@/redux/features/auth/authSlice";
+import { Link } from "react-router-dom";
 
 export type TBlogReaction = {
   like: number;
@@ -51,6 +54,7 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
   const [userReaction, setUserReaction] = useState<
     null | "like" | "love" | "dislike"
   >(null);
+  const user = useAppSelector(currentUser);
 
   useEffect(() => {
     setUserReaction(reactionResult);
@@ -58,6 +62,10 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
 
   const [reactionCount] = useReactionCountMutation();
   const handleReaction = async (reaction: TReactionOptions) => {
+    if (!user) {
+      toast.error("login first to react");
+      return;
+    }
     const reactionData = {
       reaction,
     };
@@ -111,9 +119,12 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
       </p>
       <p className="text-gray-700 dark:text-gray-300 ">
         {content.slice(0, 200)}...{" "}
-        <button className="text-blue-600 dark:text-blue-400 hover:underline mb-4">
+        <Link
+          to={`/blog/${_id}`}
+          className="text-blue-600 dark:text-blue-400 hover:underline mb-4"
+        >
           Read More
-        </button>
+        </Link>
       </p>
       <div className="flex flex-wrap items-center justify-between mb-4 text-sm text-gray-600 dark:text-gray-300">
         <div className="flex items-center space-x-2">
@@ -127,7 +138,7 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
         <div className="flex items-center space-x-4">
           <span className="flex items-center space-x-1">
             <span className="font-semibold text-gray-800 dark:text-gray-100">
-              Views:
+              👁️
             </span>
             <span>{view}</span>
           </span>
@@ -169,7 +180,9 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
                   : "bg-yellow-500 text-white"
               }`}
             >
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+              {type === "like" && "👍"}
+              {type === "love" && "❤️"}
+              {type === "dislike" && "👎"}
             </button>
           ))}
         </div>

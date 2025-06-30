@@ -34,6 +34,14 @@ const blogApi = baseApi.injectEndpoints({
       providesTags: ["blog"],
     }),
 
+    getASingleBlog: builder.query({
+      query: (id) => ({
+        url: `/blog/single-blog/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["blog"],
+    }),
+
     getMyReaction: builder.query({
       query: (args) => ({
         url: `/reaction/my-reaction/${args}`,
@@ -52,11 +60,14 @@ const blogApi = baseApi.injectEndpoints({
     }),
 
     reactionCount: builder.mutation({
-      query: (reactionInfo) => ({
-        url: `/blog/count-reaction/${reactionInfo._id}`,
-        method: "PATCH",
-        body: reactionInfo.reactionData,
-      }),
+      query: (reactionInfo) => (
+        console.log(reactionInfo),
+        {
+          url: `/blog/count-reaction/${reactionInfo._id}`,
+          method: "PATCH",
+          body: reactionInfo.reactionData,
+        }
+      ),
       invalidatesTags: ["blog"],
     }),
   }),
@@ -66,3 +77,4 @@ export const { useAddBlogMutation } = blogApi;
 export const { useGetAllBlogsQuery } = blogApi;
 export const { useReactionCountMutation } = blogApi;
 export const { useGetMyReactionQuery } = blogApi;
+export const { useGetASingleBlogQuery } = blogApi;
