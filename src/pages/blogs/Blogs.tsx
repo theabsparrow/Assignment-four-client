@@ -5,7 +5,7 @@ import CreateBlog from "./CreateBlog";
 // import { blogInitalState } from "./blog.const";
 import { useGetAllBlogsQuery } from "@/redux/features/blog/blogApi";
 import BlogCard, { TBlog } from "./BlogCard";
-import BlogSceleton from "@/components/loader/BlogSceleton";
+import BlogSceleton from "@/myComponent/loader/BlogSceleton";
 
 const Blogs = () => {
   const user = useAppSelector(currentUser);

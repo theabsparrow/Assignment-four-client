@@ -1,4 +1,4 @@
-import BlogDetailsSceleton from "@/components/loader/BlogDetailsSceleton";
+import BlogDetailsSceleton from "@/myComponent/loader/BlogDetailsSceleton";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import {
   useGetASingleBlogQuery,
