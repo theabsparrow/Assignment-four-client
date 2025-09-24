@@ -89,67 +89,67 @@ export const router = createBrowserRouter([
         path: "all-brands",
         element: <AllBrands></AllBrands>,
       },
-      {
-        path: "profile/:id",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-            <UserProfile />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "checkout/:id",
-        element: (
-          <ProtectedRoute
-            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
-          >
-            <CheckOut />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "order/verify",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
-            <VerifyOrder />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "order/:id",
-        element: (
-          <ProtectedRoute
-            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
-          >
-            <OrderDetails />
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: "profile/:id",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+      //       <UserProfile />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "checkout/:id",
+      //   element: (
+      //     <ProtectedRoute
+      //       roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+      //     >
+      //       <CheckOut />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "order/verify",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.user]}>
+      //       <VerifyOrder />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "order/:id",
+      //   element: (
+      //     <ProtectedRoute
+      //       roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+      //     >
+      //       <OrderDetails />
+      //     </ProtectedRoute>
+      //   ),
+      // },
     ],
   },
-  ...dashboardRoutes,
-  {
-    path: "/forgot-password",
-    element: <ForgotPassword></ForgotPassword>,
-  },
-  {
-    path: "/verify-otp",
-    element: (
-      <ProtectedRoute
-        roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
-      >
-        <VerifyOTP />{" "}
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/set-newPassword",
-    element: (
-      <ProtectedRoute
-        roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
-      >
-        <SetNewPassword />
-      </ProtectedRoute>
-    ),
-  },
+  // ...dashboardRoutes,
+  // {
+  //   path: "/forgot-password",
+  //   element: <ForgotPassword></ForgotPassword>,
+  // },
+  // {
+  //   path: "/verify-otp",
+  //   element: (
+  //     <ProtectedRoute
+  //       roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+  //     >
+  //       <VerifyOTP />{" "}
+  //     </ProtectedRoute>
+  //   ),
+  // },
+  // {
+  //   path: "/set-newPassword",
+  //   element: (
+  //     <ProtectedRoute
+  //       roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+  //     >
+  //       <SetNewPassword />
+  //     </ProtectedRoute>
+  //   ),
+  // },
 ]);

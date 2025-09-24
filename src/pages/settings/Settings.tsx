@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import useMyProfile from "@/hook/useMyProfile";
+import { TMyProfileQUery } from "@/interface/navbar.types";
 import FormInput from "@/myComponent/formInput/FormInput";
 import { genders } from "@/myComponent/formInput/formInput.const";
 import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
@@ -10,6 +10,7 @@ import { useChnagePassowrdMutation } from "@/redux/features/auth/authApi";
 import { logOut, setUser } from "@/redux/features/auth/authSlice";
 import {
   useDeleteUserMutation,
+  useMyProfileQuery,
   useUpdateUserInfoMutation,
 } from "@/redux/features/user/userApi";
 import { useAppDispatch } from "@/redux/hooks";
@@ -21,7 +22,11 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Settings = () => {
-  const myprofile = useMyProfile();
+  const query: Record<string, TMyProfileQUery | undefined> = {};
+  query.for = "settings";
+  const { data, isLoading } = useMyProfileQuery(query);
+  const profileInfo = data?.data;
+
   const [updatedInfo] = useUpdateUserInfoMutation();
   const [changePasswordInfo] = useChnagePassowrdMutation();
   const dispatch = useAppDispatch();
@@ -190,7 +195,7 @@ const Settings = () => {
                     />
                   ) : (
                     <p className="mt-1 text-gray-800 dark:text-gray-300">
-                      {myprofile.myProfile?.name.firstName}
+                      {profileInfo?.name.firstName}
                     </p>
                   )}
                 </div>
@@ -206,7 +211,7 @@ const Settings = () => {
                     />
                   ) : (
                     <p className="mt-1 text-gray-800 dark:text-gray-300">
-                      {myprofile.myProfile?.name?.middleName}
+                      {profileInfo?.name?.middleName}
                     </p>
                   )}
                 </div>
@@ -223,7 +228,7 @@ const Settings = () => {
                     />
                   ) : (
                     <p className="mt-1 text-gray-800 dark:text-gray-300">
-                      {myprofile.myProfile?.name.lastName}
+                      {profileInfo?.name.lastName}
                     </p>
                   )}
                 </div>
@@ -246,7 +251,7 @@ const Settings = () => {
                   />
                 ) : (
                   <p className="mt-1 text-gray-800 dark:text-gray-300">
-                    {myprofile.myProfile?.dateOfBirth}
+                    {profileInfo?.dateOfBirth}
                   </p>
                 )}
               </div>
@@ -268,7 +273,7 @@ const Settings = () => {
                   />
                 ) : (
                   <p className="mt-1 text-gray-800 dark:text-gray-300">
-                    {myprofile.myProfile?.gender}
+                    {profileInfo?.gender}
                   </p>
                 )}
               </div>
@@ -320,9 +325,7 @@ const Settings = () => {
                     register={methods.register}
                   />
                 ) : (
-                  <p className="mt-1 text-gray-600">
-                    {myprofile.myProfile?.email}
-                  </p>
+                  <p className="mt-1 text-gray-600">{profileInfo?.email}</p>
                 )}
               </div>
               <div className="mt-2">
@@ -341,7 +344,7 @@ const Settings = () => {
                   />
                 ) : (
                   <p className="mt-1 text-gray-600">
-                    {myprofile.myProfile?.phoneNumber}
+                    {profileInfo?.phoneNumber}
                   </p>
                 )}
               </div>

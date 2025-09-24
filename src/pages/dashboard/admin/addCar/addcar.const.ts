@@ -1,6 +1,6 @@
 import { TValue } from "@/myComponent/formInput/formInput.const";
 import { getPastYears } from "@/utills/generateYears";
-import { TCarBrand, TCategory } from "./addcar.interface";
+import { TCarBrand, TCategory, TCondition } from "./addcar.interface";
 
 export const carBrands: TCarBrand[] = [
   "Toyota",
@@ -137,6 +137,12 @@ export const requiredFields: string[] = [
   "deliveryMethod",
 ];
 export default carColors;
+
+export const condition: TCondition[] = [
+  "New",
+  "Used",
+  "Certified Pre-Owned",
+] as const;
 
 export const years = getPastYears(25);
 

@@ -1,12 +1,20 @@
+import { TMyProfileQUery } from "@/interface/navbar.types";
 import { baseApi } from "@/redux/api/baseApi";
 
 const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     myProfile: builder.query({
-      query: () => ({
-        url: "/user/my-profile",
-        method: "GET",
-      }),
+      query: (args: { [key: string]: TMyProfileQUery | undefined }) => {
+        const params = new URLSearchParams();
+        if (args?.for) {
+          params.append("for", args?.for.toString());
+        }
+        return {
+          url: "/user/my-profile",
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["user"],
     }),
     updateUserInfo: builder.mutation({

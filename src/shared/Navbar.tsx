@@ -4,24 +4,29 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { IoIosArrowForward } from "react-icons/io";
-import useMyProfile from "@/hook/useMyProfile";
 import { MdDashboard, MdOutlineLogout } from "react-icons/md";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
 import MenuItem from "@/myComponent/menuItem/MenuItem";
 import { IoSettingsSharp } from "react-icons/io5";
 import Dropdown from "@/myComponent/darkmode/Dropdown";
 import MobileNavbar from "@/myComponent/mobileNavbar/MobileNavbar";
 import { LogoutFunc } from "@/utills/logout";
+import { TMyProfileQUery } from "@/interface/navbar.types";
+import { useMyProfileQuery } from "@/redux/features/user/userApi";
+import { currentUser } from "@/redux/features/auth/authSlice";
 
 const Navbar = () => {
   const [display, setDisplay] = useState(false);
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const myprofile =
-    useMyProfile(["name", "profileImage", "email"]) || undefined;
-
+  // login user data
+  const query: Record<string, TMyProfileQUery | undefined> = {};
+  query.for = "navbar";
+  const { data, isLoading } = useMyProfileQuery(query);
+  const profileInfo = data?.data;
+  const user = useAppSelector(currentUser);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -34,12 +39,10 @@ const Navbar = () => {
   }, [display]);
 
   const handleLogout = (e: React.MouseEvent<HTMLElement>) => {
-    const email = myprofile?.myProfile?.email;
     return LogoutFunc({
       e,
       dispatch,
       navigate,
-      email,
       setDisplay,
       logout,
       display,
@@ -50,14 +53,14 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "All cars", path: "/all-cars" },
     {
-      name: myprofile.myProfile ? "My Profile" : "Sign In",
-      path: myprofile.myProfile ? "/my-profile" : "/sign-in",
+      name: user ? "My Profile" : "Sign In",
+      path: user ? "/my-profile" : "/sign-in",
     },
     {
-      name: myprofile.myProfile ? "Dashboard" : "Sign up",
-      path: myprofile.myProfile ? "/dashboard" : "/sign-up",
+      name: user ? "Dashboard" : "Sign up",
+      path: user ? "/dashboard" : "/sign-up",
     },
-    ...(myprofile.myProfile ? [{ name: "Settings", path: "/settings" }] : []),
+    ...(user ? [{ name: "Settings", path: "/settings" }] : []),
   ];
 
   return (
@@ -122,7 +125,7 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        {myprofile?.isLoading ? (
+        {isLoading ? (
           <div className="hidden md:flex">
             <div className="w-11 h-11 rounded-full border border-secondary bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
           </div>
@@ -135,10 +138,10 @@ const Navbar = () => {
               }}
               className="text-5xl"
             >
-              {myprofile.myProfile?.profileImage ? (
+              {profileInfo?.profileImage ? (
                 <img
                   className="w-11 h-11 rounded-full border border-secondary"
-                  src={myprofile.myProfile?.profileImage}
+                  src={profileInfo?.profileImage}
                 />
               ) : (
                 <CgProfile className="hover:text-primary" />
@@ -155,10 +158,9 @@ const Navbar = () => {
             className="absolute top-[76px] hidden md:flex flex-col right-16 w-96 py-6 border-x border-gray-400 dark:bg-gray-800 bg-white shadow-md z-50 px-6 rounded-lg"
           >
             <h1 className="text-2xl font-inter font-bold text-center">
-              {myprofile?.myProfile ? (
+              {user ? (
                 <span className="text-secondary">
-                  {myprofile?.myProfile?.name?.firstName}{" "}
-                  {myprofile?.myProfile?.name?.lastName}
+                  {profileInfo?.name?.firstName} {profileInfo?.name?.lastName}
                 </span>
               ) : (
                 "My Lambo Car"
@@ -170,7 +172,7 @@ const Navbar = () => {
                 your future saved vehicles.
               </p>
               <div className="mt-8 flex justify-between items-center">
-                {myprofile.myProfile ? (
+                {user ? (
                   <MenuItem
                     display={display}
                     setDisplay={setDisplay}
@@ -186,7 +188,7 @@ const Navbar = () => {
                     icon={IoIosArrowForward}
                   ></MenuItem>
                 )}
-                {myprofile.myProfile ? (
+                {user ? (
                   <MenuItem
                     display={display}
                     setDisplay={setDisplay}
@@ -209,7 +211,7 @@ const Navbar = () => {
               <Dropdown></Dropdown>
             </div>
 
-            {myprofile.myProfile && (
+            {user && (
               <div className="mt-4 px-5 flex flex-col justify-center items-start space-y-2">
                 <MenuItem
                   display={display}
@@ -230,9 +232,9 @@ const Navbar = () => {
         )}
         <MobileNavbar
           navLinks={navLinks}
-          userInfo={myprofile.myProfile}
-          name={myprofile.myProfile?.name}
-          profile={myprofile.myProfile?.profileImage}
+          userInfo={profileInfo}
+          name={profileInfo?.name}
+          profile={profileInfo?.profileImage}
         ></MobileNavbar>
       </div>
     </nav>

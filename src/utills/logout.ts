@@ -10,7 +10,6 @@ type HandleLogoutParams = {
   setOpen?: (value: boolean) => void;
   dispatch: AppDispatch;
   navigate: NavigateFunction;
-  email?: string;
   setDisplay?: (value: boolean) => void;
   logout: (email?: string) => Promise<any>;
   display?: boolean;
@@ -22,7 +21,6 @@ export const LogoutFunc = async ({
   setOpen,
   dispatch,
   navigate,
-  email,
   setDisplay,
   logout,
   display,
@@ -40,7 +38,7 @@ export const LogoutFunc = async ({
   }
 
   try {
-    const res = await logout(email);
+    const res = await logout();
     if (res.data?.success) {
       dispatch(logOut());
       dispatch(baseApi.util.resetApiState());

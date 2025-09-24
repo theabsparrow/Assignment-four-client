@@ -8,13 +8,12 @@ import FormSelect from "@/myComponent/formInput/FormSelect";
 import { genders } from "@/myComponent/formInput/formInput.const";
 import { imageUpload } from "@/utills/uploadImage";
 import { TUserInfo } from "@/interface/userInfo";
-import { useAppDispatch } from "@/redux/hooks";
-import { setUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { currentUser, setUser } from "@/redux/features/auth/authSlice";
 import { decodeToken } from "@/utills/decodeToken";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useRegisterMutation } from "@/redux/features/auth/authApi";
-import useMyProfile from "@/hook/useMyProfile";
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +21,7 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [register] = useRegisterMutation();
   const navigate = useNavigate();
-  const { refetch, myProfile, isLoading } = useMyProfile();
+  const user = useAppSelector(currentUser);
 
   const onSubmit = async (data: any) => {
     setErrorMessage("");
@@ -63,7 +62,6 @@ const SignUp = () => {
       const user = decodeToken(res.data.access);
       dispatch(setUser({ user, token: res.data.access }));
       toast.success("successfully registered", { id: toastId, duration: 3000 });
-      await refetch();
       navigate("/");
     } catch (error: any) {
       const errorInfo =
@@ -73,14 +71,10 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    if (myProfile) {
+    if (user) {
       navigate("/");
     }
-  }, [myProfile, navigate]);
-
-  if (isLoading) {
-    return <h1>loading..........</h1>;
-  }
+  }, [user, navigate]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4 font-inter">

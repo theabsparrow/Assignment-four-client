@@ -1,4 +1,6 @@
-export const initalState = {
+import { TInitialState } from "./allCars.types";
+
+export const initalState: TInitialState = {
   brand: "",
   model: "",
   minPrice: 0,
@@ -6,5 +8,5 @@ export const initalState = {
   year: "",
   category: "",
   condition: "",
-  inStock: true,
+  inStock: "",
 };

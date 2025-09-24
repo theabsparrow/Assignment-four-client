@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import useMyProfile from "@/hook/useMyProfile";
-import { useUpdateUserInfoMutation } from "@/redux/features/user/userApi";
+import {
+  useMyProfileQuery,
+  useUpdateUserInfoMutation,
+} from "@/redux/features/user/userApi";
 
 import { imageUpload } from "@/utills/uploadImage";
 import { useEffect, useState } from "react";
@@ -9,28 +11,34 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { calculateAge } from "./myProfile.utills";
 import ProfileLoader from "@/myComponent/loader/ProfileLoader";
+import { TMyProfileQUery } from "@/interface/navbar.types";
 
 const MyProfile = () => {
-  const myprofile = useMyProfile();
+  const query: Record<string, TMyProfileQUery | undefined> = {};
+  query.for = "profile";
+  const { data, isLoading } = useMyProfileQuery(query);
+  const profileInfo = data?.data;
+
   const [profileImage, setProfileImage] = useState<string | "">(
-    myprofile.myProfile?.profileImage
+    profileInfo?.profileImage
   );
   const [coverImage, setCoverImage] = useState<string | "">(
-    myprofile.myProfile?.coverImage
+    profileInfo?.coverImage
   );
   const [homeTown, setHomeTown] = useState<string | " ">(
-    myprofile.myProfile?.homeTown
+    profileInfo?.homeTown ?? "No hometown"
   );
   const [currentAddress, setCurrentAddress] = useState<string | " ">(
-    myprofile.myProfile?.currentAddress
+    profileInfo?.currentAddress ?? "No current address"
   );
   const [age, setAge] = useState(0);
+
   useEffect(() => {
-    if (myprofile?.myProfile?.dateOfBirth) {
-      const age = calculateAge(myprofile?.myProfile.dateOfBirth);
+    if (profileInfo) {
+      const age = calculateAge(profileInfo?.dateOfBirth);
       setAge(age);
     }
-  }, [myprofile?.myProfile?.dateOfBirth]);
+  }, [profileInfo?.dateOfBirth]);
 
   const methods = useForm({
     defaultValues: {
@@ -43,13 +51,13 @@ const MyProfile = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (myprofile?.myProfile) {
-      setProfileImage(myprofile.myProfile.profileImage);
-      setCoverImage(myprofile.myProfile.coverImage);
-      setHomeTown(myprofile.myProfile.homeTown);
-      setCurrentAddress(myprofile.myProfile.currentAddress);
+    if (profileInfo) {
+      setProfileImage(profileInfo.profileImage);
+      setCoverImage(profileInfo.coverImage);
+      setHomeTown(profileInfo.homeTown);
+      setCurrentAddress(profileInfo.currentAddress);
     }
-  }, [myprofile]);
+  }, [profileInfo]);
 
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -104,8 +112,8 @@ const MyProfile = () => {
     }
   };
 
-  if (myprofile.isLoading) {
-    return <ProfileLoader></ProfileLoader>;
+  if (isLoading) {
+    return <ProfileLoader />;
   }
   return (
     <div className="max-w-4xl mx-auto bg-gray-100 shadow-lg rounded-lg overflow-hidden font-inter pb-10 dark:bg-gray-800">
@@ -168,13 +176,11 @@ const MyProfile = () => {
       )}
       <div className="flex items-center dark:text-gray-400">
         <h2 className="text-3xl mx-4 font-bold my-2 ">
-          {myprofile.myProfile?.name.firstName}{" "}
-          {myprofile.myProfile?.name?.middleName}{" "}
-          {myprofile.myProfile?.name.lastName}
+          {profileInfo?.name.firstName}{" "}
+          {profileInfo?.name?.middleName && profileInfo.name.middleName}{" "}
+          {profileInfo?.name.lastName}
         </h2>{" "}
-        <span className="font-bold text-lg">
-          ({myprofile.myProfile?.gender})
-        </span>
+        <span className="font-bold text-lg">({profileInfo?.gender})</span>
       </div>
 
       <div className=" mt-4 p-4 bg-white dark:bg-gray-950 mx-4 rounded-lg shadow-md ">
@@ -184,15 +190,13 @@ const MyProfile = () => {
             <label className="block text-sm font-medium text-gray-700">
               Email
             </label>
-            <p className="mt-1 text-gray-600">{myprofile.myProfile?.email}</p>
+            <p className="mt-1 text-gray-600">{profileInfo?.email}</p>
           </div>
           <div className="mt-2">
             <label className="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
-            <p className="mt-1 text-gray-600">
-              {myprofile.myProfile?.phoneNumber}
-            </p>
+            <p className="mt-1 text-gray-600">{profileInfo?.phoneNumber}</p>
           </div>
 
           <div className="mt-2">
@@ -200,7 +204,7 @@ const MyProfile = () => {
               Date of Birth
             </label>
             <p className="mt-1 text-gray-600">
-              {myprofile.myProfile?.dateOfBirth} <span>(Age: {age})</span>
+              {profileInfo?.dateOfBirth} <span>(Age: {age})</span>
             </p>
           </div>
         </div>

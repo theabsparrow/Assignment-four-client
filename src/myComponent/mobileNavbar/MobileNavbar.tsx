@@ -58,7 +58,7 @@ const MobileNavbar = ({
           </Button>
         </SheetTrigger>
         <SheetContent side="right" className="p-4">
-          <div className="space-y-4">
+          <div className="space-y-4 border border-red-600">
             {profile && (
               <div className="px-4">
                 <img
