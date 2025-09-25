@@ -16,10 +16,11 @@ import ReactRangeSliderInput from "react-range-slider-input";
 import { TInitialState } from "./allCars.types";
 import { initalState } from "./allCars.const";
 import { useSearchParams } from "react-router-dom";
-import { IoMdArrowDropdown } from "react-icons/io";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import { RxCross1 } from "react-icons/rx";
+import { RiArrowDropDownLine } from "react-icons/ri";
+import SelectComponent from "@/myComponent/selectComponent/SelectComponent";
 
 type TFilterProps = {
   filter: TInitialState;
@@ -71,10 +72,6 @@ const AllcarsFiltering = ({
     }));
   }, [searchParams]);
 
-  const handleFilterChange = (name: string, value: string) => {
-    setFilter((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handlePriceRangeChange = (newRange: [number, number]) => {
     setPriceRange(newRange);
     setFilter((prevFilters) => ({
@@ -105,25 +102,37 @@ const AllcarsFiltering = ({
         setIsOpen(false);
       }
     };
-
     const handleGlobalDropdownOpen = () => {
       setIsOpen(false);
     };
-
     document.addEventListener("click", handleClickOutside);
     window.addEventListener("dropdown-open", handleGlobalDropdownOpen);
-
     return () => {
       document.removeEventListener("click", handleClickOutside);
       window.removeEventListener("dropdown-open", handleGlobalDropdownOpen);
     };
   }, []);
-  console.log(isOpen);
+
   return (
     <section ref={filterRef} className="sticky top-20 z-30">
-      <div className="lg:hidden  bg-white dark:bg-gray-900 shadow-lg px-4 py-2 space-y-4 max-h-[80vh] overflow-y-auto">
-        <div className="">
+      <div className="lg:hidden bg-white dark:bg-gray-900 shadow-lg px-4 pb-8 space-y-4 max-h-[80vh] overflow-y-auto relative">
+        <h1 className="text-xl font-semibold ">Total {total} cars for sale</h1>
+        <div className=" space-y-4 ">
           <div className="flex items-center justify-between ">
+            <button
+              onClick={() => handleSoldCars("inStock", "no")}
+              className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold px-2 py-1 rounded-md duration-500 transition "
+            >
+              see sold cars
+            </button>
+            <button
+              onClick={handelReset}
+              className="bg-red-500 text-white px-2 py-1 rounded shadow hover:bg-red-600 duration-500 "
+            >
+              Reset
+            </button>
+          </div>
+          <div className=" flex justify-center items-center">
             <input
               type="text"
               placeholder="Search items"
@@ -131,152 +140,40 @@ const AllcarsFiltering = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button
-              onClick={handelReset}
-              className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 duration-500"
-            >
-              Reset
-            </button>
-          </div>
-          <div className=" px-4 mt-1  md:hidden">
-            <button
-              onClick={() => handleSoldCars("inStock", "no")}
-              className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold px-2 py-1 rounded-md duration-500 transition "
-            >
-              see sold cars
-            </button>
           </div>
         </div>
         {open && (
-          <div className=" md:hidden ">
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Brand :
-              </h1>
-              <select
-                value={filter.brand}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, brand: value }));
-                  handleFilterChange("brand", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select brand</option>
-                {carBrands.map((brand: TCarBrand) => (
-                  <option
-                    key={brand}
-                    value={brand as string}
-                    className="dark:bg-gray-700"
-                  >
-                    {brand as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700  p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-medium ">
-                Filter Model :
-              </h1>
-              <select
-                value={filter.model}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, model: value }));
-                  handleFilterChange("model", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select brand first</option>
-                {models?.map((model: string) => (
-                  <option
-                    key={model}
-                    value={model}
-                    className="dark:bg-gray-700"
-                  >
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Year :
-              </h1>
-              <select
-                value={filter.year}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, year: value }));
-                  handleFilterChange("year", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select year</option>
-                {years.map((years) => (
-                  <option
-                    key={years}
-                    value={years}
-                    className="dark:bg-gray-700"
-                  >
-                    {years}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Category :
-              </h1>
-              <select
-                value={filter.category}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  handleFilterChange("category", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">All Categories</option>
-                {carCategories.map((category: TCategory) => (
-                  <option
-                    key={category}
-                    value={category as string}
-                    className="dark:bg-gray-700"
-                  >
-                    {category as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Filter Conditon :
-              </h1>
-              <select
-                value={filter.condition}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  handleFilterChange("condition", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value=""></option>
-                {condition.map((con: TCondition) => (
-                  <option key={con} value={con} className="dark:bg-gray-700">
-                    {con}
-                  </option>
-                ))}
-              </select>
-            </div>
-
+          <div className="space-y-2">
+            <SelectComponent
+              valueOptions={carBrands as TCarBrand[]}
+              setFilter={setFilter}
+              label="brand"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={models as string[]}
+              setFilter={setFilter}
+              label="model"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={carCategories as TCategory[]}
+              setFilter={setFilter}
+              label="category"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={years as string[]}
+              setFilter={setFilter}
+              label="year"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={condition as TCondition[]}
+              setFilter={setFilter}
+              label="condition"
+              filter={filter}
+            />
             <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
               <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
                 {" "}
@@ -299,7 +196,6 @@ const AllcarsFiltering = ({
                 ))}
               </select>
             </div>
-
             <div className="md:w-full text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-2">
               <div className="flex items-center mb-3 md:gap-3">
                 <h2 className="text-sm md:font-semibold">PRICE RANGE : </h2>
@@ -324,12 +220,12 @@ const AllcarsFiltering = ({
             </div>
           </div>
         )}
-        <div className="md:hidden ">
-          <IoMdArrowDropdown
-            onClick={() => setOpen(!open)}
-            className="text-4xl text-secondary mx-auto "
-          />
-        </div>
+        <button
+          onClick={() => setOpen(!open)}
+          className="absolute -bottom-3 left-[45%]"
+        >
+          <RiArrowDropDownLine className="text-4xl text-secondary" />
+        </button>
       </div>
 
       <Button
@@ -380,138 +276,36 @@ const AllcarsFiltering = ({
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Brand :
-              </h1>
-              <select
-                value={filter.brand}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, brand: value }));
-                  setFilter((prev) => ({ ...prev, model: "" }));
-
-                  handleFilterChange("brand", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select brand</option>
-                {carBrands.map((brand: TCarBrand) => (
-                  <option
-                    key={brand}
-                    value={brand as string}
-                    className="dark:bg-gray-700"
-                  >
-                    {brand as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
-              <h1 className="text-gray-500 dark:text-gray-300 font-medium ">
-                Model :
-              </h1>
-              <select
-                value={filter.model}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, model: value }));
-                  handleFilterChange("model", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select brand first</option>
-                {models?.map((model: string) => (
-                  <option
-                    key={model}
-                    value={model}
-                    className="dark:bg-gray-700"
-                  >
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Year :
-              </h1>
-              <select
-                value={filter.year}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, year: value }));
-                  handleFilterChange("year", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select year</option>
-                {years.map((years) => (
-                  <option
-                    key={years}
-                    value={years}
-                    className="dark:bg-gray-700"
-                  >
-                    {years}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Category :
-              </h1>
-              <select
-                value={filter.category}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, category: value }));
-                  handleFilterChange("category", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select Category</option>
-                {carCategories.map((category: TCategory) => (
-                  <option
-                    key={category}
-                    value={category as string}
-                    className="dark:bg-gray-700"
-                  >
-                    {category as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
-              <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
-                {" "}
-                Conditon :
-              </h1>
-              <select
-                value={filter.condition}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setFilter((prev) => ({ ...prev, condition: value }));
-                  handleFilterChange("condition", value);
-                }}
-                className="px-5 rounded outline-none bg-transparent font-bold"
-              >
-                <option value="">Select condition</option>
-                {condition.map((con: TCondition) => (
-                  <option key={con} value={con} className="dark:bg-gray-700">
-                    {con}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <SelectComponent
+              valueOptions={carBrands as TCarBrand[]}
+              setFilter={setFilter}
+              label="brand"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={models as string[]}
+              setFilter={setFilter}
+              label="model"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={carCategories as TCategory[]}
+              setFilter={setFilter}
+              label="category"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={years as string[]}
+              setFilter={setFilter}
+              label="year"
+              filter={filter}
+            />
+            <SelectComponent
+              valueOptions={condition as TCondition[]}
+              setFilter={setFilter}
+              label="condition"
+              filter={filter}
+            />
 
             <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
               <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
