@@ -13,26 +13,14 @@ import {
 import { sortingOrders, TValue } from "@/myComponent/formInput/formInput.const";
 import { TbCurrencyTaka } from "react-icons/tb";
 import ReactRangeSliderInput from "react-range-slider-input";
-import { TInitialState } from "./allCars.types";
+import { TFilterProps } from "./allCars.types";
 import { initalState } from "./allCars.const";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import { RxCross1 } from "react-icons/rx";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import SelectComponent from "@/myComponent/selectComponent/SelectComponent";
-
-type TFilterProps = {
-  filter: TInitialState;
-  setFilter: React.Dispatch<React.SetStateAction<TInitialState>>;
-  searchTerm: string;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-  sort: string;
-  setSort: React.Dispatch<React.SetStateAction<string>>;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-  models: string[];
-  total: number;
-};
 
 const AllcarsFiltering = ({
   filter,
@@ -44,18 +32,21 @@ const AllcarsFiltering = ({
   setPage,
   models,
   total,
+  maxPrice,
+  minPrice,
 }: TFilterProps) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
-  const [searchParams] = useSearchParams();
-  const initialMinPrice = Number(searchParams.get("minPrice")) || 1;
-  const initialMaxPrice = Number(searchParams.get("maxPrice")) || 100000000;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialMinPrice = Number(searchParams.get("minPrice")) || 0;
+  const initialMaxPrice = Number(searchParams.get("maxPrice")) || 0;
   const [priceRange, setPriceRange] = useState<[number, number]>([
-    initialMinPrice,
-    initialMaxPrice,
+    minPrice,
+    maxPrice,
   ]);
-
+  const params = new URLSearchParams(searchParams);
   useEffect(() => {
     const brand = searchParams.get("brand") || "";
     const model = searchParams.get("model") || "";
@@ -67,8 +58,8 @@ const AllcarsFiltering = ({
       brand,
       model,
       category,
-      minPrice: Number(minPrice),
-      maxPrice: Number(maxPrice),
+      minPrice,
+      maxPrice,
     }));
   }, [searchParams]);
 
@@ -79,6 +70,15 @@ const AllcarsFiltering = ({
       minPrice: newRange[0],
       maxPrice: newRange[1],
     }));
+
+    if (newRange) {
+      params.set("minPrice", newRange[0].toString());
+      params.set("maxPrice", newRange[1].toString());
+    } else {
+      params.delete("minPrice");
+      params.delete("maxPrice");
+    }
+    navigate(`/all-cars?${params.toString()}`);
   };
 
   const handleSoldCars = (name: string, value: string) => {
@@ -90,7 +90,8 @@ const AllcarsFiltering = ({
     setSearchTerm("");
     setSort("");
     setPage(1);
-    setPriceRange([1, 100000000]);
+    setPriceRange([minPrice, maxPrice]);
+    setSearchParams({});
   };
 
   useEffect(() => {
@@ -181,7 +182,17 @@ const AllcarsFiltering = ({
               </h1>
               <select
                 value={sort}
-                onChange={(e) => setSort(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSort(value);
+
+                  if (value) {
+                    params.set("sort", value);
+                  } else {
+                    params.delete("sort");
+                  }
+                  navigate(`/all-cars?${params.toString()}`);
+                }}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
                 <option value="select category">Select an option</option>
@@ -196,26 +207,26 @@ const AllcarsFiltering = ({
                 ))}
               </select>
             </div>
-            <div className="md:w-full text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-2">
+            <div className=" text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-2">
               <div className="flex items-center mb-3 md:gap-3">
-                <h2 className="text-sm md:font-semibold">PRICE RANGE : </h2>
+                <h2 className="text-sm md:font-semibold">Price range : </h2>
                 <p className="font-bold text-black dark:text-white flex items-center">
                   <TbCurrencyTaka className="text-lg" />{" "}
                   {priceRange[0].toLocaleString()}
                 </p>{" "}
-                <p className="text-sm">TO</p>{" "}
+                <p className="text-sm">to</p>{" "}
                 <p className="font-bold text-black dark:text-white flex items-center">
                   <TbCurrencyTaka className="text-lg" />{" "}
                   {priceRange[1].toLocaleString()}
                 </p>
               </div>
               <ReactRangeSliderInput
-                min={1}
-                max={100000000}
-                step={50000}
+                min={minPrice}
+                max={maxPrice}
+                step={100000}
                 value={priceRange}
                 onInput={handlePriceRangeChange}
-                className="w-full"
+                className=""
               />
             </div>
           </div>
@@ -314,7 +325,17 @@ const AllcarsFiltering = ({
               </h1>
               <select
                 value={sort}
-                onChange={(e) => setSort(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSort(value);
+
+                  if (value) {
+                    params.set("sort", value);
+                  } else {
+                    params.delete("sort");
+                  }
+                  navigate(`/all-cars?${params.toString()}`);
+                }}
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
                 <option value="">Select an option</option>
@@ -332,21 +353,21 @@ const AllcarsFiltering = ({
 
             <div className="md:w-full text-gray-500 dark:text-gray-300 font-semibold bg-[#f0f3f8] dark:bg-gray-700 p-3">
               <div className="flex items-center mb-3 md:gap-3">
-                <h2 className="text-sm md:font-semibold">PRICE RANGE : </h2>
+                <h2 className="text-sm md:font-semibold">Price range : </h2>
                 <p className="font-bold text-black dark:text-white flex items-center">
                   <TbCurrencyTaka className="text-lg" />{" "}
                   {priceRange[0].toLocaleString()}
                 </p>{" "}
-                <p className="text-sm">TO</p>{" "}
+                <p className="text-sm">to</p>{" "}
                 <p className="font-bold text-black dark:text-white flex items-center">
                   <TbCurrencyTaka className="text-lg" />{" "}
                   {priceRange[1].toLocaleString()}
                 </p>
               </div>
               <ReactRangeSliderInput
-                min={initialMinPrice}
-                max={initialMaxPrice}
-                step={50000}
+                min={minPrice}
+                max={maxPrice}
+                step={100000}
                 value={priceRange}
                 onInput={handlePriceRangeChange}
                 className="w-full"

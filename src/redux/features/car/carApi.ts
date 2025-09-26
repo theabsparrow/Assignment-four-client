@@ -16,10 +16,24 @@ const carApi = baseApi.injectEndpoints({
           }
         }
         if (!args?.limit) {
-          params.append("limit", "20");
+          params.append("limit", "21");
         }
         return {
           url: "/cars/get-allCars",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["car"],
+    }),
+    getCarModel: builder.query({
+      query: (args?: { [key: string]: string }) => {
+        const params = new URLSearchParams();
+        if (args?.brand) {
+          params.append("brand", args.brand.toString());
+        }
+        return {
+          url: "/cars/get-models",
           method: "GET",
           params: params,
         };
@@ -58,14 +72,11 @@ const carApi = baseApi.injectEndpoints({
       invalidatesTags: ["car"],
     }),
     removeGalleryImage: builder.mutation({
-      query: (imageInfo) => (
-        console.log(imageInfo),
-        {
-          url: `/cars/delete-image/${imageInfo?.id}`,
-          method: "DELETE",
-          body: imageInfo?.imageInfo,
-        }
-      ),
+      query: (imageInfo) => ({
+        url: `/cars/delete-image/${imageInfo?.id}`,
+        method: "DELETE",
+        body: imageInfo?.imageInfo,
+      }),
       invalidatesTags: ["car"],
     }),
     deleteCar: builder.mutation({
@@ -79,6 +90,7 @@ const carApi = baseApi.injectEndpoints({
 });
 
 export const { useGetCarQuery } = carApi;
+export const { useGetCarModelQuery } = carApi;
 export const { useAddCarMutation } = carApi;
 export const { useGetSingleCarQuery } = carApi;
 export const { useUpdateCarMutation } = carApi;

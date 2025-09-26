@@ -1,5 +1,6 @@
 import { TInitialState } from "@/pages/allCars/allCars.types";
 import { ReactNode } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type TSelectComponentProps<T> = {
   valueOptions: T[];
@@ -14,6 +15,8 @@ const SelectComponent = <T,>({
   label,
   filter,
 }: TSelectComponentProps<T>) => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   return (
     <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2 lg:p-3">
       <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
@@ -21,6 +24,7 @@ const SelectComponent = <T,>({
         {label} :
       </h1>
       <select
+        disabled={label === "model" && !filter.brand}
         value={filter[label as keyof TInitialState]}
         onChange={(e) => {
           const value = e.target.value;
@@ -28,6 +32,14 @@ const SelectComponent = <T,>({
           if (label === "brand") {
             setFilter((prev) => ({ ...prev, model: "" }));
           }
+          const params = new URLSearchParams(searchParams);
+          if (value) {
+            params.set(label, value);
+          } else {
+            params.delete(label);
+          }
+
+          navigate(`/all-cars?${params.toString()}`);
         }}
         className="px-5 rounded outline-none bg-transparent font-bold"
       >
@@ -38,7 +50,7 @@ const SelectComponent = <T,>({
               : "Select brand first"
             : `Select ${label}`}
         </option>
-        {valueOptions
+        {[...valueOptions]
           .sort((a, b) => String(a).localeCompare(String(b)))
           .map((value: T, i) => (
             <option

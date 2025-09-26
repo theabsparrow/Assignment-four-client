@@ -1,5 +1,4 @@
 import { TCarInfo } from "@/interface/carsInfo";
-import Sceleton from "@/myComponent/loader/Sceleton";
 import { useGetCarQuery } from "@/redux/features/car/carApi";
 import { LuArrowUpDown } from "react-icons/lu";
 import { useState } from "react";
@@ -8,6 +7,7 @@ import Pagination from "@/myComponent/pagination/Pagination";
 import { initalState } from "./allCars.const";
 import CarCard from "@/myComponent/carCard/CarCard";
 import AllcarsFiltering from "./AllcarsFiltering";
+import AllCarsSkeleton from "@/myComponent/loader/AllCarsSkeleton";
 
 const AllCars = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,14 +16,15 @@ const AllCars = () => {
   const [page, setPage] = useState<number>(1);
   const query = { ...filter, searchTerm, sort, page };
   const { data, isLoading } = useGetCarQuery(query);
-  const { meta, result, models, totalCar } = data?.data || {};
+  const { meta, result, models, totalCar, maxPrice, minPrice } =
+    data?.data || {};
 
   const handlePageChange = (page: number) => {
     setPage(page);
   };
 
   if (isLoading) {
-    return <Sceleton></Sceleton>;
+    return <AllCarsSkeleton />;
   }
 
   return (
@@ -38,6 +39,8 @@ const AllCars = () => {
         setPage={setPage}
         models={models}
         total={totalCar}
+        maxPrice={maxPrice}
+        minPrice={minPrice}
       />
       <div>
         <div className=" py-2 sticky top-[70px] lg:top-[76px] z-20 bg-[#f0f3f8] dark:bg-gray-700 space-y-1 ">

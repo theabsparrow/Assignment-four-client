@@ -51,19 +51,22 @@ const SearchAndSelect = ({
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
   return (
     <div className="relative font-inter">
-      <h1 className="text-gray-500 font-semibold">* {label}:</h1>
+      <h1 className="text-gray-500 font-semibold hidden lg:block">
+        * {label}:
+      </h1>
       <div
-        className=" p-2 w-full rounded cursor-pointer bg-gray-50 dark:bg-gray-800 border"
+        className="p-1 lg:p-2 w-full rounded cursor-pointer bg-gray-50 dark:bg-gray-800 border"
         onClick={(e) => {
           setDropDownOpen(!dropDownOpen);
           e.stopPropagation();
         }}
       >
-        <h1 className="whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-2 ">
+        <h1 className="whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-2 text-sm lg:text-base">
           {selectedBrand || `Select a ${name}`}{" "}
-          <RiArrowDropDownLine className="text-2xl" />
+          <RiArrowDropDownLine className="text-xl lg:text-2xl" />
         </h1>
       </div>
       {dropDownOpen && (

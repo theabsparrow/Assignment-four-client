@@ -85,7 +85,6 @@ const Settings = () => {
       setContactEdit(true);
       return setErrorMessage("Nothing to update");
     }
-    console.log("Updated Data:", updatedFields);
   };
 
   const onPassChangeSubmit = async (data: any) => {

@@ -4,41 +4,32 @@ import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { IoSearchSharp } from "react-icons/io5";
-import useGetAllCars from "@/hook/useGetAllCars";
-import { exTractModel, TCar } from "@/utills/extraxt.model";
 import { useNavigate } from "react-router-dom";
 import SearchAndSelect from "../searchAndSelect/SearchAndSelect";
+import { carBrands } from "@/pages/dashboard/admin/addCar/addcar.const";
+import { TCarBrand } from "@/pages/dashboard/admin/addCar/addcar.interface";
+import { useGetCarModelQuery } from "@/redux/features/car/carApi";
+import { RiResetLeftLine } from "react-icons/ri";
 
 const Banner = () => {
-  const { carData } = useGetAllCars(["brand", "model"]) || {};
-  const brands: string[] =
-    carData.length > 1
-      ? Array.from(new Set(carData.map((car) => car.brand as string)))
-      : [];
-  const models: Record<string, string[]> =
-    carData.length > 1 ? exTractModel(carData as TCar[]) : {};
-
-  const [selectedBrand, setSelectedBrand] = useState("");
-  const [selectedModel, setSelectedModel] =
-    useState<string>("select brand first");
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    1, 100000000,
-  ]);
+  const [brand, setBrand] = useState<TCarBrand | string>("");
+  const [model, setModel] = useState("");
   const navigate = useNavigate();
-  // const [brandName, setBrandName] = useState("");
+  const query = { brand };
+  const { data } = useGetCarModelQuery(query);
+  const { models, maxPrice, minPrice } = data?.data || {};
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
 
   useEffect(() => {
-    if (selectedBrand !== "All") {
-      setSelectedModel("");
+    if (typeof minPrice === "number" && typeof maxPrice === "number") {
+      setPriceRange([minPrice, maxPrice]);
     }
-  }, [selectedBrand]);
+  }, [minPrice, maxPrice]);
 
   const handelSubmit = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
     const minPrice = Number(priceRange[0]);
     const maxPrice = Number(priceRange[1]);
-    const brand = selectedBrand !== "All" ? selectedBrand : "";
-    const model = selectedModel !== "select brand first" ? selectedModel : "";
     const queryParams = new URLSearchParams();
     if (brand) queryParams.set("brand", brand);
     if (model) queryParams.set("model", model);
@@ -47,10 +38,16 @@ const Banner = () => {
     navigate(`/all-cars?${queryParams.toString()}`);
   };
 
+  const handleReset = () => {
+    setBrand("");
+    setModel("");
+    setPriceRange([minPrice, maxPrice]);
+  };
+
   return (
     <>
       <div
-        className="relative w-full h-[55vh] md:h-[calc(100vh-80px)] bg-cover bg-center flex items-center justify-center font-inter"
+        className="relative w-full h-[65vh] lg:h-[625px] bg-cover bg-center flex items-center justify-center font-inter"
         style={{ backgroundImage: `url(${banner})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60 "></div>
@@ -63,71 +60,79 @@ const Banner = () => {
               Leading online automotive marketplace in Bnagladesh
             </p>
           </div>
-          <div className=" bg-opacity-65 md:bg-opacity-100 bg-white dark:bg-gray-900 px-3 md:px-16 py-1 md:py-6 space-x-10 shadow-lg w-full md:max-w-[calc(100vw-256px)]">
+          <div className=" bg-opacity-65 md:bg-opacity-100 bg-white dark:bg-gray-900 px-3 lg:px-8 py-1 md:py-6 space-x-10 shadow-lg w-full lg:w-[calc(100vw-128px)]">
             <form
               onSubmit={handelSubmit}
-              className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-20"
+              className="flex flex-col lg:flex-row items-center lg:items-start gap-5 lg:gap-0 lg:justify-between"
             >
-              <div className="flex flex-col lg:flex-row items-center gap-1 md:gap-20 ">
-                <div>
-                  <SearchAndSelect
-                    options={brands}
-                    label="BRAND"
-                    name="brand"
-                    setValue={setSelectedBrand}
-                    selectedBrand={selectedBrand}
-                  ></SearchAndSelect>
-                </div>
-
-                <div>
-                  <h1 className="text-gray-500 font-semibold">* MODEL</h1>
-                  <select
-                    value={selectedModel}
-                    onChange={(e) => setSelectedModel(e.target.value)}
-                    className="p-2 rounded outline-none bg-gray-50 dark:bg-gray-800 border cursor-pointer"
-                    disabled={!selectedBrand}
-                  >
-                    <option value="select brand first">
-                      Select brand first
-                    </option>
-                    {selectedBrand &&
-                      models[selectedBrand]?.map((model) => (
-                        <option key={model} value={model}>
-                          {model}
-                        </option>
-                      ))}
-                  </select>
-                </div>
+              <div>
+                <SearchAndSelect
+                  options={carBrands}
+                  label="Brand"
+                  name="brand"
+                  setValue={setBrand}
+                  selectedBrand={brand}
+                ></SearchAndSelect>
               </div>
-
-              <div className="md:w-full text-gray-500 font-semibold ">
-                <div className="flex items-center mb-3 md:gap-3">
+              <div>
+                <h1 className="text-gray-500 font-semibold hidden lg:block">
+                  Model*
+                </h1>
+                <select
+                  value={model as string}
+                  onChange={(e) => setModel(e.target.value)}
+                  className="p-1 lg:p-2 rounded outline-none bg-gray-50 dark:bg-gray-800 border cursor-pointer text-sm lg:text-base"
+                  disabled={!brand}
+                >
+                  <option value="">
+                    {brand ? "select model" : " select brand first"}
+                  </option>
+                  {models &&
+                    models.map((model: string, i: number) => (
+                      <option key={i} value={model}>
+                        {model}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="lg:text-gray-500 font-semibold space-y-2">
+                <div className="flex items-center gap-3">
                   <h2 className="text-sm md:text-base md:font-semibold">
-                    PRICE RANGE FROM{" "}
+                    Price range{" "}
                   </h2>
                   <p className="font-bold text-black flex items-center">
-                    <TbCurrencyTaka className="text-xl" />{" "}
-                    {priceRange[0].toLocaleString()}
+                    <TbCurrencyTaka className="text-xl" /> {priceRange[0]}
                   </p>{" "}
-                  <p>TO</p>{" "}
+                  <p>to</p>{" "}
                   <p className="font-bold text-black flex items-center">
-                    <TbCurrencyTaka className="text-xl" />{" "}
-                    {priceRange[1].toLocaleString()}
+                    <TbCurrencyTaka className="text-xl" /> {priceRange[1]}
                   </p>
                 </div>
                 <RangeSlider
-                  min={1}
-                  max={100000000}
-                  step={500000}
+                  min={minPrice}
+                  max={maxPrice}
+                  step={100000}
                   value={priceRange}
                   onInput={setPriceRange}
                   className="w-full"
                 />
               </div>
 
-              <button className="w-64 bg-secondary hover:bg-deepRed dark:bg-gray-700 dark:hover:bg-gray-900 text-white font-bold px-2 py-2 rounded-full flex items-center gap-1 justify-center">
-                <IoSearchSharp /> Search
-              </button>
+              <div className="flex items-center gap-10">
+                <button
+                  type="submit"
+                  className=" bg-secondary hover:bg-deepRed dark:bg-gray-700 dark:hover:bg-gray-900 text-white font-semibold px-2 py-2 rounded-xl flex items-center gap-1 justify-center"
+                >
+                  <IoSearchSharp /> Search
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className=" bg-secondary hover:bg-deepRed dark:bg-gray-700 dark:hover:bg-gray-900 text-white font-semibold px-2 py-2 rounded-xl flex items-center gap-1 justify-center"
+                >
+                  <RiResetLeftLine /> Reset
+                </button>
+              </div>
             </form>
           </div>
         </div>

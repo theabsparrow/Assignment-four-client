@@ -4,7 +4,7 @@ export const initalState: TInitialState = {
   brand: "",
   model: "",
   minPrice: 0,
-  maxPrice: 100000000,
+  maxPrice: 0,
   year: "",
   category: "",
   condition: "",
