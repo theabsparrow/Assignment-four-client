@@ -11,9 +11,9 @@ const RecentCars = () => {
     return <AllCarsSkeleton />;
   }
   return (
-    <section className="md:px-32 mt-16 space-y-5">
+    <section className="px-2 lg:px-16 space-y-5">
       <h1 className="text-4xl font-inter font-semibold text-center">
-        Most recent car for sale{" "}
+        Recent cars
       </h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {cars.map((car: Partial<TCarInfo>) => (

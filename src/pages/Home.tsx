@@ -6,15 +6,15 @@ import RecentCars from "@/myComponent/recentCars/RecentCars";
 
 const Home = () => {
   return (
-    <>
-      <Banner></Banner>
-      <div className="md:px-32">
-        <SecondBanner></SecondBanner>
+    <section className="space-y-8 lg:space-y-16">
+      <Banner />
+      <div className="px-2 lg:px-16">
+        <SecondBanner />
       </div>
       <RecentCars />
-      <BodyType></BodyType>
-      <PopularBrands></PopularBrands>
-    </>
+      <BodyType />
+      <PopularBrands />
+    </section>
   );
 };
 

@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
 export type TBodyTypeProps = {
-  _id: string;
-  image: string;
   category: string;
+  image: string;
 };
 
 const BodyTypeCard = (car: TBodyTypeProps) => {

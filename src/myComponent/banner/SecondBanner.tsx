@@ -2,7 +2,7 @@ import secondBanner from "../../assets/banner-2-removebg-preview.png";
 
 const SecondBanner = () => {
   return (
-    <div className="mt-16">
+    <div>
       <div
         className="relative w-full h-36 bg-center bg-cover flex items-center justify-center"
         style={{ backgroundImage: `url(${secondBanner})` }}

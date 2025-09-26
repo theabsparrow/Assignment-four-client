@@ -12,7 +12,7 @@ const AllCarsSkeleton = () => {
             <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
             <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div>
           </div>
-          <div className="mt-4 w-full h-10 bg-gray-300 dark:bg-gray-700 rounded-lg"></div>
+          <div className="mt-4 w-24 h-10 bg-gray-300 dark:bg-gray-700 rounded-lg"></div>
         </div>
       ))}
     </section>

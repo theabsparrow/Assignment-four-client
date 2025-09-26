@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
 export type TBrandCardProps = {
-  _id: string;
   brand: string;
   carBrandLogo: string;
 };
@@ -18,7 +17,7 @@ const PopularBrandCards = (car: TBrandCardProps) => {
   return (
     <div
       onClick={handleSubmit}
-      className=" dark:bg-gray-900  p-4 text-center transition transform hover:scale-105 hover:shadow-2xl duration-500 font-inter cursor-pointer"
+      className="bg-[#f0f3f8] dark:bg-gray-900  p-4 text-center transition transform hover:scale-105 hover:shadow-2xl duration-500 font-inter cursor-pointer"
     >
       <img
         src={carBrandLogo}
