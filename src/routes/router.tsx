@@ -23,15 +23,16 @@ import AllBrands from "@/pages/allBrands/AllBrands";
 import VerifyOrder from "@/pages/verifyOrder/VerifyOrder";
 import OrderDetails from "@/pages/orderDetails/OrderDetails";
 import BlogDetails from "@/pages/blogDetails/BlogDetails";
+import AllCategories from "@/pages/allCategories/AllCategories";
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    errorElement: <Error></Error>,
+    errorElement: <Error />,
     children: [
       {
         index: true,
-        element: <Home></Home>,
+        element: <Home />,
       },
       {
         path: "my-profile",
@@ -55,11 +56,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "sign-in",
-        element: <SignIn></SignIn>,
+        element: <SignIn />,
       },
       {
         path: "sign-up",
-        element: <SignUp></SignUp>,
+        element: <SignUp />,
       },
       {
         path: "details/:id",
@@ -67,15 +68,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "all-cars",
-        element: <AllCars></AllCars>,
+        element: <AllCars />,
       },
       {
         path: "about-us",
-        element: <AboutUs></AboutUs>,
+        element: <AboutUs />,
       },
       {
         path: "blogs",
-        element: <Blogs></Blogs>,
+        element: <Blogs />,
       },
       {
         path: "blog/:id",
@@ -83,11 +84,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "contact",
-        element: <Contacts></Contacts>,
+        element: <Contacts />,
       },
       {
         path: "all-brands",
-        element: <AllBrands></AllBrands>,
+        element: <AllBrands />,
+      },
+      {
+        path: "all-category",
+        element: <AllCategories />,
       },
       // {
       //   path: "profile/:id",
@@ -128,10 +133,10 @@ export const router = createBrowserRouter([
     ],
   },
   // ...dashboardRoutes,
-  // {
-  //   path: "/forgot-password",
-  //   element: <ForgotPassword></ForgotPassword>,
-  // },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
   // {
   //   path: "/verify-otp",
   //   element: (

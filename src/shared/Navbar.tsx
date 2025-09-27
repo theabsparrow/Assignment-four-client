@@ -15,6 +15,7 @@ import { LogoutFunc } from "@/utills/logout";
 import { TMyProfileQUery } from "@/interface/navbar.types";
 import { useMyProfileQuery } from "@/redux/features/user/userApi";
 import { currentUser } from "@/redux/features/auth/authSlice";
+import { NavbarLinks } from "./navbar.const";
 
 const Navbar = () => {
   const [display, setDisplay] = useState(false);
@@ -73,56 +74,21 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex space-x-6">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `transition-colors font-inter ${
-                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
-              }`
-            }
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/all-cars"
-            className={({ isActive }) =>
-              `transition-colors font-inter ${
-                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
-              }`
-            }
-          >
-            All cars
-          </NavLink>
-          <NavLink
-            to="/blogs"
-            className={({ isActive }) =>
-              `transition-colors font-inter ${
-                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
-              }`
-            }
-          >
-            Blogs
-          </NavLink>
-          <NavLink
-            to="/about-us"
-            className={({ isActive }) =>
-              `transition-colors font-inter ${
-                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
-              }`
-            }
-          >
-            About us
-          </NavLink>
-          <NavLink
-            to="/contact"
-            className={({ isActive }) =>
-              `transition-colors font-inter ${
-                isActive ? "font-semibold text-deepRed" : "hover:text-secondary"
-              }`
-            }
-          >
-            Contact
-          </NavLink>
+          {NavbarLinks.map((link, i) => (
+            <NavLink
+              key={i}
+              to={link?.path}
+              className={({ isActive }) =>
+                `transition-colors font-inter ${
+                  isActive
+                    ? "font-semibold text-deepRed"
+                    : "hover:text-secondary"
+                }`
+              }
+            >
+              {link?.name}
+            </NavLink>
+          ))}
         </div>
 
         {isLoading ? (
@@ -208,7 +174,7 @@ const Navbar = () => {
               </div>
             </div>
             <div className="mt-4">
-              <Dropdown></Dropdown>
+              <Dropdown />
             </div>
 
             {user && (
@@ -235,7 +201,7 @@ const Navbar = () => {
           userInfo={profileInfo}
           name={profileInfo?.name}
           profile={profileInfo?.profileImage}
-        ></MobileNavbar>
+        />
       </div>
     </nav>
   );

@@ -1,5 +1,6 @@
 import banner from "../../assets/all brands banner.png";
-const AllBrandsBanner = () => {
+
+const AllCategoryBanner = () => {
   return (
     <section
       className="relative w-full h-[55vh] lg:h-[60vh] bg-cover bg-center flex items-center justify-center font-inter"
@@ -20,4 +21,4 @@ const AllBrandsBanner = () => {
   );
 };
 
-export default AllBrandsBanner;
+export default AllCategoryBanner;
