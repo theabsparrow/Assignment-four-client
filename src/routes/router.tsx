@@ -6,7 +6,6 @@ import SignUp from "@/pages/SignUp";
 import MyProfile from "@/pages/myProfile/MyProfile";
 import Settings from "@/pages/settings/Settings";
 import ForgotPassword from "@/pages/forgotPassword/ForgotPassword";
-import VerifyOTP from "@/pages/forgotPassword/VerifyOTP";
 import SetNewPassword from "@/pages/forgotPassword/SetNewPassword";
 import ProtectedRoute from "@/layout/ProtectedRoute";
 import { USER_ROLE } from "@/config/role.const";
@@ -137,24 +136,9 @@ export const router = createBrowserRouter([
     path: "/forgot-password",
     element: <ForgotPassword />,
   },
-  // {
-  //   path: "/verify-otp",
-  //   element: (
-  //     <ProtectedRoute
-  //       roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
-  //     >
-  //       <VerifyOTP />{" "}
-  //     </ProtectedRoute>
-  //   ),
-  // },
-  // {
-  //   path: "/set-newPassword",
-  //   element: (
-  //     <ProtectedRoute
-  //       roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
-  //     >
-  //       <SetNewPassword />
-  //     </ProtectedRoute>
-  //   ),
-  // },
+
+  {
+    path: "/set-newPassword",
+    element: <SetNewPassword />,
+  },
 ]);

@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { config } from "@/config";
+import { TMyProfileQUery } from "@/interface/navbar.types";
 import SignInFormInput from "@/myComponent/formInput/SignInFormInput";
-import Loader from "@/myComponent/loader/Loader";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
-import { currentUser, setUser } from "@/redux/features/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { useMyProfileQuery } from "@/redux/features/user/userApi";
+import { useAppDispatch } from "@/redux/hooks";
 import { decodeToken } from "@/utills/decodeToken";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -13,11 +14,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const methods = useForm();
+  const query: Record<string, TMyProfileQUery | undefined> = {};
+  query.for = "navbar";
+  const { data, refetch } = useMyProfileQuery(query);
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const user = useAppSelector(currentUser);
 
   const onSubmit = async (data: any) => {
     const loginInfo = {
@@ -30,7 +33,8 @@ const SignIn = () => {
       const user = decodeToken(res.data);
       dispatch(setUser({ user, token: res.data }));
       toast.success("successfully signed in", { id: toastId, duration: 3000 });
-      navigate("/");
+      navigate("/my-profile");
+      refetch();
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -49,7 +53,8 @@ const SignIn = () => {
       const user = decodeToken(res.data);
       dispatch(setUser({ user, token: res.data }));
       toast.success("successfully signed in", { id: toastId, duration: 3000 });
-      navigate("/");
+      navigate("/my-profile");
+      refetch();
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -68,7 +73,8 @@ const SignIn = () => {
       const user = decodeToken(res.data);
       dispatch(setUser({ user, token: res.data }));
       toast.success("successfully signed in", { id: toastId, duration: 3000 });
-      navigate("/");
+      navigate("/my-profile");
+      refetch();
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -77,10 +83,10 @@ const SignIn = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (data) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [data, navigate]);
 
   return (
     <div className="flex justify-center pt-10 lg:pt-20 min-h-[calc(100vh-80px)] bg-gray-100 dark:bg-gray-900 px-4 font-inter ">

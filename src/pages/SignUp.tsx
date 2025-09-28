@@ -8,20 +8,24 @@ import FormSelect from "@/myComponent/formInput/FormSelect";
 import { genders } from "@/myComponent/formInput/formInput.const";
 import { imageUpload } from "@/utills/uploadImage";
 import { TUserInfo } from "@/interface/userInfo";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { currentUser, setUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/features/auth/authSlice";
 import { decodeToken } from "@/utills/decodeToken";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useRegisterMutation } from "@/redux/features/auth/authApi";
+import { useMyProfileQuery } from "@/redux/features/user/userApi";
+import { TMyProfileQUery } from "@/interface/navbar.types";
 
 const SignUp = () => {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const methods = useForm();
   const [errorMessage, setErrorMessage] = useState("");
+  const query: Record<string, TMyProfileQUery | undefined> = {};
+  query.for = "navbar";
+  const { data, refetch } = useMyProfileQuery(query);
   const [register] = useRegisterMutation();
-  const navigate = useNavigate();
-  const user = useAppSelector(currentUser);
+  const dispatch = useAppDispatch();
 
   const onSubmit = async (data: any) => {
     setErrorMessage("");
@@ -54,15 +58,19 @@ const SignUp = () => {
         dateOfBirth,
         password,
       };
-      const profileImage = image ? await imageUpload(image) : undefined;
-      if (profileImage) {
+      if (image) {
+        const profileImage = await imageUpload(image);
+        if (!profileImage) {
+          toast.error("faild to upload image", { duration: 3000 });
+        }
         userInfo.profileImage = profileImage;
       }
       const res = await register(userInfo).unwrap();
       const user = decodeToken(res.data.access);
       dispatch(setUser({ user, token: res.data.access }));
       toast.success("successfully registered", { id: toastId, duration: 3000 });
-      navigate("/");
+      navigate("/my-profile");
+      refetch();
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -71,10 +79,10 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (data) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [data, navigate]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4 font-inter">

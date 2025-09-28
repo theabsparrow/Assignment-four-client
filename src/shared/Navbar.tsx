@@ -2,7 +2,6 @@
 import logo from "../assets/logo.png";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CgProfile } from "react-icons/cg";
 import { IoIosArrowForward } from "react-icons/io";
 import { MdDashboard, MdOutlineLogout } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -16,18 +15,20 @@ import { TMyProfileQUery } from "@/interface/navbar.types";
 import { useMyProfileQuery } from "@/redux/features/user/userApi";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import { NavbarLinks } from "./navbar.const";
+import profileLofo from "../assets/profile-icon.png";
 
 const Navbar = () => {
   const [display, setDisplay] = useState(false);
-  const [logout] = useLogoutMutation();
   const navigate = useNavigate();
+  // rtk query options
+  const user = useAppSelector(currentUser);
   const dispatch = useAppDispatch();
-  // login user data
+  const [logout] = useLogoutMutation();
   const query: Record<string, TMyProfileQUery | undefined> = {};
   query.for = "navbar";
   const { data, isLoading } = useMyProfileQuery(query);
-  const profileInfo = data?.data;
-  const user = useAppSelector(currentUser);
+  const profileInfo = data?.data || {};
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -110,7 +111,7 @@ const Navbar = () => {
                   src={profileInfo?.profileImage}
                 />
               ) : (
-                <CgProfile className="hover:text-primary" />
+                <img className="w-11 h-11 rounded-full " src={profileLofo} />
               )}
             </button>
           </div>
