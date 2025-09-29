@@ -1,3 +1,5 @@
+import { USER_ROLE } from "@/config/role.const";
+
 export type TUserInfo = {
   name: {
     firstName: string;
@@ -11,3 +13,5 @@ export type TUserInfo = {
   password: string;
   profileImage?: string;
 };
+
+export type TUSerRole = keyof typeof USER_ROLE;

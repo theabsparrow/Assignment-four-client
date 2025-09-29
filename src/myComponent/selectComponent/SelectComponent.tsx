@@ -1,22 +1,20 @@
-import { TInitialState } from "@/pages/allCars/allCars.types";
+import { currentFilter, setFilter } from "@/redux/features/car/carSlice";
+import { TInitialState } from "@/redux/features/car/carSlice.type";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ReactNode } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
 
 type TSelectComponentProps<T> = {
   valueOptions: T[];
-  setFilter: React.Dispatch<React.SetStateAction<TInitialState>>;
   label: string;
-  filter: TInitialState;
 };
 
 const SelectComponent = <T,>({
   valueOptions,
-  setFilter,
   label,
-  filter,
 }: TSelectComponentProps<T>) => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const dispatch = useAppDispatch();
+  const query = useAppSelector(currentFilter);
+
   return (
     <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2 lg:p-3">
       <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
@@ -24,28 +22,20 @@ const SelectComponent = <T,>({
         {label} :
       </h1>
       <select
-        disabled={label === "model" && !filter.brand}
-        value={filter[label as keyof TInitialState]}
+        disabled={label === "model" && !query.brand}
+        value={query[label as keyof TInitialState]}
         onChange={(e) => {
           const value = e.target.value;
-          setFilter((prev) => ({ ...prev, [label]: value }));
+          dispatch(setFilter({ [label]: value }));
           if (label === "brand") {
-            setFilter((prev) => ({ ...prev, model: "" }));
+            dispatch(setFilter({ model: "" }));
           }
-          const params = new URLSearchParams(searchParams);
-          if (value) {
-            params.set(label, value);
-          } else {
-            params.delete(label);
-          }
-
-          navigate(`/all-cars?${params.toString()}`);
         }}
         className="px-5 rounded outline-none bg-transparent font-bold"
       >
         <option value="">
           {label === "model"
-            ? filter.brand
+            ? query.brand
               ? `Select model`
               : "Select brand first"
             : `Select ${label}`}

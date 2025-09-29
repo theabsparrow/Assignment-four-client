@@ -11,7 +11,7 @@ type HandleLogoutParams = {
   dispatch: AppDispatch;
   navigate: NavigateFunction;
   setDisplay?: (value: boolean) => void;
-  logout: (email?: string) => Promise<any>;
+  logout: (id?: string) => Promise<any>;
   display?: boolean;
 };
 
@@ -26,17 +26,13 @@ export const LogoutFunc = async ({
   display,
 }: HandleLogoutParams) => {
   const toastId = toast.loading("Signing out...");
-
   e.stopPropagation();
-
   if (setDisplay) {
     setDisplay(!display);
   }
-
   if (setOpen) {
     setOpen(!open);
   }
-
   try {
     const res = await logout();
     if (res.data?.success) {

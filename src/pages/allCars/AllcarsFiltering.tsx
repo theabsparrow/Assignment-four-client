@@ -14,82 +14,83 @@ import { sortingOrders, TValue } from "@/myComponent/formInput/formInput.const";
 import { TbCurrencyTaka } from "react-icons/tb";
 import ReactRangeSliderInput from "react-range-slider-input";
 import { TFilterProps } from "./allCars.types";
-import { initalState } from "./allCars.const";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import { RxCross1 } from "react-icons/rx";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import SelectComponent from "@/myComponent/selectComponent/SelectComponent";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  currentFilter,
+  resetFilter,
+  setFilter,
+  setSearchTerm,
+  setSort,
+} from "@/redux/features/car/carSlice";
 
 const AllcarsFiltering = ({
-  filter,
-  setFilter,
-  searchTerm,
-  setSearchTerm,
-  sort,
-  setSort,
-  setPage,
   models,
   total,
   maxPrice,
   minPrice,
 }: TFilterProps) => {
-  const navigate = useNavigate();
+  // local state
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const filterRef = useRef<HTMLDivElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialMinPrice = Number(searchParams.get("minPrice")) || 0;
-  const initialMaxPrice = Number(searchParams.get("maxPrice")) || 0;
+  const params = new URLSearchParams(searchParams);
+  // data from other state
+  const dispatch = useAppDispatch();
+  const query = useAppSelector(currentFilter);
+  const priceSLiderRange: [number, number] | null =
+    query?.minPrice > 0 || query?.maxPrice > 0
+      ? [query.minPrice, query.maxPrice]
+      : null;
   const [priceRange, setPriceRange] = useState<[number, number]>([
     minPrice,
     maxPrice,
   ]);
-  const params = new URLSearchParams(searchParams);
+
   useEffect(() => {
     const brand = searchParams.get("brand") || "";
     const model = searchParams.get("model") || "";
     const category = searchParams.get("category") || "";
-    const minPrice = initialMinPrice;
-    const maxPrice = initialMaxPrice;
-    setFilter((prev) => ({
-      ...prev,
+    const minPrice = Number(searchParams.get("minPrice")) || 0;
+    const maxPrice = Number(searchParams.get("maxPrice")) || 0;
+    const filter = {
+      ...query,
       brand,
       model,
       category,
       minPrice,
       maxPrice,
-    }));
+    };
+    dispatch(setFilter(filter));
   }, [searchParams]);
 
   const handlePriceRangeChange = (newRange: [number, number]) => {
     setPriceRange(newRange);
-    setFilter((prevFilters) => ({
-      ...prevFilters,
+    const data = {
+      ...query,
       minPrice: newRange[0],
       maxPrice: newRange[1],
-    }));
-
-    if (newRange) {
-      params.set("minPrice", newRange[0].toString());
-      params.set("maxPrice", newRange[1].toString());
-    } else {
-      params.delete("minPrice");
-      params.delete("maxPrice");
-    }
-    navigate(`/all-cars?${params.toString()}`);
+    };
+    dispatch(setFilter(data));
   };
 
-  const handleSoldCars = (name: string, value: string) => {
-    setFilter((prev) => ({ ...prev, [name]: value }));
+  const handleSoldCars = () => {
+    const filter = {
+      ...query,
+      inStock: "yes",
+    };
+    dispatch(setFilter(filter));
   };
 
   const handelReset = () => {
-    setFilter(initalState);
-    setSearchTerm("");
-    setSort("");
-    setPage(1);
+    dispatch(resetFilter());
     setPriceRange([minPrice, maxPrice]);
     setSearchParams({});
   };
@@ -121,7 +122,7 @@ const AllcarsFiltering = ({
         <div className=" space-y-4 ">
           <div className="flex items-center justify-between ">
             <button
-              onClick={() => handleSoldCars("inStock", "no")}
+              onClick={handleSoldCars}
               className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold px-2 py-1 rounded-md duration-500 transition "
             >
               see sold cars
@@ -138,8 +139,11 @@ const AllcarsFiltering = ({
               type="text"
               placeholder="Search items"
               className="p-2 border rounded-lg shadow-sm bg-[#f0f3f8] dark:bg-gray-700 outline-cyan-400"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={query.searchTerm}
+              onChange={(e) => {
+                const value = e.target.value;
+                dispatch(setSearchTerm(value));
+              }}
             />
           </div>
         </div>
@@ -147,33 +151,17 @@ const AllcarsFiltering = ({
           <div className="space-y-2">
             <SelectComponent
               valueOptions={carBrands as TCarBrand[]}
-              setFilter={setFilter}
               label="brand"
-              filter={filter}
             />
-            <SelectComponent
-              valueOptions={models as string[]}
-              setFilter={setFilter}
-              label="model"
-              filter={filter}
-            />
+            <SelectComponent valueOptions={models as string[]} label="model" />
             <SelectComponent
               valueOptions={carCategories as TCategory[]}
-              setFilter={setFilter}
               label="category"
-              filter={filter}
             />
-            <SelectComponent
-              valueOptions={years as string[]}
-              setFilter={setFilter}
-              label="year"
-              filter={filter}
-            />
+            <SelectComponent valueOptions={years as string[]} label="year" />
             <SelectComponent
               valueOptions={condition as TCondition[]}
-              setFilter={setFilter}
               label="condition"
-              filter={filter}
             />
             <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
               <h1 className="text-gray-500 dark:text-gray-300 font-semibold ">
@@ -181,10 +169,10 @@ const AllcarsFiltering = ({
                 Sort by :
               </h1>
               <select
-                value={sort}
+                value={query?.sort}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  setSort(value);
+                  const value = e.target.value as string;
+                  dispatch(setSort(value));
 
                   if (value) {
                     params.set("sort", value);
@@ -224,7 +212,7 @@ const AllcarsFiltering = ({
                 min={minPrice}
                 max={maxPrice}
                 step={100000}
-                value={priceRange}
+                value={priceSLiderRange ?? priceRange}
                 onInput={handlePriceRangeChange}
                 className=""
               />
@@ -264,7 +252,7 @@ const AllcarsFiltering = ({
             <div className="flex items-center justify-between">
               <div>
                 <button
-                  onClick={() => handleSoldCars("inStock", "no")}
+                  onClick={handleSoldCars}
                   className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white px-2 py-1 rounded-md duration-500 transition "
                 >
                   See sold cars
@@ -283,39 +271,26 @@ const AllcarsFiltering = ({
                 type="text"
                 placeholder="Search items"
                 className="px-2 py-1 border rounded-lg shadow-sm bg-[#f0f3f8] dark:bg-gray-700 outline-cyan-400"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={query.searchTerm}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  dispatch(setSearchTerm(value));
+                }}
               />
             </div>
             <SelectComponent
               valueOptions={carBrands as TCarBrand[]}
-              setFilter={setFilter}
               label="brand"
-              filter={filter}
             />
-            <SelectComponent
-              valueOptions={models as string[]}
-              setFilter={setFilter}
-              label="model"
-              filter={filter}
-            />
+            <SelectComponent valueOptions={models as string[]} label="model" />
             <SelectComponent
               valueOptions={carCategories as TCategory[]}
-              setFilter={setFilter}
               label="category"
-              filter={filter}
             />
-            <SelectComponent
-              valueOptions={years as string[]}
-              setFilter={setFilter}
-              label="year"
-              filter={filter}
-            />
+            <SelectComponent valueOptions={years as string[]} label="year" />
             <SelectComponent
               valueOptions={condition as TCondition[]}
-              setFilter={setFilter}
               label="condition"
-              filter={filter}
             />
 
             <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-3">
@@ -324,11 +299,10 @@ const AllcarsFiltering = ({
                 Sort by :
               </h1>
               <select
-                value={sort}
+                value={query.sort}
                 onChange={(e) => {
                   const value = e.target.value;
-                  setSort(value);
-
+                  dispatch(setSort(value));
                   if (value) {
                     params.set("sort", value);
                   } else {
@@ -368,7 +342,7 @@ const AllcarsFiltering = ({
                 min={minPrice}
                 max={maxPrice}
                 step={100000}
-                value={priceRange}
+                value={priceSLiderRange ?? priceRange}
                 onInput={handlePriceRangeChange}
                 className="w-full"
               />

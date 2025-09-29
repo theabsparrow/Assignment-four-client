@@ -131,7 +131,7 @@ export const router = createBrowserRouter([
       // },
     ],
   },
-  // ...dashboardRoutes,
+  ...dashboardRoutes,
   {
     path: "/forgot-password",
     element: <ForgotPassword />,

@@ -2,10 +2,14 @@ import { useGetCarQuery } from "@/redux/features/car/carApi";
 import CarCard from "../carCard/CarCard";
 import AllCarsSkeleton from "../loader/AllCarsSkeleton";
 import { TCarInfo } from "@/interface/carsInfo";
+import { useAppSelector } from "@/redux/hooks";
+import { currentFilter } from "@/redux/features/car/carSlice";
+import { TInitialState } from "@/redux/features/car/carSlice.type";
 
 const RecentCars = () => {
-  const query = { limit: 9 };
-  const { data, isLoading } = useGetCarQuery(query);
+  const reduxQuery = useAppSelector(currentFilter);
+  const query = { ...reduxQuery, limit: "9" };
+  const { data, isLoading } = useGetCarQuery(query as TInitialState);
   const cars = data?.data;
   if (isLoading) {
     return <AllCarsSkeleton />;

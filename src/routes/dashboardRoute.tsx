@@ -32,15 +32,15 @@ export const dashboardRoutes = [
           </ProtectedRoute>
         ),
       },
-      // admin route
-      {
-        path: "/dashboard/car-listing",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-            <CarListing />
-          </ProtectedRoute>
-        ),
-      },
+      // admin routes
+      // {
+      //   path: "/dashboard/car-listing",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+      //       <CarListing />
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: "/dashboard/manage-users",
         element: (
@@ -57,47 +57,47 @@ export const dashboardRoutes = [
           </ProtectedRoute>
         ),
       },
-      {
-        path: "/dashboard/order-history",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-            <OrderHistory />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/sales-report",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-            <SalesReport />
-          </ProtectedRoute>
-        ),
-      },
-      // user dashboard
-      {
-        path: "/dashboard/my-orders",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
-            <MyOrders />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/my-wishlist",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
-            <Wishlist />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/payment-history",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
-            <PaymentHistory />
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: "/dashboard/order-history",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+      //       <OrderHistory />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "/dashboard/sales-report",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+      //       <SalesReport />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // // user dashboard
+      // {
+      //   path: "/dashboard/my-orders",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.user]}>
+      //       <MyOrders />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "/dashboard/my-wishlist",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.user]}>
+      //       <Wishlist />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "/dashboard/payment-history",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.user]}>
+      //       <PaymentHistory />
+      //     </ProtectedRoute>
+      //   ),
+      // },
     ],
   },
 ];

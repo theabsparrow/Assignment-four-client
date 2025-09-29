@@ -1,10 +1,4 @@
-type TUser = {
-  admin: string;
-  user: string;
-  superAdmin: string;
-};
-
-export const USER_ROLE: TUser = {
+export const USER_ROLE = {
   admin: "admin",
   user: "user",
   superAdmin: "superAdmin",

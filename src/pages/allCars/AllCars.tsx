@@ -1,26 +1,22 @@
 import { TCarInfo } from "@/interface/carsInfo";
 import { useGetCarQuery } from "@/redux/features/car/carApi";
 import { LuArrowUpDown } from "react-icons/lu";
-import { useState } from "react";
-
 import Pagination from "@/myComponent/pagination/Pagination";
-import { initalState } from "./allCars.const";
 import CarCard from "@/myComponent/carCard/CarCard";
 import AllcarsFiltering from "./AllcarsFiltering";
 import AllCarsSkeleton from "@/myComponent/loader/AllCarsSkeleton";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { currentFilter, setPage } from "@/redux/features/car/carSlice";
 
 const AllCars = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState(initalState);
-  const [sort, setSort] = useState<string>("");
-  const [page, setPage] = useState<number>(1);
-  const query = { ...filter, searchTerm, sort, page };
+  const dispatch = useAppDispatch();
+  const query = useAppSelector(currentFilter);
   const { data, isLoading } = useGetCarQuery(query);
   const { meta, result, models, totalCar, maxPrice, minPrice } =
     data?.data || {};
 
   const handlePageChange = (page: number) => {
-    setPage(page);
+    dispatch(setPage(page));
   };
 
   if (isLoading) {
@@ -30,13 +26,6 @@ const AllCars = () => {
   return (
     <section className="bg-[#f0f3f8] dark:bg-gray-700 px-2 lg:px-16 font-inter relative pb-4 flex flex-col lg:flex-row justify-center lg:justify-between lg:items-start lg:gap-5">
       <AllcarsFiltering
-        filter={filter}
-        setFilter={setFilter}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        sort={sort}
-        setSort={setSort}
-        setPage={setPage}
         models={models}
         total={totalCar}
         maxPrice={maxPrice}

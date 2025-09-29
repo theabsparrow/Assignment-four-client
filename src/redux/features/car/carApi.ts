@@ -1,11 +1,10 @@
 import { baseApi } from "@/redux/api/baseApi";
+import { TInitialState } from "./carSlice.type";
 
 const carApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCar: builder.query({
-      query: (args?: {
-        [key: string]: string | string[] | number | undefined;
-      }) => {
+      query: (args?: TInitialState) => {
         const params = new URLSearchParams();
         if (args) {
           const entries = Object.entries(args);
@@ -14,9 +13,6 @@ const carApi = baseApi.injectEndpoints({
               params.append(key, value.toString());
             }
           }
-        }
-        if (!args?.limit) {
-          params.append("limit", "21");
         }
         return {
           url: "/cars/get-allCars",
