@@ -6,10 +6,10 @@ import { TbCurrencyTaka } from "react-icons/tb";
 import { IoSearchSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import SearchAndSelect from "../searchAndSelect/SearchAndSelect";
-import { carBrands } from "@/pages/dashboard/admin/addCar/addcar.const";
-import { TCarBrand } from "@/pages/dashboard/admin/addCar/addcar.interface";
 import { useGetCarModelQuery } from "@/redux/features/car/carApi";
 import { RiResetLeftLine } from "react-icons/ri";
+import { carBrands } from "@/const/carInfo.const";
+import { TCarBrand } from "@/interface/carInterface/car.interface";
 
 const Banner = () => {
   const [brand, setBrand] = useState<TCarBrand | string>("");

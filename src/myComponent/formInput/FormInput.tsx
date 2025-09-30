@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { TFormInputProps } from "./formInput.type";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { useFormContext } from "react-hook-form";
 import { AiFillWarning } from "react-icons/ai";
 
 const FormInput = ({
@@ -14,15 +13,11 @@ const FormInput = ({
   maxLength,
   required,
   setValue,
-  clearErrors,
 }: TFormInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageText, setImageText] = useState<string | null>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const {
-    formState: { errors },
-  } = useFormContext();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -30,14 +25,12 @@ const FormInput = ({
       setImagePreview(URL.createObjectURL(file));
       setImageText(file?.name);
       if (setValue) setValue(name, file);
-      if (clearErrors) clearErrors(name);
     }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (setValue) setValue(name, value);
-    if (clearErrors) clearErrors(name);
   };
 
   return (
@@ -122,9 +115,7 @@ const FormInput = ({
               },
             }),
           })}
-          className={`mt-1 w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white outline-none ${
-            errors[name] ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`mt-1 w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white outline-none `}
           placeholder={placeholder}
           onChange={handleChange}
         />
@@ -141,12 +132,12 @@ const FormInput = ({
           )}
         </span>
       )}
-      {errors[name] && (
+      {/* {errors[name] && (
         <p className="text-red-500 text-sm flex items-center gap-1">
           {" "}
           <AiFillWarning /> {errors[name].message as string}
         </p>
-      )}
+      )} */}
     </div>
   );
 };

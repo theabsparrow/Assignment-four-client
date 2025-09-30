@@ -1,4 +1,4 @@
-import { TCarInfo } from "@/interface/carsInfo";
+import { TCarInfo } from "@/interface/carInterface/car.interface";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { Link } from "react-router-dom";
 

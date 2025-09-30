@@ -1,15 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  carBrands,
-  carCategories,
-  condition,
-  years,
-} from "../dashboard/admin/addCar/addcar.const";
-import {
-  TCarBrand,
-  TCategory,
-  TCondition,
-} from "../dashboard/admin/addCar/addcar.interface";
 import { sortingOrders, TValue } from "@/myComponent/formInput/formInput.const";
 import { TbCurrencyTaka } from "react-icons/tb";
 import ReactRangeSliderInput from "react-range-slider-input";
@@ -28,6 +17,17 @@ import {
   setSearchTerm,
   setSort,
 } from "@/redux/features/car/carSlice";
+import {
+  TCarBrand,
+  TCategory,
+  TCondition,
+} from "@/interface/carInterface/car.interface";
+import {
+  carBrands,
+  carCategories,
+  conditions,
+  years,
+} from "@/const/carInfo.const";
 
 const AllcarsFiltering = ({
   models,
@@ -160,7 +160,7 @@ const AllcarsFiltering = ({
             />
             <SelectComponent valueOptions={years as string[]} label="year" />
             <SelectComponent
-              valueOptions={condition as TCondition[]}
+              valueOptions={conditions as TCondition[]}
               label="condition"
             />
             <div className="flex items-center bg-[#f0f3f8] dark:bg-gray-700 p-2">
@@ -289,7 +289,7 @@ const AllcarsFiltering = ({
             />
             <SelectComponent valueOptions={years as string[]} label="year" />
             <SelectComponent
-              valueOptions={condition as TCondition[]}
+              valueOptions={conditions as TCondition[]}
               label="condition"
             />
 

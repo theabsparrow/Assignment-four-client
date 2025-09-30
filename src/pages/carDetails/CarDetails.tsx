@@ -23,7 +23,7 @@ import carColors, {
   seatingCapacities,
   years,
 } from "../dashboard/admin/addCar/addcar.const";
-import { countries } from "@/config/country.const";
+import { countries } from "@/const/country.const";
 import FormSelect from "@/myComponent/formInput/FormSelect";
 import { conditions } from "@/myComponent/formInput/formInput.const";
 import FormInput from "@/myComponent/formInput/FormInput";

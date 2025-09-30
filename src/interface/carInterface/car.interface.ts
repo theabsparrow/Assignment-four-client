@@ -1,3 +1,9 @@
+import { TDeliveryAndPayment } from "./carDelivery.interface";
+import { TCarEngine } from "./carEngine.interface";
+import { TRegistrationdata } from "./registrationData.interface";
+import { TSafetyFeature } from "./safetyFeature.interface";
+import { TserviceHistory } from "./serviceHistory.interface";
+
 export type TCarBrand =
   | "Toyota"
   | "Hyundai"
@@ -76,45 +82,72 @@ export type TCategory =
   | "Compact Car"
   | "Pony Car";
 
+export const carColors: string[] = [
+  "White",
+  "Black",
+  "Gray",
+  "Silver",
+  "Red",
+  "Blue",
+  "Green",
+  "Metallic Silver",
+  "Metallic Blue",
+  "Metallic Red",
+  "Pearl White",
+  "Pearl Black",
+  "Matte Black",
+  "Matte Gray",
+  "Matte Blue",
+  "Matte Green",
+  "Candy Apple Red",
+  "Midnight Purple",
+  "Chameleon",
+  "Rose Gold",
+  "Champagne Gold",
+  "Dual-Tone (Black & White)",
+  "Dual-Tone (Red & Black)",
+  "Chrome Finish",
+  "Satin Finish",
+  "Carbon Fiber Wrap",
+  "Neon Green",
+  "Lava Orange",
+  "Deep Purple",
+  "Bright Yellow",
+];
+
 export type TGalleryImage = {
   url: string;
 };
 export type TSeatingCapacity = "2" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
 export type TCondition = "New" | "Used" | "Certified Pre-Owned";
-export type TPaymentMethod = "Cash on Delivery" | "Online Payment";
-export type TPaymentOption = "SSLCommerz" | "Stripe" | "SurjoPay";
-export type TMethod = "Home Delivery" | "Pickup" | "Express Delivery";
 
-export type TEstimatedTime =
-  | "24 hours"
-  | "2 days"
-  | "5 days"
-  | "6 days"
-  | "8 days"
-  | "9 days"
-  | "10 days";
-
-export type TDeliveryMethod = {
-  method: TMethod;
-  estimatedTime: TEstimatedTime;
-  deliveryCost: number;
-};
-
-export type TCarInfo = {
+export type TCar = {
   brand: TCarBrand;
   model: string;
-  year: string;
-  price: number;
   category: TCategory;
+  madeIn: string;
   condition: TCondition;
   color: string;
-  description: string;
+  price: number;
+  year: string;
   seatingCapacity: TSeatingCapacity;
-  madeIn: string;
-  country: string;
-  image?: string;
+  description?: string;
+  image: string;
   galleryImage?: TGalleryImage[];
-  paymentMethod: TPaymentMethod[];
-  paymentOption?: TPaymentOption[];
-  deliveryMethod: TDeliveryMethod[];
+};
+
+export interface TCarInfo extends TCar {
+  _id: string;
+  inStock: boolean;
+  carBrandLogo: string;
+  createdAt: string;
+}
+
+export type TcarInfoPayload = {
+  basicInfo: TCar;
+  engineInfo: TCarEngine;
+  deliveryAndPayment: TDeliveryAndPayment;
+  registrationData?: TRegistrationdata;
+  safetyFeature?: TSafetyFeature;
+  serviceHistory?: TserviceHistory;
 };

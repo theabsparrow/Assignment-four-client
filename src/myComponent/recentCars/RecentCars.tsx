@@ -1,10 +1,10 @@
 import { useGetCarQuery } from "@/redux/features/car/carApi";
 import CarCard from "../carCard/CarCard";
 import AllCarsSkeleton from "../loader/AllCarsSkeleton";
-import { TCarInfo } from "@/interface/carsInfo";
 import { useAppSelector } from "@/redux/hooks";
 import { currentFilter } from "@/redux/features/car/carSlice";
 import { TInitialState } from "@/redux/features/car/carSlice.type";
+import { TCarInfo } from "@/interface/carInterface/car.interface";
 
 const RecentCars = () => {
   const reduxQuery = useAppSelector(currentFilter);

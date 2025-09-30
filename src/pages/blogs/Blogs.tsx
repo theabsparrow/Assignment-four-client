@@ -58,7 +58,7 @@ const Blogs = () => {
   }
   return (
     <div className="md:px-32 mt-2">
-      {user && <CreateBlog />}
+      {/* {user && <CreateBlog />} */}
       {blogs.map((blog: TBlog) => (
         <BlogCard key={blog?._id} blog={blog} />
       ))}

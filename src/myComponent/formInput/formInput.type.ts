@@ -7,11 +7,10 @@ export type TFormInputProps = {
   name: string;
   type: string;
   placeholder?: string;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<any>;
   maxLength?: number;
   required?: boolean;
   setValue?: (name: string, value: any) => void;
-  clearErrors?: (name: string) => void;
 };
 
 export type TFormPhoneInputProps = {

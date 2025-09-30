@@ -1,4 +1,3 @@
-import { TCarInfo } from "@/interface/carsInfo";
 import { useGetCarQuery } from "@/redux/features/car/carApi";
 import { LuArrowUpDown } from "react-icons/lu";
 import Pagination from "@/myComponent/pagination/Pagination";
@@ -7,6 +6,7 @@ import AllcarsFiltering from "./AllcarsFiltering";
 import AllCarsSkeleton from "@/myComponent/loader/AllCarsSkeleton";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { currentFilter, setPage } from "@/redux/features/car/carSlice";
+import { TCarInfo } from "@/interface/carInterface/car.interface";
 
 const AllCars = () => {
   const dispatch = useAppDispatch();
