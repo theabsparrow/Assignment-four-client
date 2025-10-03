@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { TFormInputProps } from "./formInput.type";
 import { IoEye, IoEyeOff } from "react-icons/io5";
-import { useFormContext } from "react-hook-form";
 import { AiFillWarning } from "react-icons/ai";
 
 const SignInFormInput = ({
@@ -10,17 +9,14 @@ const SignInFormInput = ({
   type,
   placeholder,
   register,
-  required,
+  required = false,
+  error,
 }: TFormInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const {
-    formState: { errors },
-  } = useFormContext();
-
   return (
     <div className="relative">
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-        {label}
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
         type={type === "password" && showPassword ? "text" : type}
@@ -35,7 +31,7 @@ const SignInFormInput = ({
           }),
         })}
         className={`mt-1 w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white outline-none ${
-          errors[name] ? "border-red-500" : "border-gray-300"
+          error ? "border-red-500" : "border-gray-300"
         }`}
         placeholder={placeholder}
       />
@@ -52,9 +48,9 @@ const SignInFormInput = ({
           )}
         </span>
       )}
-      {errors[name] && (
+      {error && (
         <p className="text-red-500 text-sm flex items-center gap-1">
-          <AiFillWarning /> {errors[name].message as string}
+          <AiFillWarning /> {error.message as string}
         </p>
       )}
     </div>

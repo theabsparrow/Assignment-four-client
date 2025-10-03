@@ -1,17 +1,5 @@
 import { TValue } from "@/myComponent/formInput/formInput.const";
 
-export const requiredFields: string[] = [
-  "brand",
-  "category",
-  "year",
-  "country",
-  "madeIn",
-  "color",
-  "paymentOption",
-  "paymentMethod",
-  "deliveryMethod",
-];
-
 export const estimatedTime: TValue[] = [
   { value: "24 hours", label: "Available Immediately" },
   { value: "2 days", label: "1-2 Business Days" },

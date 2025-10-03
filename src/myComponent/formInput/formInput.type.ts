@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import { FieldError, FieldValues, UseFormRegister } from "react-hook-form";
 import { TValue } from "./formInput.const";
 
 export type TFormInputProps = {
@@ -11,6 +11,7 @@ export type TFormInputProps = {
   maxLength?: number;
   required?: boolean;
   setValue?: (name: string, value: any) => void;
+  error?: FieldError;
 };
 
 export type TFormPhoneInputProps = {

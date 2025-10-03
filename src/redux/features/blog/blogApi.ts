@@ -60,14 +60,11 @@ const blogApi = baseApi.injectEndpoints({
     }),
 
     reactionCount: builder.mutation({
-      query: (reactionInfo) => (
-        console.log(reactionInfo),
-        {
-          url: `/blog/count-reaction/${reactionInfo._id}`,
-          method: "PATCH",
-          body: reactionInfo.reactionData,
-        }
-      ),
+      query: (reactionInfo) => ({
+        url: `/blog/count-reaction/${reactionInfo._id}`,
+        method: "PATCH",
+        body: reactionInfo.reactionData,
+      }),
       invalidatesTags: ["blog"],
     }),
   }),

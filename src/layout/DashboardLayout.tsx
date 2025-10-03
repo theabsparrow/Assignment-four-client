@@ -6,7 +6,7 @@ import { USER_ROLE } from "@/config/role.const";
 const DashboardLayout = () => {
   return (
     <>
-      <div className="md:flex bg-[#f0f3f8] dark:bg-gray-800">
+      <section className="lg:flex bg-[#f0f3f8] dark:bg-gray-800 lg:gap-20">
         <ProtectedRoute
           roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
         >
@@ -15,7 +15,7 @@ const DashboardLayout = () => {
         <div>
           <Outlet></Outlet>
         </div>
-      </div>
+      </section>
     </>
   );
 };

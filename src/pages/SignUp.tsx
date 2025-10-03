@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FormProvider, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import FormInput from "@/myComponent/formInput/FormInput";
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import "react-phone-input-2/lib/style.css";
 import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
-import FormSelect from "@/myComponent/formInput/FormSelect";
-import { genders } from "@/myComponent/formInput/formInput.const";
 import { imageUpload } from "@/utills/uploadImage";
-import { TUserInfo } from "@/interface/userInfo";
+import { TUserInfo } from "@/interface/userInterface/userInfo";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { decodeToken } from "@/utills/decodeToken";
@@ -16,61 +13,45 @@ import { toast } from "sonner";
 import { useRegisterMutation } from "@/redux/features/auth/authApi";
 import { useMyProfileQuery } from "@/redux/features/user/userApi";
 import { TMyProfileQUery } from "@/interface/navbar.types";
+import InputType from "@/myComponent/formInput/InputType";
+import InputSelect from "@/myComponent/formInput/InputSelect";
+import InputImage from "@/myComponent/formInput/InputImage";
+import AcceptTermsInput from "@/myComponent/formInput/AcceptTermsInput";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const methods = useForm();
-  const [errorMessage, setErrorMessage] = useState("");
+  const {
+    handleSubmit,
+    register,
+    reset,
+    setValue,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<TUserInfo>();
+  // redux state
   const query: Record<string, TMyProfileQUery | undefined> = {};
   query.for = "navbar";
   const { data, refetch } = useMyProfileQuery(query);
-  const [register] = useRegisterMutation();
+  const [registration] = useRegisterMutation();
   const dispatch = useAppDispatch();
 
-  const onSubmit = async (data: any) => {
-    setErrorMessage("");
-    const {
-      firstName,
-      middleName,
-      lastName,
-      email,
-      phoneNumber,
-      gender,
-      dateOfBirth,
-      image,
-      password,
-      confirmPass,
-    } = data;
-    if (password !== confirmPass) {
-      return setErrorMessage("Password and confirm Passowrd doesn`t match");
-    }
+  const onSubmit = async (data: TUserInfo) => {
     const toastId = toast.loading("regestering");
     try {
-      const userInfo: TUserInfo = {
-        name: {
-          firstName,
-          middleName,
-          lastName,
-        },
-        email,
-        phoneNumber,
-        gender,
-        dateOfBirth,
-        password,
-      };
-      if (image) {
-        const profileImage = await imageUpload(image);
+      if (data?.profileImage) {
+        const profileImage = await imageUpload(data?.profileImage as File);
         if (!profileImage) {
           toast.error("faild to upload image", { duration: 3000 });
         }
-        userInfo.profileImage = profileImage;
+        data.profileImage = profileImage as string;
       }
-      const res = await register(userInfo).unwrap();
+      const res = await registration(data).unwrap();
       const user = decodeToken(res.data.access);
       dispatch(setUser({ user, token: res.data.access }));
       toast.success("successfully registered", { id: toastId, duration: 3000 });
       navigate("/my-profile");
       refetch();
+      reset();
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -85,132 +66,97 @@ const SignUp = () => {
   }, [data, navigate]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4 font-inter">
+    <div className="flex justify-center bg-gray-100 dark:bg-gray-900 p-4 font-inter">
       <div className=" p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
-          Create a Free <br /> Account
+          Create a Free Account
         </h2>
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-2">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 pb-2 space-y-2 md:space-y-0">
-              <FormInput
-                label="First name"
-                name="firstName"
-                placeholder="Enter your first name"
-                type="text"
-                maxLength={30}
-                register={methods.register}
-                required={true}
-              />
-              <FormInput
-                label="Middle name"
-                name="middleName"
-                placeholder="Enter your middle name"
-                type="text"
-                maxLength={30}
-                register={methods.register}
-                required={false}
-              />
-              <FormInput
-                label="Last name"
-                name="lastName"
-                placeholder="Enter your last name"
-                type="text"
-                maxLength={30}
-                register={methods.register}
-                required={true}
-              />
-            </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ">
+            <InputType
+              label="First Name"
+              name="name.firstName"
+              register={register}
+              error={errors.name?.firstName}
+              required={true}
+            />
+            <InputType
+              label="Middle Name"
+              name="name.middleName"
+              register={register}
+              error={errors.name?.middleName}
+            />
+            <InputType
+              label="Last Name"
+              name="name.lastName"
+              register={register}
+              error={errors.name?.lastName}
+              required={true}
+            />
+            <InputType
+              label="Email"
+              name="email"
+              register={register}
+              error={errors.email}
+              type="email"
+              required={true}
+            />
+            <FormPhoneInput
+              label="Phone Number"
+              name="phoneNumber"
+              control={control}
+              required={true}
+            />
+            <InputSelect
+              register={register}
+              name="gender"
+              label="Gender"
+              error={errors.gender}
+              options={["male", "female", "others"]}
+              required={true}
+            />
+            <InputType
+              label="Date of Birth"
+              name="dateOfBirth"
+              register={register}
+              error={errors.dateOfBirth}
+              type="date"
+              required={true}
+            />
+            <InputImage
+              name={"profileImage"}
+              label={"Profile Photo"}
+              register={register}
+              error={errors.profileImage}
+              setValue={setValue}
+            />
+            <InputType
+              label="Password"
+              name="password"
+              register={register}
+              error={errors.password}
+              type="password"
+              required={true}
+            />
+          </div>
+          <AcceptTermsInput
+            register={register}
+            name="acceptTerms"
+            errors={errors}
+            required={true}
+          />
 
-            <div className="flex flex-col md:flex-row md:justify-start md:items-start gap-3 pb-4 space-y-2 md:space-y-0">
-              <FormInput
-                label="Email"
-                name="email"
-                placeholder="Enter your email address"
-                type="email"
-                register={methods.register}
-                required={true}
-              />
-              <FormPhoneInput
-                label="Phone Number"
-                name="phoneNumber"
-                control={methods.control}
-                required={true}
-              />
-            </div>
-
-            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 space-y-2 md:space-y-0">
-              <FormSelect
-                label="Gender"
-                name="gender"
-                options={genders}
-                register={methods.register}
-                required
-              />
-              <FormInput
-                label="Date of Birth"
-                name="dateOfBirth"
-                type="date"
-                register={methods.register}
-                required={true}
-              />
-              <FormInput
-                label="Profile Image"
-                name="image"
-                type="file"
-                register={methods.register}
-                setValue={methods.setValue}
-              />
-            </div>
-
-            <div className=" space-y-2">
-              <FormInput
-                label="Password"
-                name="password"
-                type="password"
-                placeholder="Enter your password"
-                register={methods.register}
-                required={true}
-              />
-
-              <FormInput
-                label="Confirm Password"
-                name="confirmPass"
-                type="password"
-                placeholder="Confirm your password"
-                register={methods.register}
-                required={true}
-              />
-            </div>
-
-            <div className="flex flex-col justify-center mt-4">
-              <div className="flex items-center gap-1">
-                <input
-                  type="checkbox"
-                  {...methods.register("checked", {
-                    required: true,
-                  })}
-                  id="checked"
-                />
-                <p>Terms & services.</p>
-              </div>
-              {methods.formState.errors.checked?.type === "required" && (
-                <span className="text-sm text-red-500">
-                  Accept our terms and services *
-                </span>
-              )}
-            </div>
-            {errorMessage && (
-              <p className="text-sm text-red-500">{errorMessage}</p>
-            )}
+          <div className="flex items-start">
             <button
               type="submit"
-              className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
+              disabled={isSubmitting}
+              className=" bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
             >
               Sign Up
             </button>
-          </form>
-        </FormProvider>
+          </div>
+        </form>
+
         <div className="mt-2">
           <p>
             Already have an account?{" "}

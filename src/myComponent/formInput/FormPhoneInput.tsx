@@ -2,7 +2,6 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { TFormPhoneInputProps } from "./formInput.type";
 import { Controller } from "react-hook-form";
-import { AiFillWarning } from "react-icons/ai";
 
 const FormPhoneInput = ({
   label,
@@ -12,8 +11,8 @@ const FormPhoneInput = ({
 }: TFormPhoneInputProps) => {
   return (
     <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        {label}
+      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+        {label} <span className="text-red-500">*</span>
       </label>
       <Controller
         name={name}
@@ -21,7 +20,11 @@ const FormPhoneInput = ({
         defaultValue=""
         rules={required ? { required: "Phone number is required" } : {}}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
-          <div className="mt-1">
+          <div
+            className={`mt-1 rounded-md overflow-hidden ${
+              error ? "border-2 border-red-500" : "border border-gray-300"
+            }`}
+          >
             <PhoneInput
               country={"bd"}
               value={value || ""}
@@ -29,11 +32,6 @@ const FormPhoneInput = ({
                 onChange(phone);
               }}
             />
-            {error && !value && (
-              <p className="text-red-500 text-sm mt-1">
-                <AiFillWarning /> {error.message}
-              </p>
-            )}
           </div>
         )}
       />

@@ -11,7 +11,7 @@ import UserItems from "./UserItems";
 import SharedItems from "./SharedItems";
 import { getDashboardNavlinks } from "@/utills/getDashboardNavLinks";
 import { currentUser } from "@/redux/features/auth/authSlice";
-import { TUSerRole } from "@/interface/userInfo";
+import { TUSerRole } from "@/interface/userInterface/userInfo";
 
 const Sidebar = () => {
   const navigate = useNavigate();

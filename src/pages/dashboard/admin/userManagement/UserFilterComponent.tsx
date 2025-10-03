@@ -1,5 +1,4 @@
 import {
-  genders,
   iSDelete,
   roles,
   statuses,
@@ -43,7 +42,7 @@ const UserFilterComponent: React.FC<FilterProps> = ({
       />
 
       {/* Gender Filter */}
-      <select
+      {/* <select
         value={filter.gender}
         onChange={(e) => handleFilterChange("gender", e.target.value)}
         className="border p-2 rounded outline-none"
@@ -54,7 +53,7 @@ const UserFilterComponent: React.FC<FilterProps> = ({
             {gender.label}
           </option>
         ))}
-      </select>
+      </select> */}
 
       {/* Role Filter */}
       <select

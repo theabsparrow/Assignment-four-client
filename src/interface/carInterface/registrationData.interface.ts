@@ -6,5 +6,5 @@ export type TRegistrationdata = {
   previousOwner?: string;
   previousOwnerAddress?: string;
   registrationCountry: string;
-  roadTaxPaid: boolean;
+  roadTaxPaid: string | boolean;
 };

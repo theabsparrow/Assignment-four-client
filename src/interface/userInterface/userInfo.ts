@@ -1,5 +1,6 @@
 import { USER_ROLE } from "@/config/role.const";
-
+export type TUSerRole = keyof typeof USER_ROLE;
+export type TGender = "male" | "female" | "others";
 export type TUserInfo = {
   name: {
     firstName: string;
@@ -7,11 +8,9 @@ export type TUserInfo = {
     lastName: string;
   };
   email: string;
-  phoneNumber: string;
-  gender: "male" | "female" | "others";
-  dateOfBirth: string;
   password: string;
-  profileImage?: string;
+  phoneNumber: string;
+  gender: TGender;
+  dateOfBirth: string;
+  profileImage?: string | File;
 };
-
-export type TUSerRole = keyof typeof USER_ROLE;

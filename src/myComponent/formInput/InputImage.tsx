@@ -26,7 +26,6 @@ const InputImage = ({
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log(file);
     if (file) {
       setImageFile(file);
       const preview = URL.createObjectURL(file);

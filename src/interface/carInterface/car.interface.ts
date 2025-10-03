@@ -115,9 +115,6 @@ export const carColors: string[] = [
   "Bright Yellow",
 ];
 
-export type TGalleryImage = {
-  url: string;
-};
 export type TSeatingCapacity = "2" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
 export type TCondition = "New" | "Used" | "Certified Pre-Owned";
 
@@ -132,8 +129,8 @@ export type TCar = {
   year: string;
   seatingCapacity: TSeatingCapacity;
   description?: string;
-  image: string;
-  galleryImage?: TGalleryImage[];
+  image: string | File;
+  galleryImage?: string[] | File[];
 };
 
 export interface TCarInfo extends TCar {

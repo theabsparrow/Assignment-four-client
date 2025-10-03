@@ -9,32 +9,39 @@ import { useMyProfileQuery } from "@/redux/features/user/userApi";
 import { useAppDispatch } from "@/redux/hooks";
 import { decodeToken } from "@/utills/decodeToken";
 import { useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+type TSingInForm = {
+  email: string;
+  password: string;
+};
+
 const SignIn = () => {
   const navigate = useNavigate();
-  const methods = useForm();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<TSingInForm>();
   const query: Record<string, TMyProfileQUery | undefined> = {};
   query.for = "navbar";
   const { data, refetch } = useMyProfileQuery(query);
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
 
-  const onSubmit = async (data: any) => {
-    const loginInfo = {
-      email: data.email,
-      password: data.password,
-    };
+  const onSubmit = async (data: TSingInForm) => {
     const toastId = toast.loading("signing in....");
     try {
-      const res = await login(loginInfo).unwrap();
+      const res = await login(data).unwrap();
       const user = decodeToken(res.data);
       dispatch(setUser({ user, token: res.data }));
       toast.success("successfully signed in", { id: toastId, duration: 3000 });
       navigate("/my-profile");
       refetch();
+      reset();
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -108,35 +115,36 @@ const SignIn = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
           Sign in With <br /> Email and Password
         </h2>
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
-            <SignInFormInput
-              label="Email"
-              name="email"
-              placeholder="Enter your email address"
-              type="email"
-              register={methods.register}
-              required={true}
-            />
-            <SignInFormInput
-              label="Password"
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              register={methods.register}
-              required={true}
-            />
-            <p className="text-blue-600 font-medium duration-500">
-              <Link to="/forgot-password">Forgot Password?</Link>
-            </p>
-            <button
-              type="submit"
-              className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
-            >
-              Sign In
-            </button>
-          </form>
-        </FormProvider>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <SignInFormInput
+            label="Email"
+            name="email"
+            placeholder="Enter your email address"
+            type="email"
+            register={register}
+            required={true}
+            error={errors.email}
+          />
+          <SignInFormInput
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            register={register}
+            required={true}
+            error={errors.password}
+          />
+          <p className="text-blue-600 font-medium duration-500">
+            <Link to="/forgot-password">Forgot Password?</Link>
+          </p>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
+          >
+            Sign In
+          </button>
+        </form>
         <div className="mt-2">
           <p>
             New to this site?{" "}

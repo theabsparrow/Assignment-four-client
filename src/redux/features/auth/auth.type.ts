@@ -1,4 +1,4 @@
-import { TUSerRole } from "@/interface/userInfo";
+import { TUSerRole } from "@/interface/userInterface/userInfo";
 
 export type TAuthUser = {
   userId: string;

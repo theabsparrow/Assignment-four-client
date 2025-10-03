@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TMyProfileQUery } from "@/interface/navbar.types";
 import FormInput from "@/myComponent/formInput/FormInput";
-import { genders } from "@/myComponent/formInput/formInput.const";
 import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
 import FormSelect from "@/myComponent/formInput/FormSelect";
 import SignInFormInput from "@/myComponent/formInput/SignInFormInput";
@@ -255,7 +254,7 @@ const Settings = () => {
                 )}
               </div>
 
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label
                   className={`block text-sm font-medium text-gray-700 dark:text-gray-300 ${
                     !editing ? "block" : "hidden"
@@ -267,7 +266,7 @@ const Settings = () => {
                   <FormSelect
                     label="Gender"
                     name="gender"
-                    options={genders}
+                    options={gender}
                     register={methods.register}
                   />
                 ) : (
@@ -275,7 +274,7 @@ const Settings = () => {
                     {profileInfo?.gender}
                   </p>
                 )}
-              </div>
+              </div> */}
 
               {editing && (
                 <button
