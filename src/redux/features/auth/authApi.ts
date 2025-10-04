@@ -22,6 +22,12 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
       }),
     }),
+    clearToken: builder.mutation({
+      query: () => ({
+        url: "/auth/clear-token",
+        method: "POST",
+      }),
+    }),
     chnagePassowrd: builder.mutation({
       query: (passowrdInfo) => ({
         url: "/auth/change-password",
@@ -69,6 +75,7 @@ const authApi = baseApi.injectEndpoints({
 export const { useRegisterMutation } = authApi;
 export const { useLoginMutation } = authApi;
 export const { useLogoutMutation } = authApi;
+export const { useClearTokenMutation } = authApi;
 export const { useChnagePassowrdMutation } = authApi;
 export const { useForgetPasswordMutation } = authApi;
 export const { useSendOtpMutation } = authApi;

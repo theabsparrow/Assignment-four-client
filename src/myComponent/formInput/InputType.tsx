@@ -21,6 +21,7 @@ const InputType = ({
   error,
   type = "text",
   required = false,
+  validateMatch,
 }: TInputTypeProps) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
@@ -30,7 +31,9 @@ const InputType = ({
       </label>
       <div className="relative">
         <input
-          type={type}
+          type={
+            type === "password" ? (showPassword ? "text" : "password") : type
+          }
           {...register(name, {
             ...(required && { required: `${label} is required` }),
             ...(type === "email" && {
@@ -54,13 +57,19 @@ const InputType = ({
                 }
               },
             }),
-            ...(type === "password" && {
-              pattern: {
-                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/,
-                message:
-                  "pass needs at least 8 chars with include one uppercase, lowercase, number & special char.",
-              },
-            }),
+            ...(type === "password" &&
+              name === "newPassword" && {
+                pattern: {
+                  value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/,
+                  message:
+                    "pass needs at least 8 chars with include one uppercase, lowercase, number & special char.",
+                },
+              }),
+            ...(type === "password" &&
+              name === "confirmPass" && {
+                validate: (value) =>
+                  value === validateMatch || "Passwords do not match",
+              }),
           })}
           className={`peer w-full px-4 py-2 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 ${
             error
@@ -83,7 +92,7 @@ const InputType = ({
         )}
       </div>
       {type === "password" && error && (
-        <p className="text-red-700">{error?.message}</p>
+        <p className="text-red-700">{error?.message as string}</p>
       )}
     </div>
   );

@@ -2,8 +2,6 @@ import { useState } from "react";
 import { TUserByEmail } from "./ForgotPassword";
 import { toast } from "sonner";
 import { useSendOtpMutation } from "@/redux/features/auth/authApi";
-import { useAppDispatch } from "@/redux/hooks";
-import { setUser } from "@/redux/features/auth/authSlice";
 
 type TSendOTPPRops = {
   userInfo: TUserByEmail;
@@ -13,7 +11,6 @@ type TSendOTPPRops = {
 const SendOTP = ({ userInfo, setOpenOTP, setOpen }: TSendOTPPRops) => {
   const [loading, setLoading] = useState(false);
   const [sendOtp] = useSendOtpMutation();
-  const dispatch = useAppDispatch();
 
   const handleSendOTP = async () => {
     setLoading(true);
@@ -21,15 +18,16 @@ const SendOTP = ({ userInfo, setOpenOTP, setOpen }: TSendOTPPRops) => {
     try {
       const data = { id: userInfo?._id };
       const res = await sendOtp(data).unwrap();
-      if (res?.data) {
+      if (res?.success) {
         toast.success("otp sent successfully", {
           id: loadingId,
           duration: 3000,
         });
-        dispatch(setUser({ token: res?.data?.resetToken }));
         setOpenOTP(true);
         setLoading(false);
         setOpen(false);
+        localStorage.setItem("openOTP", JSON.stringify(true));
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
       }
     } catch (error: any) {
       setLoading(false);

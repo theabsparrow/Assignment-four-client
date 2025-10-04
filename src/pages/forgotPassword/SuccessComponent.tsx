@@ -1,14 +1,28 @@
+import { baseApi } from "@/redux/api/baseApi";
+import { useClearTokenMutation } from "@/redux/features/auth/authApi";
 import { logOut } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const SuccessComponent = ({ onForceLogin }: { onForceLogin: () => void }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [logout] = useClearTokenMutation();
 
-  const handleLater = () => {
-    dispatch(logOut());
-    navigate("/login");
+  const handleLater = async () => {
+    try {
+      const res = await logout(undefined);
+      if (res.data?.success) {
+        dispatch(logOut());
+        dispatch(baseApi.util.resetApiState());
+        navigate("/sign-in");
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { duration: 3000 });
+    }
   };
 
   return (

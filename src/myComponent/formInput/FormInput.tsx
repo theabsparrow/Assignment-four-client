@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { TFormInputProps } from "./formInput.type";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { AiFillWarning } from "react-icons/ai";
 
 const FormInput = ({
   label,

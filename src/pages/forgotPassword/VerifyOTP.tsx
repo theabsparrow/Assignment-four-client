@@ -1,23 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  useResetPasswordMutation,
-  useSendOtpMutation,
-} from "@/redux/features/auth/authApi";
-import { logOut, setUser } from "@/redux/features/auth/authSlice";
-import { useAppDispatch } from "@/redux/hooks";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useRef, useState } from "react";
 import { TUserByEmail } from "./ForgotPassword";
+import { FaArrowLeft } from "react-icons/fa";
 
-const VerifyOTP = ({ userInfo }: { userInfo: TUserByEmail }) => {
+type TVerifyOtpProps = {
+  userInfo: TUserByEmail;
+  handleSubmit: (
+    e: React.FormEvent<HTMLFormElement>,
+    otpNum: string[]
+  ) => Promise<any>;
+  resendOTP: (
+    setLoad: React.Dispatch<React.SetStateAction<boolean>>,
+    id: string
+  ) => Promise<void>;
+  handleLocalStorage: () => void;
+  handleBackHome?: () => void;
+};
+
+const VerifyOTP = ({
+  userInfo,
+  handleSubmit,
+  resendOTP,
+  handleLocalStorage,
+  handleBackHome,
+}: TVerifyOtpProps) => {
   const [loading, setLoading] = useState(false);
   const [otpNum, setOtpNum] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const navigate = useNavigate();
-  const [sendOtp] = useSendOtpMutation();
-  const dispatch = useAppDispatch();
-  const [resetPassword] = useResetPasswordMutation();
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -49,62 +58,19 @@ const VerifyOTP = ({ userInfo }: { userInfo: TUserByEmail }) => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!userInfo) {
-      return navigate("/sign-in");
-    }
-    const enteredOTP = otpNum.join("");
-    if (enteredOTP.length !== 6) {
-      toast.error("Please enter a valid OTP.");
-      return;
-    }
-    const toastId = toast.loading("otp submitting....");
-    try {
-      const otp = {
-        otp: enteredOTP,
-      };
-      const res = await resetPassword(otp).unwrap();
-      if (res?.data) {
-        dispatch(setUser({ token: res?.data }));
-        toast.success("otp matched successfully", {
-          id: toastId,
-          duration: 3000,
-        });
-        navigate("/set-newPassword");
-      }
-    } catch (error: any) {
-      const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
-    }
-  };
-
-  const resendOTP = async () => {
-    setLoading(true);
-    const loadingId = toast.loading("sending OTP", { duration: 3000 });
-    try {
-      const data = { id: userInfo?._id };
-      const res = await sendOtp(data).unwrap();
-      if (res?.data) {
-        toast.success("otp sent successfully", {
-          id: loadingId,
-          duration: 3000,
-        });
-        dispatch(setUser({ token: res?.data?.resetToken }));
-        setLoading(false);
-      }
-    } catch (error: any) {
-      setLoading(false);
-      const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
-      toast.error(errorInfo, { duration: 3000 });
-    }
-  };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-6">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+      <div className="w-full max-w-xl bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-red-500">
+        <div className="flex items-center justify-between">
+          <button className="text-red-600" onClick={handleLocalStorage}>
+            <FaArrowLeft />
+          </button>
+          {handleBackHome && (
+            <button className="text-red-600" onClick={handleBackHome}>
+              Back to home
+            </button>
+          )}
+        </div>
         <img
           src={userInfo?.profileImage || "/default-avatar.png"}
           alt={`${userInfo?.name?.firstName} ${userInfo?.name?.lastName}`}
@@ -121,7 +87,7 @@ const VerifyOTP = ({ userInfo }: { userInfo: TUserByEmail }) => {
           Enter the 6-digit code sent to your email
         </p>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => handleSubmit(e, otpNum)}>
           <div className="mt-6 flex justify-center space-x-2">
             {otpNum.map((digit, index) => (
               <input
@@ -152,7 +118,7 @@ const VerifyOTP = ({ userInfo }: { userInfo: TUserByEmail }) => {
             Didn’t receive a code?{" "}
           </p>
           <button
-            onClick={resendOTP}
+            onClick={() => resendOTP(setLoading, userInfo?._id)}
             className="text-blue-500 hover:scale-110 duration-500"
           >
             Resend OTP
