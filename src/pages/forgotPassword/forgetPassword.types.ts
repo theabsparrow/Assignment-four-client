@@ -18,18 +18,15 @@ export type TEmail = {
 export type TVerifyOtpProps = {
   userInfo: TUserByEmail;
   timerRef: React.RefObject<TTimerhandler>;
+  loading: boolean;
   handleSubmit: (
     e: React.FormEvent<HTMLFormElement>,
     otpNum: string[],
     setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
   ) => Promise<any>;
-  resendOTP: ({
-    setLoad,
-    setIsExpired,
-  }: {
-    setLoad: React.Dispatch<React.SetStateAction<boolean>>;
-    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => Promise<void>;
+  resendOTP: (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => Promise<void>;
   handleLocalStorage?: () => void;
   handleBackHome?: () => void;
   handleSkip?: (

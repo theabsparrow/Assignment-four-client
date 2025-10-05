@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import signInImage from "../../assets/sign in photo.webp";
 
 type TSingInForm = {
   email: string;
@@ -96,9 +97,12 @@ const SignIn = () => {
   }, [data, navigate]);
 
   return (
-    <section className="flex justify-center bg-gray-100 dark:bg-gray-900 lg:px-4 font-inter py-10 lg:py-20">
-      <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md space-y-4 ">
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:gap-20">
+    <section
+      style={{ backgroundImage: `url(${signInImage})` }}
+      className="bg-cover bg-center bg-no-repeat h-[calc(100vh-76px)] relative font-inter"
+    >
+      <div className="absolute lg:left-[36%] md:left-[25%] left-[6%] top-[5%] lg:top-[15%] p-4 lg:p-6 bg-white/35 dark:bg-gray-800/60 rounded-lg shadow-md space-y-2 ">
+        <div className="flex flex-row justify-between items-center gap-10 md:gap-16 lg:gap-20">
           <button
             onClick={handleAdminSignIn}
             className=" px-3 py-2 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold shadow-md transition duration-300 ease-in-out"
@@ -112,10 +116,10 @@ const SignIn = () => {
             Login as User
           </button>
         </div>
-        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
+        <h2 className="text-2xl font-bold text-center text-green-500">
           Login to your account
         </h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
           <SignInFormInput
             label="Email"
             name="email"
@@ -134,22 +138,22 @@ const SignIn = () => {
             required={true}
             error={errors.password}
           />
-          <p className="text-blue-600 font-medium duration-500">
+          <p className="text-blue-800 font-medium hover:underline duration-500  ">
             <Link to="/forgot-password">Forgot Password?</Link>
           </p>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
+            className="w-full bg-secondary hover:bg-red-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
           >
             Login
           </button>
         </form>
-        <div className="mt-2">
-          <p>
+        <div>
+          <p className="text-green-500">
             New to this site?{" "}
             <Link
-              className="text-blue-600 font-bold hover:scale-125 duration-500"
+              className="text-blue-700 font-bold hover:underline duration-500"
               to="/sign-up"
             >
               Sign up

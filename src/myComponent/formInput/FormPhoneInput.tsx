@@ -11,7 +11,7 @@ const FormPhoneInput = ({
 }: TFormPhoneInputProps) => {
   return (
     <div className="flex flex-col">
-      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+      <label className="block text-sm font-semibold text-gray-200 mb-1">
         {label} <span className="text-red-500">*</span>
       </label>
       <Controller
@@ -21,7 +21,7 @@ const FormPhoneInput = ({
         rules={required ? { required: "Phone number is required" } : {}}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
           <div
-            className={`mt-1 rounded-md overflow-hidden ${
+            className={`mt-1 rounded-md overflow-hidden  ${
               error ? "border-2 border-red-500" : "border border-gray-300"
             }`}
           >
@@ -30,6 +30,11 @@ const FormPhoneInput = ({
               value={value || ""}
               onChange={(phone) => {
                 onChange(phone);
+              }}
+              inputStyle={{
+                backgroundColor: "transparent",
+                color: "white",
+                width: "100%",
               }}
             />
           </div>

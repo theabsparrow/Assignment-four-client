@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useSendOtpMutation } from "@/redux/features/auth/authApi";
 import { TTimerhandler, TUserByEmail } from "./forgetPassword.types";
+import profileIcon from "../../assets/profile-photo.png";
 
 type TSendOTPPRops = {
   userInfo: TUserByEmail;
@@ -46,11 +47,20 @@ const SendOTP = ({
 
   return (
     <section className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg text-center">
-      <img
-        src={userInfo?.profileImage}
-        alt={userInfo?.name?.firstName}
-        className="w-24 h-24 rounded-full mx-auto border-4 border-secondary shadow-md"
-      />
+      {userInfo?.profileImage ? (
+        <img
+          src={userInfo?.profileImage}
+          alt={userInfo?.name?.firstName}
+          className="w-24 h-24 rounded-full mx-auto border-4 border-secondary shadow-md"
+        />
+      ) : (
+        <img
+          src={profileIcon}
+          alt={userInfo?.name?.firstName}
+          className="w-24 h-24 rounded-full mx-auto shadow-md"
+        />
+      )}
+
       <h2 className="mt-4 text-xl font-semibold text-gray-800 dark:text-white">
         {userInfo?.name?.firstName} {userInfo?.name?.lastName}
       </h2>

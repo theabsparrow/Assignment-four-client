@@ -19,7 +19,7 @@ const userApi = baseApi.injectEndpoints({
     }),
     resendOTP: builder.mutation({
       query: (id) => ({
-        url: `/user/register/${id}`,
+        url: `/user/send-otp/${id}`,
         method: "POST",
       }),
     }),

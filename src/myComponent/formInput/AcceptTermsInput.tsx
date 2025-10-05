@@ -26,13 +26,13 @@ const AcceptTermsInput = ({
           })}
           className="accent-green-600 mt-1 w-4 h-4"
         />
-        <span className=" text-gray-700 dark:text-gray-200">
+        <span className="text-gray-200">
           I agree to the{" "}
           <Link
             to="/terms"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline "
+            className="text-blue-700 hover:underline font-semibold"
           >
             Terms & Conditions
           </Link>

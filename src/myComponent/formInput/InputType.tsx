@@ -27,7 +27,7 @@ const InputType = ({
 
   return (
     <div className="w-full font-inter relative">
-      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+      <label className="block text-sm font-semibold text-gray-200 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div className="relative">

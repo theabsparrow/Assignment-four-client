@@ -3,17 +3,18 @@ import { useRef, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import TimerComponent from "./TimerComponent";
 import { TVerifyOtpProps } from "./forgetPassword.types";
+import profileIcon from "../../assets/profile-photo.png";
 
 const VerifyOTP = ({
   userInfo,
   timerRef,
+  loading,
   handleSubmit,
   resendOTP,
   handleLocalStorage,
   handleBackHome,
   handleSkip,
 }: TVerifyOtpProps) => {
-  const [loading, setLoading] = useState(false);
   const [otpNum, setOtpNum] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isExpired, setIsExpired] = useState(false);
@@ -49,7 +50,7 @@ const VerifyOTP = ({
   };
 
   return (
-    <section className="w-full max-w-xl bg-white dark:bg-gray-800 p-3 lg:p-6 rounded-2xl shadow-lg space-y-4">
+    <section className="w-full max-w-xl bg-white/35 dark:bg-gray-800/60 p-3 md:p-10 lg:p-6 rounded-2xl shadow-lg space-y-4">
       <div className="flex items-center justify-between">
         {handleLocalStorage && (
           <button className="text-red-600" onClick={handleLocalStorage}>
@@ -64,11 +65,20 @@ const VerifyOTP = ({
         )}
       </div>
       <div>
-        <img
-          src={userInfo?.profileImage || "/default-avatar.png"}
-          alt={`${userInfo?.name?.firstName} ${userInfo?.name?.lastName}`}
-          className="w-24 h-24 rounded-full mx-auto border-4 border-secondary shadow-md"
-        />
+        {userInfo?.profileImage ? (
+          <img
+            src={userInfo?.profileImage}
+            alt={`${userInfo?.name?.firstName} ${userInfo?.name?.lastName}`}
+            className="w-24 h-24 rounded-full mx-auto  shadow-md"
+          />
+        ) : (
+          <img
+            src={profileIcon}
+            alt={`${userInfo?.name?.firstName} ${userInfo?.name?.lastName}`}
+            className="w-24 h-24 rounded-full mx-auto  shadow-md"
+          />
+        )}
+
         <h1 className=" text-xl flex justify-center font-bold text-gray-800 dark:text-white">
           {userInfo?.name?.firstName} {userInfo?.name?.lastName}
         </h1>
@@ -87,7 +97,7 @@ const VerifyOTP = ({
         onSubmit={(e) => handleSubmit(e, otpNum, setIsExpired)}
         className="space-y-4"
       >
-        <div className=" flex justify-center gap-2 lg:gap-4">
+        <div className=" flex justify-center gap-2 md:gap-4">
           {otpNum.map((digit, index) => (
             <input
               key={index}
@@ -106,6 +116,7 @@ const VerifyOTP = ({
         <div className="flex items-center justify-between">
           {handleSkip && (
             <button
+              disabled={loading}
               type="button"
               onClick={() => handleSkip(setIsExpired)}
               className="bg-yellow-500 text-white px-4 py-2 rounded"
@@ -117,12 +128,7 @@ const VerifyOTP = ({
           <div className="flex items-center gap-10">
             <button
               disabled={!isExpired || loading}
-              onClick={() =>
-                resendOTP({
-                  setLoad: setLoading,
-                  setIsExpired,
-                })
-              }
+              onClick={() => resendOTP(setIsExpired)}
               className="bg-gray-900 text-gray-200 font-bold p-2 rounded-md duration-500 transition disabled:cursor-not-allowed disabled:bg-gray-500"
             >
               Resend OTP

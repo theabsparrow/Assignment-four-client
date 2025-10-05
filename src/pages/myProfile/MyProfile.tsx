@@ -3,7 +3,8 @@ import {
   useMyProfileQuery,
   useUpdateUserInfoMutation,
 } from "@/redux/features/user/userApi";
-
+import profileIcon from "../../assets/profile-photo.png";
+import coverImageIcon from "../../assets/coverImage.png";
 import { imageUpload } from "@/utills/uploadImage";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -118,12 +119,18 @@ const MyProfile = () => {
   return (
     <div className="max-w-4xl mx-auto bg-gray-100 shadow-lg rounded-lg overflow-hidden font-inter pb-10 dark:bg-gray-800">
       <div className="relative h-40 md:h-60 bg-gray-200 ">
-        {coverImage && (
+        {coverImage ? (
           <img
             src={coverImage}
             alt="Cover"
             className="w-full h-full object-cover cursor-pointer"
             onClick={() => setSelectedImage(coverImage)}
+          />
+        ) : (
+          <img
+            src={coverImageIcon}
+            alt="Cover"
+            className="w-full h-full object-cover cursor-pointer"
           />
         )}
 
@@ -137,12 +144,18 @@ const MyProfile = () => {
         </label>
       </div>
       <div className="relative w-24 h-24 md:w-44 md:h-44 rounded-full border border-primary cursor-pointer">
-        {profileImage && (
+        {profileImage ? (
           <img
             src={profileImage}
             alt="Profile"
             className="w-24 h-24 md:w-44 md:h-44 rounded-full border border-primary cursor-pointer"
             onClick={() => setSelectedImage(profileImage)}
+          />
+        ) : (
+          <img
+            src={profileIcon}
+            alt="Profile"
+            className="w-24 h-24 md:w-44 md:h-44 rounded-full border border-primary cursor-pointer"
           />
         )}
 

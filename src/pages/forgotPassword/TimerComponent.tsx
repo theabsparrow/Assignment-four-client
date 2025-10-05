@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { TTimerhandler } from "./ForgotPassword";
+import { TTimerhandler } from "./forgetPassword.types";
 
 type TTimerComponentprops = {
   duration?: number;
@@ -53,7 +53,7 @@ const TimerComponent = forwardRef<TTimerhandler, TTimerComponentprops>(
       const sec = String(totalSec % 60).padStart(2, "0");
       return `${min}:${sec}`;
     };
-    console.log(timeLeft);
+
     return (
       <div>
         <p className="text-center mt-3 px-4 py-2 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 rounded-lg border border-yellow-300 dark:border-yellow-700 shadow-sm text-sm sm:text-base">

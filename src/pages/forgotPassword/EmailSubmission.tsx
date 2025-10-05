@@ -1,7 +1,7 @@
 import InputType from "@/myComponent/formInput/InputType";
 import { UseFormReturn } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { TEmail } from "./ForgotPassword";
+import { TEmail } from "./forgetPassword.types";
 
 type TEmailSubmitProps = {
   method: UseFormReturn<TEmail>;

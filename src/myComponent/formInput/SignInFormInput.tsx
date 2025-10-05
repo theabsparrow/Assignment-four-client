@@ -15,7 +15,7 @@ const SignInFormInput = ({
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label className="block text-sm font-medium text-gray-200">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
@@ -30,7 +30,7 @@ const SignInFormInput = ({
             },
           }),
         })}
-        className={`mt-1 w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white outline-none ${
+        className={`mt-1 w-full p-2 border rounded-md dark:bg-gray-700 dark:text-white outline-none ${
           error ? "border-red-500" : "border-gray-300"
         }`}
         placeholder={placeholder}
@@ -49,7 +49,7 @@ const SignInFormInput = ({
         </span>
       )}
       {error && (
-        <p className="text-red-500 text-sm flex items-center gap-1">
+        <p className="text-red-700 text-sm flex items-center gap-1 font-semibold">
           <AiFillWarning /> {error.message as string}
         </p>
       )}

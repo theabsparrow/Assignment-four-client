@@ -20,6 +20,7 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [openOTP, setOpenOTP] = useState(() =>
     JSON.parse(localStorage.getItem("openOTP") || "false")
   );
@@ -63,7 +64,7 @@ const ForgotPassword = () => {
       const res = await forgetPassword(data).unwrap();
       if (res?.data) {
         setOpen(true);
-        setUserInfo(res.data);
+        setUserInfo(res?.data);
         reset();
       }
     } catch (error: any) {
@@ -113,14 +114,10 @@ const ForgotPassword = () => {
     }
   };
 
-  const resendOTP = async ({
-    setLoad,
-    setIsExpired,
-  }: {
-    setLoad: React.Dispatch<React.SetStateAction<boolean>>;
-    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => {
-    setLoad(true);
+  const resendOTP = async (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    setLoading(true);
 
     const loadingId = toast.loading("sending OTP", { duration: 3000 });
     try {
@@ -130,12 +127,12 @@ const ForgotPassword = () => {
           id: loadingId,
           duration: 3000,
         });
-        setLoad(false);
+        setLoading(false);
         setIsExpired(false);
         timerRef.current?.reset();
       }
     } catch (error: any) {
-      setLoad(false);
+      setLoading(false);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { duration: 3000 });
@@ -170,6 +167,7 @@ const ForgotPassword = () => {
         <VerifyOTP
           userInfo={userInfo as TUserByEmail}
           timerRef={timerRef}
+          loading={loading}
           handleSubmit={handleSubmit}
           resendOTP={resendOTP}
           handleLocalStorage={handleLocalStorage}

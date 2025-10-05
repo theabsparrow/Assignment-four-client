@@ -16,6 +16,7 @@ import { useMyProfileQuery } from "@/redux/features/user/userApi";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import { NavbarLinks } from "./navbar.const";
 import profileLofo from "../assets/profile-icon.png";
+import profileIcon from "../assets/profile-photo.png";
 
 const Navbar = () => {
   const [display, setDisplay] = useState(false);
@@ -27,7 +28,7 @@ const Navbar = () => {
   const query: Record<string, TMyProfileQUery | undefined> = {};
   query.for = "navbar";
   const { data, isLoading } = useMyProfileQuery(query);
-  const profileInfo = data?.data || {};
+  const profileInfo = data?.data;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -67,14 +68,14 @@ const Navbar = () => {
 
   return (
     <nav className="w-full dark:bg-gray-800 bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto flex items-center justify-between py-4 px-4 md:px-32">
+      <div className="container mx-auto flex items-center justify-between py-4 px-2 lg:px-16">
         <div>
           <Link to="/">
             <img className="w-36 lg:w-56 " src={logo} alt=" Lambo car logo" />
           </Link>
         </div>
 
-        <div className="hidden md:flex space-x-6">
+        <div className="hidden md:flex space-x-3 lg:space-x-6">
           {NavbarLinks.map((link, i) => (
             <NavLink
               key={i}
@@ -105,11 +106,20 @@ const Navbar = () => {
               }}
               className="text-5xl"
             >
-              {profileInfo?.profileImage ? (
-                <img
-                  className="w-11 h-11 rounded-full border border-secondary"
-                  src={profileInfo?.profileImage}
-                />
+              {profileInfo ? (
+                <>
+                  {profileInfo?.profileImage ? (
+                    <img
+                      className="w-11 h-11 rounded-full "
+                      src={profileInfo?.profileImage}
+                    />
+                  ) : (
+                    <img
+                      className="w-12 h-12 rounded-full "
+                      src={profileIcon}
+                    />
+                  )}
+                </>
               ) : (
                 <img className="w-11 h-11 rounded-full " src={profileLofo} />
               )}

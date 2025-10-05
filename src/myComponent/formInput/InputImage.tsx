@@ -42,7 +42,7 @@ const InputImage = ({
 
   return (
     <section className="relative">
-      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+      <label className="block text-sm font-semibold text-gray-200 mb-1">
         {label} <span className="text-red-500">*</span>
       </label>
 
@@ -69,7 +69,7 @@ const InputImage = ({
         </div>
       ) : (
         <div
-          className={`md:w-[13vw] w-[40vw] h-28 flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer bg-white dark:bg-gray-800 transition ${
+          className={`lg:w-[13vw] md:w-[25vw] w-[40vw] h-28 flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer bg-white dark:bg-gray-800 transition ${
             error
               ? "border-red-500"
               : "border-gray-600 dark:border-gray-600 hover:border-primary"
