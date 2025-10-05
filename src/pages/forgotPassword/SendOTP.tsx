@@ -1,14 +1,20 @@
 import { useState } from "react";
-import { TUserByEmail } from "./ForgotPassword";
 import { toast } from "sonner";
 import { useSendOtpMutation } from "@/redux/features/auth/authApi";
+import { TTimerhandler, TUserByEmail } from "./forgetPassword.types";
 
 type TSendOTPPRops = {
   userInfo: TUserByEmail;
   setOpenOTP: React.Dispatch<React.SetStateAction<boolean>>;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  timerRef: React.RefObject<TTimerhandler>;
 };
-const SendOTP = ({ userInfo, setOpenOTP, setOpen }: TSendOTPPRops) => {
+const SendOTP = ({
+  userInfo,
+  setOpenOTP,
+  setOpen,
+  timerRef,
+}: TSendOTPPRops) => {
   const [loading, setLoading] = useState(false);
   const [sendOtp] = useSendOtpMutation();
 
@@ -28,6 +34,7 @@ const SendOTP = ({ userInfo, setOpenOTP, setOpen }: TSendOTPPRops) => {
         setOpen(false);
         localStorage.setItem("openOTP", JSON.stringify(true));
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        timerRef.current?.reset();
       }
     } catch (error: any) {
       setLoading(false);

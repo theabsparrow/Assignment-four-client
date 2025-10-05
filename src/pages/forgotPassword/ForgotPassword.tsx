@@ -4,7 +4,7 @@ import {
   useResetPasswordMutation,
   useSendOtpMutation,
 } from "@/redux/features/auth/authApi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import SendOTP from "./SendOTP";
 import EmailSubmission from "./EmailSubmission";
@@ -12,15 +12,8 @@ import VerifyOTP from "./VerifyOTP";
 import { useAppDispatch } from "@/redux/hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setUser } from "@/redux/features/auth/authSlice";
-
-export type TUserByEmail = {
-  _id: string;
-  name: {
-    firstName: string;
-    lastName: string;
-  };
-  profileImage?: string;
-};
+import { useForm } from "react-hook-form";
+import { TEmail, TTimerhandler, TUserByEmail } from "./forgetPassword.types";
 
 const ForgotPassword = () => {
   // local state
@@ -33,12 +26,14 @@ const ForgotPassword = () => {
   const [userInfo, setUserInfo] = useState<TUserByEmail | null>(() =>
     JSON.parse(localStorage.getItem("userInfo") || "null")
   );
-  const [loading, setLoading] = useState(false);
+  const timerRef = useRef<TTimerhandler>(null);
   // redux state
   const [forgetPassword] = useForgetPasswordMutation();
   const dispatch = useAppDispatch();
   const [resetPassword] = useResetPasswordMutation();
   const [sendOtp] = useSendOtpMutation();
+  const method = useForm<TEmail>();
+  const { reset } = method;
 
   useEffect(() => {
     localStorage.setItem("openOTP", JSON.stringify(openOTP));
@@ -64,16 +59,14 @@ const ForgotPassword = () => {
   }, [location.pathname]);
 
   const onSubmit = async (data: any) => {
-    setLoading(true);
     try {
       const res = await forgetPassword(data).unwrap();
       if (res?.data) {
         setOpen(true);
         setUserInfo(res.data);
-        setLoading(false);
+        reset();
       }
     } catch (error: any) {
-      setLoading(false);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { duration: 3000 });
@@ -82,7 +75,8 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
-    otpNum: string[]
+    otpNum: string[],
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
     e.preventDefault();
     if (!userInfo) {
@@ -110,6 +104,7 @@ const ForgotPassword = () => {
         localStorage.removeItem("openOTP");
         setUserInfo(null);
         setOpenOTP(false);
+        setIsExpired(true);
       }
     } catch (error: any) {
       const errorInfo =
@@ -118,21 +113,26 @@ const ForgotPassword = () => {
     }
   };
 
-  const resendOTP = async (
-    setLoad: React.Dispatch<React.SetStateAction<boolean>>,
-    id: string
-  ) => {
+  const resendOTP = async ({
+    setLoad,
+    setIsExpired,
+  }: {
+    setLoad: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => {
     setLoad(true);
+
     const loadingId = toast.loading("sending OTP", { duration: 3000 });
     try {
-      const data = { id };
-      const res = await sendOtp(data).unwrap();
-      if (res?.data) {
+      const res = await sendOtp(userInfo?._id).unwrap();
+      if (res?.success) {
         toast.success("otp sent successfully", {
           id: loadingId,
           duration: 3000,
         });
         setLoad(false);
+        setIsExpired(false);
+        timerRef.current?.reset();
       }
     } catch (error: any) {
       setLoad(false);
@@ -158,23 +158,25 @@ const ForgotPassword = () => {
   };
 
   return (
-    <section className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-6">
+    <section className="flex min-h-screen lg:items-center justify-center bg-gray-200 dark:bg-gray-900 p-2 lg:p-6 ">
       {open && userInfo ? (
         <SendOTP
           userInfo={userInfo as TUserByEmail}
           setOpenOTP={setOpenOTP}
           setOpen={setOpen}
+          timerRef={timerRef}
         />
       ) : openOTP && userInfo ? (
         <VerifyOTP
           userInfo={userInfo as TUserByEmail}
+          timerRef={timerRef}
           handleSubmit={handleSubmit}
           resendOTP={resendOTP}
           handleLocalStorage={handleLocalStorage}
           handleBackHome={handleBackHome}
         />
       ) : (
-        <EmailSubmission onSubmit={onSubmit} loading={loading} />
+        <EmailSubmission method={method} onSubmit={onSubmit} />
       )}
     </section>
   );

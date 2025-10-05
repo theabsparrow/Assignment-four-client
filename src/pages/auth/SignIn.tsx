@@ -96,24 +96,24 @@ const SignIn = () => {
   }, [data, navigate]);
 
   return (
-    <div className="flex justify-center pt-10 lg:pt-20 min-h-[calc(100vh-80px)] bg-gray-100 dark:bg-gray-900 px-4 font-inter ">
-      <div className=" p-6 dark:bg-gray-800 rounded-lg shadow-md h-[50%]">
-        <div className="flex flex-col justify-center items-center mb-8 space-y-4">
+    <section className="flex justify-center bg-gray-100 dark:bg-gray-900 lg:px-4 font-inter py-10 lg:py-20">
+      <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md space-y-4 ">
+        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:gap-20">
           <button
             onClick={handleAdminSignIn}
-            className="w-full px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white font-semibold shadow-md transition duration-300 ease-in-out"
+            className=" px-3 py-2 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold shadow-md transition duration-300 ease-in-out"
           >
-            Sign in as Admin
+            Login as Admin
           </button>
           <button
             onClick={handleUserSignIn}
-            className="w-full px-5 py-3 rounded-xl bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 text-white font-semibold shadow-md transition duration-300 ease-in-out"
+            className=" px-3 py-2 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold shadow-md transition duration-300 ease-in-out"
           >
-            Sign in as User
+            Login as User
           </button>
         </div>
         <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
-          Sign in With <br /> Email and Password
+          Login to your account
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <SignInFormInput
@@ -142,7 +142,7 @@ const SignIn = () => {
             disabled={isSubmitting}
             className="w-full bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
           >
-            Sign In
+            Login
           </button>
         </form>
         <div className="mt-2">
@@ -157,7 +157,7 @@ const SignIn = () => {
           </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

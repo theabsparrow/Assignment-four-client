@@ -1,8 +1,8 @@
 import Layout from "@/layout/Layout";
 import Home from "@/pages/Home";
 import { createBrowserRouter } from "react-router-dom";
-import SignIn from "@/pages/SignIn.js";
-import SignUp from "@/pages/SignUp";
+import SignIn from "@/pages/auth/SignIn.js";
+import SignUp from "@/pages/auth/register/SignUp";
 import MyProfile from "@/pages/myProfile/MyProfile";
 import Settings from "@/pages/settings/Settings";
 import ForgotPassword from "@/pages/forgotPassword/ForgotPassword";

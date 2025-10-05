@@ -4,13 +4,14 @@ import { Outlet, useLocation } from "react-router-dom";
 
 const Layout = () => {
   const location = useLocation();
-  const isCarDetailsPage = location.pathname.startsWith("/details/");
+  const isLocation = location.pathname;
+
   return (
-    <div>
+    <section>
       <Navbar></Navbar>
       <Outlet></Outlet>
-      {!isCarDetailsPage && <Footer />}
-    </div>
+      {isLocation === "/sign-in" || isLocation === "/sign-up" || <Footer />}
+    </section>
   );
 };
 

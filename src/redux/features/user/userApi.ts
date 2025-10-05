@@ -17,6 +17,25 @@ const userApi = baseApi.injectEndpoints({
       },
       providesTags: ["user"],
     }),
+    resendOTP: builder.mutation({
+      query: (id) => ({
+        url: `/user/register/${id}`,
+        method: "POST",
+      }),
+    }),
+    verifyEmail: builder.mutation({
+      query: (otp) => ({
+        url: "/user/verify-email",
+        method: "POST",
+        body: otp,
+      }),
+    }),
+    clearCookie: builder.mutation({
+      query: () => ({
+        url: "/user/clear-cookie",
+        method: "POST",
+      }),
+    }),
     updateUserInfo: builder.mutation({
       query: (image) => ({
         url: "/user/update-info",
@@ -79,7 +98,6 @@ const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["users"],
     }),
-
     deleteUserAccount: builder.mutation({
       query: (id) => ({
         url: `/user/${id}`,
@@ -96,6 +114,9 @@ const userApi = baseApi.injectEndpoints({
   }),
 });
 export const { useMyProfileQuery } = userApi;
+export const { useResendOTPMutation } = userApi;
+export const { useVerifyEmailMutation } = userApi;
+export const { useClearCookieMutation } = userApi;
 export const { useUpdateUserInfoMutation } = userApi;
 export const { useDeleteUserMutation } = userApi;
 export const { useGetAllUsersQuery } = userApi;
