@@ -22,12 +22,12 @@ const SignUpForm = ({ methods, onSubmit }: TSignUpFormProps) => {
   } = methods;
 
   return (
-    <div className="absolute lg:left-[20%] md:left-[15%] left-0 top-[1%] md:top-[10%] lg:top-[5%] px-2 py-2 md:px-6 md:py-6 lg:px-6 lg:py-2 bg-gray-800/80 rounded-lg shadow-md space-y-3">
+    <div className="absolute lg:left-0 md:left-[15%] left-0 top-[1%] md:top-[10%] lg:top-0 px-2 py-2 md:px-6 md:py-6 lg:px-6 lg:py-1 bg-gray-800/80 rounded-lg shadow-md space-y-4">
       <h2 className="text-2xl font-bold text-center text-green-500">
         Create a Free Account
       </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 lg:gap-3 ">
+        <div className="grid grid-cols-2 lg:grid-cols-2 gap-2 md:gap-4 lg:gap-3 ">
           <InputType
             label="First Name"
             name="name.firstName"

@@ -11,3 +11,12 @@ export const calculateAge = (dob: string) => {
   }
   return age;
 };
+
+export const formatedDate = (date: Date) => {
+  const covertedDate = date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return covertedDate;
+};

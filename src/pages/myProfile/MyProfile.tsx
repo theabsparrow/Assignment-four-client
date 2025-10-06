@@ -10,16 +10,21 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { calculateAge } from "./myProfile.utills";
+import { calculateAge, formatedDate } from "./myProfile.utills";
 import ProfileLoader from "@/myComponent/loader/ProfileLoader";
 import { TMyProfileQUery } from "@/interface/navbar.types";
+import { FaCheckCircle, FaClock } from "react-icons/fa";
 
 const MyProfile = () => {
+  // redux state
   const query: Record<string, TMyProfileQUery | undefined> = {};
   query.for = "profile";
   const { data, isLoading } = useMyProfileQuery(query);
   const profileInfo = data?.data;
-
+  const [updatedInfo] = useUpdateUserInfoMutation();
+  // local state
+  const [editing, setEditing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string | "">(
     profileInfo?.profileImage
   );
@@ -33,23 +38,19 @@ const MyProfile = () => {
     profileInfo?.currentAddress ?? "No current address"
   );
   const [age, setAge] = useState(0);
-
-  useEffect(() => {
-    if (profileInfo) {
-      const age = calculateAge(profileInfo?.dateOfBirth);
-      setAge(age);
-    }
-  }, [profileInfo?.dateOfBirth]);
-
   const methods = useForm({
     defaultValues: {
       homeTown: homeTown || "",
       currentAddress: currentAddress || "",
     },
   });
-  const [editing, setEditing] = useState(false);
-  const [updatedInfo] = useUpdateUserInfoMutation();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  console.log(profileInfo);
+  useEffect(() => {
+    if (profileInfo) {
+      const age = calculateAge(profileInfo?.dateOfBirth);
+      setAge(age);
+    }
+  }, [profileInfo?.dateOfBirth]);
 
   useEffect(() => {
     if (profileInfo) {
@@ -117,7 +118,7 @@ const MyProfile = () => {
     return <ProfileLoader />;
   }
   return (
-    <div className="max-w-4xl mx-auto bg-gray-100 shadow-lg rounded-lg overflow-hidden font-inter pb-10 dark:bg-gray-800">
+    <div className="mx-auto bg-gray-100 shadow-lg rounded-lg overflow-hidden font-inter pb-10 dark:bg-gray-800 px-2 lg:px-16">
       <div className="relative h-40 md:h-60 bg-gray-200 ">
         {coverImage ? (
           <img
@@ -143,7 +144,7 @@ const MyProfile = () => {
           />
         </label>
       </div>
-      <div className="relative w-24 h-24 md:w-44 md:h-44 rounded-full border border-primary cursor-pointer">
+      <div className="relative w-24 h-24 md:w-44 md:h-44 rounded-full cursor-pointer">
         {profileImage ? (
           <img
             src={profileImage}
@@ -187,100 +188,128 @@ const MyProfile = () => {
           </button>
         </div>
       )}
-      <div className="flex items-center dark:text-gray-400">
-        <h2 className="text-3xl mx-4 font-bold my-2 ">
-          {profileInfo?.name.firstName}{" "}
-          {profileInfo?.name?.middleName && profileInfo.name.middleName}{" "}
-          {profileInfo?.name.lastName}
-        </h2>{" "}
-        <span className="font-bold text-lg">({profileInfo?.gender})</span>
-      </div>
-
-      <div className=" mt-4 p-4 bg-white dark:bg-gray-950 mx-4 rounded-lg shadow-md ">
-        <h3 className="text-lg font-semibold">Personal Information</h3>
-        <div className="mt-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <p className="mt-1 text-gray-600">{profileInfo?.email}</p>
-          </div>
-          <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <p className="mt-1 text-gray-600">{profileInfo?.phoneNumber}</p>
-          </div>
-
-          <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Date of Birth
-            </label>
-            <p className="mt-1 text-gray-600">
-              {profileInfo?.dateOfBirth} <span>(Age: {age})</span>
-            </p>
-          </div>
+      <div className="space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:gap-2 dark:text-gray-400">
+          <h2 className="text-2xl lg:text-3xl font-bold ">
+            {profileInfo?.name.firstName}{" "}
+            {profileInfo?.name?.middleName && profileInfo.name.middleName}{" "}
+            {profileInfo?.name.lastName}
+          </h2>{" "}
+          <span className="font-bold text-lg">({profileInfo?.gender})</span>
+          <h1>
+            {profileInfo?.verifyWithEmail ? (
+              <span className="flex items-center gap-1 text-green-600 dark:text-green-400 text-sm font-medium">
+                <FaCheckCircle className="w-4 h-4" /> Verified
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400 text-sm font-medium">
+                <FaClock className="w-4 h-4 animate-pulse" />
+                Not verified
+              </span>
+            )}
+          </h1>
         </div>
-        <h1 className="text-center">
-          Go to{" "}
-          <Link to="/settings" className="text-blue-600 font-semibold text-lg">
-            Settings
-          </Link>{" "}
-          to update personal info
+        <h1 className="font-semibold">
+          Since {formatedDate(new Date(profileInfo?.createdAt))}
         </h1>
-      </div>
+        <div className="flex flex-col lg:flex-row lg:justify-between gap-6 ">
+          <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full ">
+            <h3 className="text-lg font-semibold text-gray-400">
+              Personal Information
+            </h3>
+            <div className="mt-2">
+              <div>
+                <label className="block text-sm font-medium ">Email</label>
+                <p className="mt-1 ">{profileInfo?.email}</p>
+              </div>
+              <div className="mt-2">
+                <label className="block text-sm font-medium ">
+                  Phone Number
+                </label>
+                <p className="mt-1 ">{profileInfo?.phoneNumber}</p>
+              </div>
 
-      <div className="p-4 bg-white dark:bg-gray-950 mt-4 mx-4 rounded-lg shadow-md">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Address Information</h3>
+              <div className="mt-2">
+                <label className="block text-sm font-medium ">
+                  Date of Birth
+                </label>
+                <p className="mt-1 ">
+                  {profileInfo?.dateOfBirth} <span>(Age: {age})</span>
+                </p>
+              </div>
+            </div>
+            <h1 className="text-center">
+              Go to{" "}
+              <Link
+                to="/settings"
+                className="text-blue-600 font-semibold text-lg"
+              >
+                Settings
+              </Link>{" "}
+              to update personal info
+            </h1>
+          </div>
 
-          <button
-            onClick={() => setEditing(!editing)}
-            className="text-blue-500 font-semibold hover:underline"
-          >
-            {editing ? "cancel " : "Edit"}
-          </button>
-        </div>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Home Town
-            </label>
-            {editing ? (
-              <input
-                type="text"
-                {...methods.register("homeTown")}
-                className="mt-1 w-full p-2 border rounded-lg outline-none dark:bg-gray-700"
-              />
-            ) : (
-              <p className="mt-1 text-gray-600">{homeTown || "Not set"}</p>
-            )}
-          </div>
-          <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Current Address
-            </label>
-            {editing ? (
-              <input
-                type="text"
-                {...methods.register("currentAddress")}
-                className="mt-1 w-full p-2 border rounded-lg outline-none dark:bg-gray-700"
-              />
-            ) : (
-              <p className="mt-1 text-gray-600">
-                {currentAddress || "Not set"}
-              </p>
-            )}
-          </div>
-          {editing && (
-            <div className="mt-4">
-              <button className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition ">
-                {" "}
-                update{" "}
+          <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-400">
+                Address Information
+              </h3>
+
+              <button
+                onClick={() => setEditing(!editing)}
+                className="text-blue-500 font-semibold hover:underline"
+              >
+                {editing ? "cancel " : "Edit"}
               </button>
             </div>
-          )}
-        </form>
+            {editing ? (
+              <form
+                onSubmit={methods.handleSubmit(onSubmit)}
+                className="space-y-2"
+              >
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium ">
+                    Home Town
+                  </label>
+                  <input
+                    type="text"
+                    {...methods.register("homeTown")}
+                    className="w-full p-2 border rounded-lg outline-none dark:bg-gray-700"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium ">
+                    Current Address
+                  </label>
+                  <input
+                    type="text"
+                    {...methods.register("currentAddress")}
+                    className=" w-full p-2 border rounded-lg outline-none dark:bg-gray-700"
+                  />
+                </div>
+                <button className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition ">
+                  {" "}
+                  update{" "}
+                </button>
+              </form>
+            ) : (
+              <div className="space-y-2">
+                <div className="space-y-1">
+                  <h1 className="block text-sm font-medium ">Home Town</h1>
+                  <p>{homeTown || "Not set"}</p>
+                </div>
+                <div className="space-y-1">
+                  <h1 className="block text-sm font-medium ">
+                    {" "}
+                    Current Address
+                  </h1>
+                  <p>{currentAddress || "Not set"}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
