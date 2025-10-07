@@ -31,6 +31,12 @@ const settingSlice = createSlice({
     setGender: (state, action: PayloadAction<TGender>) => {
       state.gender = action.payload;
     },
+    setEmail: (state, action: PayloadAction<string>) => {
+      state.email = action.payload;
+    },
+    setPhone: (state, action: PayloadAction<string>) => {
+      state.phoneNumber = action.payload;
+    },
     setProfile: (state, action: PayloadAction<TUserInfo>) => {
       return { ...state, ...action.payload };
     },
@@ -44,6 +50,8 @@ export const {
   setLastName,
   setDOB,
   setGender,
+  setEmail,
+  setPhone,
   setProfile,
   resetProfile,
 } = settingSlice.actions;

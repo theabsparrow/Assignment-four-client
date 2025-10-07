@@ -113,6 +113,9 @@ const PersonalInfoSettings = ({ profileInfo }: { profileInfo: TUserInfo }) => {
                     onClick={() => {
                       setOpen("");
                       dispatch(resetProfile());
+                      setfirstName(profileInfo?.name?.firstName);
+                      setmiddleName(profileInfo?.name?.middleName);
+                      setlastName(profileInfo?.name?.lastName);
                     }}
                     className="text-secondary font-semibold"
                   >
@@ -142,7 +145,10 @@ const PersonalInfoSettings = ({ profileInfo }: { profileInfo: TUserInfo }) => {
           </div>
           {open !== "name" && (
             <button
-              onClick={() => setOpen("name")}
+              onClick={() => {
+                setOpen("name");
+                dispatch(resetProfile());
+              }}
               className="text-red-600 text-lg "
             >
               <MdEdit />
@@ -179,6 +185,7 @@ const PersonalInfoSettings = ({ profileInfo }: { profileInfo: TUserInfo }) => {
                   onClick={() => {
                     setOpen("");
                     dispatch(resetProfile());
+                    setDate(new Date(profileInfo?.dateOfBirth as string));
                   }}
                   className="text-secondary font-semibold"
                 >
@@ -209,7 +216,10 @@ const PersonalInfoSettings = ({ profileInfo }: { profileInfo: TUserInfo }) => {
           )}
           {open !== "date" && (
             <button
-              onClick={() => setOpen("date")}
+              onClick={() => {
+                setOpen("date");
+                dispatch(resetProfile());
+              }}
               className="text-red-600 text-lg "
             >
               <MdEdit />
@@ -254,6 +264,7 @@ const PersonalInfoSettings = ({ profileInfo }: { profileInfo: TUserInfo }) => {
                   onClick={() => {
                     setOpen("");
                     dispatch(resetProfile());
+                    setgender(profileInfo?.gender);
                   }}
                   className="text-secondary font-semibold"
                 >
@@ -277,7 +288,10 @@ const PersonalInfoSettings = ({ profileInfo }: { profileInfo: TUserInfo }) => {
           )}
           {open !== "gender" && (
             <button
-              onClick={() => setOpen("gender")}
+              onClick={() => {
+                setOpen("gender");
+                dispatch(resetProfile());
+              }}
               className="text-red-600 text-lg "
             >
               <MdEdit />
