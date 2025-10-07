@@ -7,13 +7,14 @@ import { decodeToken } from "@/utills/decodeToken";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import RetrivePass from "./RetrivePass";
+import { TUserByEmail } from "../forgotPassword/forgetPassword.types";
 type TPasswordSettings = {
   oldPassword: string;
   newPassword: string;
   confirmPass: string;
 };
 
-const PasswordSettings = () => {
+const PasswordSettings = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
   const [changePassword] = useChnagePassowrdMutation();
   const dispatch = useAppDispatch();
   const {
@@ -87,7 +88,7 @@ const PasswordSettings = () => {
           </button>
         </form>
         <div className="flex justify-center items-center">
-          <RetrivePass />
+          <RetrivePass profileInfo={profileInfo} />
         </div>
       </div>
     </section>

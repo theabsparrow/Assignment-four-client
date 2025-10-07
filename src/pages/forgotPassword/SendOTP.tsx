@@ -23,8 +23,7 @@ const SendOTP = ({
     setLoading(true);
     const loadingId = toast.loading("sending OTP", { duration: 3000 });
     try {
-      const data = { id: userInfo?._id };
-      const res = await sendOtp(data).unwrap();
+      const res = await sendOtp(userInfo?._id).unwrap();
       if (res?.success) {
         toast.success("otp sent successfully", {
           id: loadingId,

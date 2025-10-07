@@ -97,7 +97,10 @@ const SignUp = () => {
       methods.reset();
     } catch (error: any) {
       const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
+        error?.data?.errorSource[1]?.message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
@@ -131,13 +134,14 @@ const SignUp = () => {
           id: toastId,
           duration: 3000,
         });
-        navigate("/my-profile");
-        localStorage.removeItem("userInfo");
-        localStorage.removeItem("openOTP");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("otpPage");
+        localStorage.removeItem("otpExpiry");
         setUserData(null);
         setOtpPage(false);
         setIsExpired(true);
         setLoading(true);
+        navigate("/my-profile");
       }
     } catch (error: any) {
       const errorInfo =
@@ -174,15 +178,15 @@ const SignUp = () => {
   const handleSkip = async (
     setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    console.log("clickerd");
     const result = await clearCookie(undefined).unwrap();
     if (result?.success) {
-      navigate("/my-profile");
       localStorage.removeItem("userData");
       localStorage.removeItem("otpPage");
+      localStorage.removeItem("otpExpiry");
       setUserData(null);
       setOtpPage(false);
       setIsExpired(true);
+      navigate("/my-profile");
     }
   };
 

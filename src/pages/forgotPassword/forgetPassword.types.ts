@@ -27,8 +27,12 @@ export type TVerifyOtpProps = {
   resendOTP: (
     setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
   ) => Promise<void>;
-  handleLocalStorage?: () => void;
-  handleBackHome?: () => void;
+  handleLocalStorage?: (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => void;
+  handleBackHome?: (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => void;
   handleSkip?: (
     setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
   ) => Promise<void>;

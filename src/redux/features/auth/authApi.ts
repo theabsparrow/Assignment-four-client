@@ -37,23 +37,42 @@ const authApi = baseApi.injectEndpoints({
     }),
     forgetPassword: builder.mutation({
       query: (email) => ({
-        url: "/auth/retrive-password",
+        url: "/auth/forget-password",
         method: "POST",
         body: email,
       }),
     }),
     retrivePassword: builder.mutation({
       query: (email) => ({
-        url: "/auth/forget-password",
+        url: "/auth/retrive-password",
         method: "POST",
         body: email,
       }),
     }),
-    sendOtp: builder.mutation({
+    otpResend: builder.mutation({
+      query: () => ({
+        url: "/auth/otp-resend",
+        method: "POST",
+      }),
+    }),
+    matchOTP: builder.mutation({
       query: (data) => ({
-        url: "/auth/send-otp",
+        url: "/auth/match-otp",
         method: "POST",
         body: data,
+      }),
+    }),
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: "/auth/update-newPassword",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    sendOtp: builder.mutation({
+      query: (id) => ({
+        url: `/auth/send-otp/${id}`,
+        method: "POST",
       }),
     }),
     getUser: builder.query({
@@ -86,6 +105,9 @@ export const { useClearTokenMutation } = authApi;
 export const { useChnagePassowrdMutation } = authApi;
 export const { useForgetPasswordMutation } = authApi;
 export const { useRetrivePasswordMutation } = authApi;
+export const { useOtpResendMutation } = authApi;
+export const { useMatchOTPMutation } = authApi;
+export const { useUpdatePasswordMutation } = authApi;
 export const { useSendOtpMutation } = authApi;
 export const { useGetUserQuery } = authApi;
 export const { useResetPasswordMutation } = authApi;

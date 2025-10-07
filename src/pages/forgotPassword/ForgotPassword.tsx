@@ -103,6 +103,7 @@ const ForgotPassword = () => {
         navigate("/set-newPassword");
         localStorage.removeItem("userInfo");
         localStorage.removeItem("openOTP");
+        localStorage.removeItem("otpExpiry");
         setUserInfo(null);
         setOpenOTP(false);
         setIsExpired(true);
@@ -118,7 +119,6 @@ const ForgotPassword = () => {
     setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
     setLoading(true);
-
     const loadingId = toast.loading("sending OTP", { duration: 3000 });
     try {
       const res = await sendOtp(userInfo?._id).unwrap();
@@ -139,18 +139,26 @@ const ForgotPassword = () => {
     }
   };
 
-  const handleLocalStorage = () => {
+  const handleLocalStorage = (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("openOTP");
+    localStorage.removeItem("otpExpiry");
     setUserInfo(null);
     setOpenOTP(false);
+    setIsExpired(true);
   };
 
-  const handleBackHome = () => {
+  const handleBackHome = (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("openOTP");
+    localStorage.removeItem("otpExpiry");
     setUserInfo(null);
     setOpenOTP(false);
+    setIsExpired(true);
     navigate("/");
   };
 

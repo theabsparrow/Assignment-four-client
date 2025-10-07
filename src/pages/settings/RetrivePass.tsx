@@ -1,18 +1,53 @@
-import { useState } from "react";
-import { TEmail } from "../forgotPassword/forgetPassword.types";
+import { useEffect, useRef, useState } from "react";
+import {
+  TEmail,
+  TTimerhandler,
+  TUserByEmail,
+} from "../forgotPassword/forgetPassword.types";
 import { useForm } from "react-hook-form";
 import InputType from "@/myComponent/formInput/InputType";
-import { useRetrivePasswordMutation } from "@/redux/features/auth/authApi";
+import {
+  useMatchOTPMutation,
+  useOtpResendMutation,
+  useRetrivePasswordMutation,
+} from "@/redux/features/auth/authApi";
 import { toast } from "sonner";
+import VerifyOTP from "../forgotPassword/VerifyOTP";
+import { useClearCookieMutation } from "@/redux/features/user/userApi";
+import { useLocation } from "react-router-dom";
 
-const RetrivePass = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
+  const [isOpen, setIsOpen] = useState<"otp" | "email" | "password" | "">(() =>
+    JSON.parse(localStorage.getItem("OTP") || "")
+  );
+  const location = useLocation();
+  const timerRef = useRef<TTimerhandler>(null);
+  const [loading, setLoading] = useState(false);
   const [retrivePass] = useRetrivePasswordMutation();
+  const [resendOtp] = useOtpResendMutation();
+  const [matchOtp] = useMatchOTPMutation();
+  const [clearCookie] = useClearCookieMutation();
+
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<TEmail>();
+
+  useEffect(() => {
+    localStorage.setItem("OTP", JSON.stringify(isOpen));
+  }, [isOpen]);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    return () => {
+      if (location.pathname !== currentPath) {
+        localStorage.removeItem("OTP");
+        localStorage.removeItem("otpExpiry");
+      }
+    };
+  }, [location.pathname]);
 
   const onSubmit = async (data: TEmail) => {
     const toastId = toast.loading("otp sending", { duration: 3000 });
@@ -23,7 +58,9 @@ const RetrivePass = () => {
           id: toastId,
           duration: 3000,
         });
-        setIsOpen(true);
+        setIsOpen("otp");
+        localStorage.setItem("OTP", JSON.stringify(isOpen));
+        timerRef.current?.reset();
       }
     } catch (error: any) {
       const errorInfo =
@@ -31,16 +68,89 @@ const RetrivePass = () => {
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };
+
+  const handleSubmitOTP = async (
+    e: React.FormEvent<HTMLFormElement>,
+    otpNum: string[],
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    e.preventDefault();
+    const enteredOTP = otpNum.join("");
+    if (enteredOTP.length !== 6) {
+      toast.error("Please enter a valid OTP.");
+      return;
+    }
+    const toastId = toast.loading("otp submitting....");
+    try {
+      const otp = {
+        otp: enteredOTP,
+      };
+      const res = await matchOtp(otp).unwrap();
+      if (res?.data) {
+        toast.success("otp matched successfully", {
+          id: toastId,
+          duration: 3000,
+        });
+        setIsExpired(true);
+        setIsOpen("password");
+        localStorage.setItem("OTP", JSON.stringify(isOpen));
+        localStorage.removeItem("otpExpiry");
+        reset();
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
+
+  const resendOTP = async (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    setLoading(true);
+    const loadingId = toast.loading("sending OTP", { duration: 3000 });
+    try {
+      const res = await resendOtp(undefined).unwrap();
+      if (res?.success) {
+        toast.success("otp sent successfully", {
+          id: loadingId,
+          duration: 3000,
+        });
+        setLoading(false);
+        setIsExpired(false);
+        timerRef.current?.reset();
+        reset();
+      }
+    } catch (error: any) {
+      setLoading(false);
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { duration: 3000 });
+    }
+  };
+
+  const handleSkip = async (
+    setIsExpired: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    const result = await clearCookie(undefined).unwrap();
+    if (result?.success) {
+      localStorage.removeItem("OTP");
+      localStorage.removeItem("otpExpiry");
+      setIsOpen("");
+      setIsExpired(true);
+      reset();
+    }
+  };
   return (
     <section>
       <button
         type="button"
         className="text-red-700 font-semibold hover:underline"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen("email")}
       >
         forget password?
       </button>
-      {isOpen && (
+      {isOpen === "email" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
           <div className="w-full max-w-md bg-gray-500 dark:bg-gray-800 p-6 rounded-2xl shadow-lg space-y-4">
             <p className="text-gray-200 dark:text-gray-400 text-center mt-2">
@@ -59,7 +169,7 @@ const RetrivePass = () => {
               <div className="flex justify-between items-center">
                 <button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setIsOpen("")}
                   className="bg-gray-800 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
                 >
                   Cancel
@@ -74,6 +184,18 @@ const RetrivePass = () => {
               </div>
             </form>
           </div>
+        </div>
+      )}
+      {isOpen === "otp" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+          <VerifyOTP
+            userInfo={profileInfo as TUserByEmail}
+            timerRef={timerRef}
+            loading={loading}
+            handleSubmit={handleSubmitOTP}
+            resendOTP={resendOTP}
+            handleSkip={handleSkip}
+          />
         </div>
       )}
     </section>

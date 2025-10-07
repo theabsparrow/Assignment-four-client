@@ -43,7 +43,9 @@ const Settings = () => {
           {settings === "contact" && (
             <ContactInfoSettings profileInfo={profileInfo} />
           )}
-          {settings === "password" && <PasswordSettings />}
+          {settings === "password" && (
+            <PasswordSettings profileInfo={profileInfo} />
+          )}
           {settings === "deletion" && <DelationSettings />}
         </div>
       </div>

@@ -53,13 +53,19 @@ const VerifyOTP = ({
     <section className="w-full max-w-xl bg-white/35 dark:bg-gray-800/60 p-3 md:p-10 lg:p-6 rounded-2xl shadow-lg space-y-4">
       <div className="flex items-center justify-between">
         {handleLocalStorage && (
-          <button className="text-red-600" onClick={handleLocalStorage}>
+          <button
+            className="text-red-600"
+            onClick={() => handleLocalStorage(setIsExpired)}
+          >
             <FaArrowLeft />
           </button>
         )}
 
         {handleBackHome && (
-          <button className="text-red-600" onClick={handleBackHome}>
+          <button
+            className="text-red-600"
+            onClick={() => handleBackHome(setIsExpired)}
+          >
             Back to home
           </button>
         )}
@@ -127,6 +133,7 @@ const VerifyOTP = ({
 
           <div className="flex items-center gap-10">
             <button
+              type="button"
               disabled={!isExpired || loading}
               onClick={() => resendOTP(setIsExpired)}
               className="bg-gray-900 text-gray-200 font-bold p-2 rounded-md duration-500 transition disabled:cursor-not-allowed disabled:bg-gray-500"
@@ -134,6 +141,7 @@ const VerifyOTP = ({
               Resend OTP
             </button>
             <button
+              type="submit"
               disabled={loading}
               className=" bg-secondary dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition"
             >
