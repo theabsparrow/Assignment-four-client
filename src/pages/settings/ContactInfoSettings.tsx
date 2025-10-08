@@ -17,6 +17,7 @@ import { FaCheckCircle, FaClock } from "react-icons/fa";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import RetrivePass from "./RetrivePass";
 import { TUserByEmail } from "../forgotPassword/forgetPassword.types";
+import VerifyEmail from "./VerifyEmail";
 
 const ContactInfoSettings = ({
   profileInfo,
@@ -152,9 +153,7 @@ const ContactInfoSettings = ({
                   )}
                 </h1>
                 {!profileInfo?.verifyWithEmail && (
-                  <button className="text-white text-xs lg:text-sm bg-secondary px-1 lg:px-2 py-1 rounded-lg">
-                    Verify Email
-                  </button>
+                  <VerifyEmail profileInfo={profileInfo} />
                 )}
               </div>
             </div>

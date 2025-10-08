@@ -173,6 +173,7 @@ const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
         localStorage.removeItem("openOTP");
         localStorage.removeItem("Settings");
         localStorage.removeItem("OTP");
+        localStorage.removeItem("otpPage");
         // navigate("/sign-in");
       }
     } catch (error: any) {

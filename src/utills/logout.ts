@@ -44,6 +44,7 @@ export const LogoutFunc = async ({
       localStorage.removeItem("userInfo");
       localStorage.removeItem("openOTP");
       localStorage.removeItem("Settings");
+      localStorage.removeItem("otpPage");
       navigate("/sign-in");
     }
   } catch (error: any) {

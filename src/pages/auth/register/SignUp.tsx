@@ -68,6 +68,7 @@ const SignUp = () => {
       if (location.pathname !== currentPath) {
         localStorage.removeItem("otpPage");
         localStorage.removeItem("userData");
+        localStorage.removeItem("otpExpiry");
       }
     };
   }, [location.pathname]);
@@ -140,7 +141,7 @@ const SignUp = () => {
         setUserData(null);
         setOtpPage(false);
         setIsExpired(true);
-        setLoading(true);
+        setLoading(false);
         navigate("/my-profile");
       }
     } catch (error: any) {
@@ -157,7 +158,7 @@ const SignUp = () => {
     setLoading(true);
     const loadingId = toast.loading("sending OTP", { duration: 3000 });
     try {
-      const res = await sendOtp(user?._id).unwrap();
+      const res = await sendOtp(undefined).unwrap();
       if (res?.success) {
         toast.success("otp sent successfully", {
           id: loadingId,
