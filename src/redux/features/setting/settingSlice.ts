@@ -37,6 +37,9 @@ const settingSlice = createSlice({
     setPhone: (state, action: PayloadAction<string>) => {
       state.phoneNumber = action.payload;
     },
+    setPassword: (state, action: PayloadAction<string>) => {
+      state.password = action.payload;
+    },
     setProfile: (state, action: PayloadAction<TUserInfo>) => {
       return { ...state, ...action.payload };
     },
@@ -52,6 +55,7 @@ export const {
   setGender,
   setEmail,
   setPhone,
+  setPassword,
   setProfile,
   resetProfile,
 } = settingSlice.actions;

@@ -11,7 +11,6 @@ const ErrorComponent = () => {
   const navigate = useNavigate();
 
   const handleLogOut = async (label: string) => {
-    console.log(label);
     try {
       const res = await logout(undefined);
       if (res.data?.success) {

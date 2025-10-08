@@ -11,5 +11,6 @@ export type TSettingUser = {
   phoneNumber: string;
   gender: TGender;
   dateOfBirth: string;
+  password: string;
 };
 export const settingsInitialState: Partial<TSettingUser> = {};

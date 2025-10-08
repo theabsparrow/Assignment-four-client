@@ -44,7 +44,6 @@ const MyProfile = () => {
       currentAddress: currentAddress || "",
     },
   });
-  console.log(profileInfo);
   useEffect(() => {
     if (profileInfo) {
       const age = calculateAge(profileInfo?.dateOfBirth);

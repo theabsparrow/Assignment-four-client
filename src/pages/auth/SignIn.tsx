@@ -10,7 +10,7 @@ import { useAppDispatch } from "@/redux/hooks";
 import { decodeToken } from "@/utills/decodeToken";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import signInImage from "../../assets/sign in photo.webp";
 
@@ -27,22 +27,30 @@ const SignIn = () => {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<TSingInForm>();
+
   const query: Record<string, TMyProfileQUery | undefined> = {};
   query.for = "navbar";
   const { data, refetch } = useMyProfileQuery(query);
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const path = location.state?.from;
 
   const onSubmit = async (data: TSingInForm) => {
     const toastId = toast.loading("signing in....");
     try {
       const res = await login(data).unwrap();
-      const user = decodeToken(res.data);
-      dispatch(setUser({ user, token: res.data }));
-      toast.success("successfully signed in", { id: toastId, duration: 3000 });
-      navigate("/my-profile");
-      refetch();
-      reset();
+      if (res?.data) {
+        const user = decodeToken(res?.data);
+        dispatch(setUser({ user, token: res?.data }));
+        toast.success("successfully signed in", {
+          id: toastId,
+          duration: 3000,
+        });
+        navigate("/my-profile");
+        refetch();
+        reset();
+      }
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -58,11 +66,16 @@ const SignIn = () => {
     const toastId = toast.loading("signing in....");
     try {
       const res = await login(loginInfo).unwrap();
-      const user = decodeToken(res.data);
-      dispatch(setUser({ user, token: res.data }));
-      toast.success("successfully signed in", { id: toastId, duration: 3000 });
-      navigate("/my-profile");
-      refetch();
+      if (res?.data) {
+        const user = decodeToken(res.data);
+        dispatch(setUser({ user, token: res.data }));
+        toast.success("successfully signed in", {
+          id: toastId,
+          duration: 3000,
+        });
+        navigate("/my-profile");
+        refetch();
+      }
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -78,11 +91,16 @@ const SignIn = () => {
     const toastId = toast.loading("signing in....");
     try {
       const res = await login(loginInfo).unwrap();
-      const user = decodeToken(res.data);
-      dispatch(setUser({ user, token: res.data }));
-      toast.success("successfully signed in", { id: toastId, duration: 3000 });
-      navigate("/my-profile");
-      refetch();
+      if (res?.data) {
+        const user = decodeToken(res?.data);
+        dispatch(setUser({ user, token: res?.data }));
+        toast.success("successfully signed in", {
+          id: toastId,
+          duration: 3000,
+        });
+        navigate("/my-profile");
+        refetch();
+      }
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
@@ -102,6 +120,11 @@ const SignIn = () => {
       className="bg-cover bg-center bg-no-repeat h-[calc(100vh-76px)] relative font-inter"
     >
       <div className="absolute lg:left-[36%] md:left-[25%] left-[6%] top-[5%] lg:top-[15%] p-4 lg:p-6 bg-white/35 dark:bg-gray-800/60 rounded-lg shadow-md space-y-2 ">
+        {path === "forgetPassword" && (
+          <h1 className="text-2xl font-bold text-center text-secondary">
+            You need to login again
+          </h1>
+        )}
         <div className="flex flex-row justify-between items-center gap-10 md:gap-16 lg:gap-20">
           <button
             onClick={handleAdminSignIn}

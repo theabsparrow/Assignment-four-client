@@ -6,8 +6,8 @@ import {
   logOut,
 } from "@/redux/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { ReactNode, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { ReactNode, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 type TProtectedRouteProps = {
   children: ReactNode;
@@ -19,37 +19,33 @@ const ProtectedRoute = ({ children, roles }: TProtectedRouteProps) => {
   const user = useAppSelector(currentUser);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
-  const [needLogout, setNeedLogout] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (needLogout) {
+    if (!token || !user) {
       const handleLogout = async () => {
         try {
-          await logout(user?.userEmail || "");
+          await logout(user?.userId);
           dispatch(logOut());
           dispatch(baseApi.util.resetApiState());
           navigate("/sign-in");
-          window.location.reload();
         } catch (error) {
           console.log(error);
         }
       };
       handleLogout();
     }
-  }, [dispatch, logout, navigate, needLogout, user?.userEmail]);
+  }, [dispatch, logout, navigate, token, user?.userId]);
 
   useEffect(() => {
     if (!token || !user) {
-      setNeedLogout(true);
+      navigate("/sign-in");
     }
     if (roles?.length && (!user?.userRole || !roles.includes(user?.userRole))) {
-      setNeedLogout(true);
+      navigate("/sign-in");
     }
   }, [roles, token, user]);
-  if (needLogout) {
-    return <Navigate to="/sign-in" />;
-  }
+
   return children;
 };
 

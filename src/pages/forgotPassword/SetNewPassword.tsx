@@ -2,6 +2,7 @@
 import {
   useGetUserQuery,
   useLoginMutation,
+  useSetNewPasswordMutation,
 } from "@/redux/features/auth/authApi";
 import { logOut, setUser } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
@@ -13,6 +14,12 @@ import SetPasswordSkeleton from "@/myComponent/loader/SetPasswordSkeleton";
 import ErrorComponent from "./ErrorComponent";
 import SuccessComponent from "./SuccessComponent";
 import { decodeToken } from "@/utills/decodeToken";
+import { useForm } from "react-hook-form";
+
+export type TSetNewPass = {
+  newPassword: string;
+  confirmPass: string;
+};
 
 export type TUser = {
   email: string;
@@ -24,13 +31,36 @@ const SetNewPassword = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [userData, setUserData] = useState<TUser | null>(null);
+  const method = useForm<TSetNewPass>();
+
   // redux state
   const { data, isLoading, isError } = useGetUserQuery(undefined);
   const userInfo = data?.data || {};
-  console.log(userInfo);
   const dispatch = useAppDispatch();
   const [login] = useLoginMutation();
-  console.log(data);
+  const [setNewPass] = useSetNewPasswordMutation();
+
+  const onSubmit = async (data: TSetNewPass) => {
+    const toastId = toast.loading("Setting new Passoword....");
+    try {
+      const res = await setNewPass(data).unwrap();
+      if (res?.data) {
+        toast.success("successfully set new password", {
+          id: toastId,
+          duration: 3000,
+        });
+        setUserData(res?.data);
+        setOpen(true);
+        dispatch(logOut());
+        method.reset();
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
+
   const handleForceLogin = async () => {
     const loginInfo: { email: string; password: string } = {
       email: userData?.email as string,
@@ -76,7 +106,7 @@ const SetNewPassword = () => {
       ) : open ? (
         <SuccessComponent onForceLogin={handleForceLogin} />
       ) : (
-        <SetPassword setOpen={setOpen} setUserData={setUserData} />
+        <SetPassword method={method} onSubmit={onSubmit} />
       )}
     </section>
   );

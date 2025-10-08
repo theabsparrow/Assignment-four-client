@@ -39,6 +39,11 @@ export const LogoutFunc = async ({
       dispatch(logOut());
       dispatch(baseApi.util.resetApiState());
       toast.success("Successfully signed out", { id: toastId, duration: 3000 });
+      localStorage.removeItem("OTP");
+      localStorage.removeItem("otpExpiry");
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("openOTP");
+      localStorage.removeItem("Settings");
       navigate("/sign-in");
     }
   } catch (error: any) {

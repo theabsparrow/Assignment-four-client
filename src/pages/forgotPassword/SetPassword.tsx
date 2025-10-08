@@ -1,59 +1,33 @@
 import InputType from "@/myComponent/formInput/InputType";
-import { useSetNewPasswordMutation } from "@/redux/features/auth/authApi";
-import { useAppDispatch } from "@/redux/hooks";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { TUser } from "./SetNewPassword";
-import { logOut } from "@/redux/features/auth/authSlice";
+import { UseFormReturn } from "react-hook-form";
+import { TSetNewPass } from "./SetNewPassword";
+import { FaArrowLeft } from "react-icons/fa";
 
 type TsetNewPasswordProps = {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setUserData: React.Dispatch<React.SetStateAction<TUser | null>>;
+  method: UseFormReturn<TSetNewPass>;
+  onSubmit: (data: TSetNewPass) => Promise<void>;
+  handleClose?: () => void;
 };
-type TSetNewPass = {
-  newPassword: string;
-  confirmPass: string;
-};
-const SetPassword = ({ setOpen, setUserData }: TsetNewPasswordProps) => {
-  const dispatch = useAppDispatch();
-  const [setNewPass] = useSetNewPasswordMutation();
 
+const SetPassword = ({
+  method,
+  onSubmit,
+  handleClose,
+}: TsetNewPasswordProps) => {
   const {
     handleSubmit,
     register,
-    reset,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<TSetNewPass>();
-
-  const onSubmit = async (data: any) => {
-    const { newPassword, confirmPass } = data;
-    if (newPassword !== confirmPass) {
-      return toast.error("password doesn`t match");
-    }
-    const toastId = toast.loading("Setting new Passoword....");
-    const password = { newPassword };
-    try {
-      const res = await setNewPass(password).unwrap();
-      if (res?.data) {
-        toast.success("successfully set new password", {
-          id: toastId,
-          duration: 3000,
-        });
-        setUserData(res?.data);
-        setOpen(true);
-        dispatch(logOut());
-        reset();
-      }
-    } catch (error: any) {
-      const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
-    }
-  };
+  } = method;
 
   return (
-    <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg space-y-6 ">
+    <section className="w-full max-w-md bg-white/35 dark:bg-gray-800/60 p-6 rounded-2xl shadow-lg space-y-6 ">
+      {handleClose && (
+        <button className="text-red-600" onClick={() => handleClose()}>
+          <FaArrowLeft />
+        </button>
+      )}
       <div>
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-white text-center">
           Set New Password
@@ -91,7 +65,7 @@ const SetPassword = ({ setOpen, setUserData }: TsetNewPasswordProps) => {
           Reset Password
         </button>
       </form>
-    </div>
+    </section>
   );
 };
 

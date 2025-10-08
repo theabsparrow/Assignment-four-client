@@ -7,18 +7,27 @@ import {
 import { useForm } from "react-hook-form";
 import InputType from "@/myComponent/formInput/InputType";
 import {
+  useLogoutMutation,
   useMatchOTPMutation,
   useOtpResendMutation,
   useRetrivePasswordMutation,
+  useUpdatePasswordMutation,
 } from "@/redux/features/auth/authApi";
 import { toast } from "sonner";
 import VerifyOTP from "../forgotPassword/VerifyOTP";
 import { useClearCookieMutation } from "@/redux/features/user/userApi";
 import { useLocation } from "react-router-dom";
+import SetPassword from "../forgotPassword/SetPassword";
+import { TSetNewPass } from "../forgotPassword/SetNewPassword";
+import { useAppDispatch } from "@/redux/hooks";
+import { logOut } from "@/redux/features/auth/authSlice";
+import { baseApi } from "@/redux/api/baseApi";
+
+type TOpenProps = "otp" | "email" | "password";
 
 const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
-  const [isOpen, setIsOpen] = useState<"otp" | "email" | "password" | "">(() =>
-    JSON.parse(localStorage.getItem("OTP") || "")
+  const [isOpen, setIsOpen] = useState<TOpenProps | "">(
+    () => JSON.parse(localStorage.getItem("OTP") as TOpenProps) || ""
   );
   const location = useLocation();
   const timerRef = useRef<TTimerhandler>(null);
@@ -27,13 +36,16 @@ const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
   const [resendOtp] = useOtpResendMutation();
   const [matchOtp] = useMatchOTPMutation();
   const [clearCookie] = useClearCookieMutation();
-
+  const [updatePassword] = useUpdatePasswordMutation();
+  const [logout] = useLogoutMutation();
+  const dispatch = useAppDispatch();
   const {
     handleSubmit,
     register,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<TEmail>();
+  const method = useForm<TSetNewPass>();
 
   useEffect(() => {
     localStorage.setItem("OTP", JSON.stringify(isOpen));
@@ -59,7 +71,7 @@ const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
           duration: 3000,
         });
         setIsOpen("otp");
-        localStorage.setItem("OTP", JSON.stringify(isOpen));
+        localStorage.setItem("OTP", JSON.stringify("otp"));
         timerRef.current?.reset();
       }
     } catch (error: any) {
@@ -80,20 +92,21 @@ const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
       toast.error("Please enter a valid OTP.");
       return;
     }
+    const otp = {
+      otp: enteredOTP,
+    };
+
     const toastId = toast.loading("otp submitting....");
     try {
-      const otp = {
-        otp: enteredOTP,
-      };
       const res = await matchOtp(otp).unwrap();
-      if (res?.data) {
+      if (res?.success) {
         toast.success("otp matched successfully", {
           id: toastId,
           duration: 3000,
         });
         setIsExpired(true);
         setIsOpen("password");
-        localStorage.setItem("OTP", JSON.stringify(isOpen));
+        localStorage.setItem("OTP", JSON.stringify("password"));
         localStorage.removeItem("otpExpiry");
         reset();
       }
@@ -141,6 +154,41 @@ const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
       reset();
     }
   };
+
+  const onPasswordSubmit = async (data: TSetNewPass) => {
+    const toastId = toast.loading("Setting new Passoword....");
+    try {
+      const res = await updatePassword(data).unwrap();
+      if (res?.success) {
+        toast.success("successfully set new password", {
+          id: toastId,
+          duration: 3000,
+        });
+        method.reset();
+        await logout(undefined);
+        dispatch(logOut());
+        dispatch(baseApi.util.resetApiState());
+        localStorage.removeItem("otpExpiry");
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("openOTP");
+        localStorage.removeItem("Settings");
+        localStorage.removeItem("OTP");
+        // navigate("/sign-in");
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
+
+  const handleClose = () => {
+    localStorage.removeItem("OTP");
+    localStorage.removeItem("otpExpiry");
+    setIsOpen("");
+    reset();
+  };
+
   return (
     <section>
       <button
@@ -195,6 +243,15 @@ const RetrivePass = ({ profileInfo }: { profileInfo: TUserByEmail }) => {
             handleSubmit={handleSubmitOTP}
             resendOTP={resendOTP}
             handleSkip={handleSkip}
+          />
+        </div>
+      )}
+      {isOpen === "password" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+          <SetPassword
+            method={method}
+            onSubmit={onPasswordSubmit}
+            handleClose={handleClose}
           />
         </div>
       )}

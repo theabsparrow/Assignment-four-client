@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TMyProfileQUery } from "@/interface/navbar.types";
 import { useMyProfileQuery } from "@/redux/features/user/userApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PersonalInfoSettings from "./PersonalInfoSettings";
 import ContactInfoSettings from "./ContactInfoSettings";
 import PasswordSettings from "./PasswordSettings";
@@ -10,10 +10,12 @@ import SettingsButtons from "./SettingsButtons";
 import SettingsSkeleton from "@/myComponent/loader/SettingsSkeleton";
 import { TUserInfo } from "@/interface/userInterface/userInfo";
 import SmallDeviceButton from "./SmallDeviceButton";
+import { useLocation } from "react-router-dom";
 export type TSettings = "personal" | "contact" | "password" | "deletion";
 
 export interface TSettingExtendType extends TUserInfo {
   verifyWithEmail: boolean;
+  _id: string;
 }
 
 const Settings = () => {
@@ -23,11 +25,29 @@ const Settings = () => {
   const { data, isLoading } = useMyProfileQuery(query);
   const profileInfo = data?.data;
   // local state
-  const [settings, setSettings] = useState<TSettings>("personal");
+  const [settings, setSettings] = useState<TSettings>(
+    () =>
+      JSON.parse(localStorage.getItem("Settings") as TSettings) || "personal"
+  );
+  const location = useLocation();
+
+  useEffect(() => {
+    localStorage.setItem("Settings", JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    return () => {
+      if (location.pathname !== currentPath) {
+        localStorage.removeItem("Settings");
+      }
+    };
+  }, [location.pathname]);
 
   if (isLoading) {
     return <SettingsSkeleton />;
   }
+
   return (
     <section className="mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md px-2 lg:px-16  h-[calc(100vh-76px)] space-y-4">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex justify-center items-center">
@@ -46,7 +66,9 @@ const Settings = () => {
           {settings === "password" && (
             <PasswordSettings profileInfo={profileInfo} />
           )}
-          {settings === "deletion" && <DelationSettings />}
+          {settings === "deletion" && (
+            <DelationSettings profileInfo={profileInfo} />
+          )}
         </div>
       </div>
     </section>
