@@ -1,4 +1,4 @@
-import Sidebar from "@/myComponent/dashboard/sidebar/Sidebar";
+import Sidebar from "@/myComponent/sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import { USER_ROLE } from "@/config/role.const";

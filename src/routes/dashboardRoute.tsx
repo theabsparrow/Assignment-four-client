@@ -32,9 +32,17 @@ export const dashboardRoutes = [
           </ProtectedRoute>
         ),
       },
-      // admin routes
+
       // {
-      //   path: "/dashboard/car-listing",
+      //   path: "/dashboard/adminc/manage-cars",
+      //   element: (
+      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+      //       <CarListing />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "/dashboard/admin/statistic",
       //   element: (
       //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
       //       <CarListing />
@@ -42,7 +50,7 @@ export const dashboardRoutes = [
       //   ),
       // },
       {
-        path: "/dashboard/manage-users",
+        path: "/dashboard/admin/manage-users",
         element: (
           <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
             <UserManagement />
@@ -58,7 +66,7 @@ export const dashboardRoutes = [
         ),
       },
       // {
-      //   path: "/dashboard/order-history",
+      //   path: "/dashboard/admin/order-history",
       //   element: (
       //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
       //       <OrderHistory />
@@ -66,7 +74,7 @@ export const dashboardRoutes = [
       //   ),
       // },
       // {
-      //   path: "/dashboard/sales-report",
+      //   path: "/dashboard/admin/sales-report",
       //   element: (
       //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
       //       <SalesReport />

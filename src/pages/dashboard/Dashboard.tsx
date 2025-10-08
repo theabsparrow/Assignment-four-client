@@ -13,9 +13,9 @@ const Dashboard = () => {
       user?.userRole === USER_ROLE.admin ||
       user?.userRole === USER_ROLE.superAdmin
     ) {
-      navigate("/dashboard/manage-users");
+      navigate("/dashboard/admin/manage-users");
     } else {
-      navigate("/dashboard/my-orders");
+      navigate("/dashboard/admin/my-orders");
     }
   }, [navigate]);
 
