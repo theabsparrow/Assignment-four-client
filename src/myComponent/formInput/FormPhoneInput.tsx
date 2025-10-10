@@ -21,7 +21,7 @@ const FormPhoneInput = ({
         rules={required ? { required: "Phone number is required" } : {}}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
           <div
-            className={`mt-1 rounded-md overflow-hidden  ${
+            className={`rounded-md  ${
               error ? "border-2 border-red-500" : "border border-gray-300"
             }`}
           >

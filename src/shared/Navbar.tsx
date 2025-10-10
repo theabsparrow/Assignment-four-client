@@ -9,7 +9,7 @@ import { useLogoutMutation } from "@/redux/features/auth/authApi";
 import MenuItem from "@/myComponent/menuItem/MenuItem";
 import { IoSettingsSharp } from "react-icons/io5";
 import Dropdown from "@/myComponent/darkmode/Dropdown";
-import MobileNavbar from "@/myComponent/mobileNavbar/MobileNavbar";
+import MobileNavbar from "@/shared/MobileNavbar";
 import { LogoutFunc } from "@/utills/logout";
 import { TMyProfileQUery } from "@/interface/navbar.types";
 import { useMyProfileQuery } from "@/redux/features/user/userApi";
@@ -51,20 +51,6 @@ const Navbar = () => {
       display,
     });
   };
-
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "All cars", path: "/all-cars" },
-    {
-      name: user ? "My Profile" : "Sign In",
-      path: user ? "/my-profile" : "/sign-in",
-    },
-    {
-      name: user ? "Dashboard" : "Sign up",
-      path: user ? "/dashboard" : "/sign-up",
-    },
-    ...(user ? [{ name: "Settings", path: "/settings" }] : []),
-  ];
 
   return (
     <nav className="w-full dark:bg-gray-800 bg-white shadow-md sticky top-0 z-50">
@@ -207,12 +193,7 @@ const Navbar = () => {
             )}
           </div>
         )}
-        <MobileNavbar
-          navLinks={navLinks}
-          userInfo={profileInfo}
-          name={profileInfo?.name}
-          profile={profileInfo?.profileImage}
-        />
+        <MobileNavbar userInfo={profileInfo} />
       </div>
     </nav>
   );

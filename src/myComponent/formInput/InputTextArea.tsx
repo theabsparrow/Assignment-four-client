@@ -25,7 +25,7 @@ const InputTextArea = ({
   const length = value.length;
   return (
     <section className="w-full font-inter space-y-1">
-      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 ">
+      <label className="block text-sm font-semibold text-gray-200 ">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div>

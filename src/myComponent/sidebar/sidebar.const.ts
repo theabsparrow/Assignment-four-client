@@ -1,13 +1,9 @@
 import { AiFillHome } from "react-icons/ai";
 import { FaBorderAll, FaCarSide, FaUser, FaUserFriends } from "react-icons/fa";
 import { IoIosStats, IoMdSettings } from "react-icons/io";
-import {
-  MdLibraryAdd,
-  MdOutlineDescription,
-  MdPermContactCalendar,
-} from "react-icons/md";
+import { MdBrandingWatermark, MdLibraryAdd } from "react-icons/md";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
-import { TbLogs } from "react-icons/tb";
+import { TbCategoryFilled, TbJewishStarFilled, TbLogs } from "react-icons/tb";
 
 export const adminSidebarLinks = [
   {
@@ -32,7 +28,7 @@ export const adminSidebarLinks = [
   },
   {
     name: "Add Car",
-    path: "/dashboard/Add Car",
+    path: "/dashboard/add-car",
     icon: MdLibraryAdd,
   },
   {
@@ -55,6 +51,64 @@ export const adminSidebarLinks = [
     path: "/blogs",
     icon: TbLogs,
   },
+  {
+    name: "All Brands",
+    path: "/all-brands",
+    icon: MdBrandingWatermark,
+  },
+  {
+    name: "All Categories",
+    path: "/all-category",
+    icon: TbCategoryFilled,
+  },
+];
+
+export const userSidebarlinks = [
+  {
+    name: "My cars",
+    path: "/dashboard/user/my-cars",
+    icon: FaCarSide,
+  },
+  {
+    name: "Add Car",
+    path: "/dashboard/add-car",
+    icon: MdLibraryAdd,
+  },
+  {
+    name: "My Wishlist",
+    path: "/dashboard/user/my-wishlist",
+    icon: TbJewishStarFilled,
+  },
+  {
+    name: "My Orders",
+    path: "/dashboard/user/my-orders",
+    icon: FaBorderAll,
+  },
+  {
+    name: "Payment History",
+    path: "/dashboard/user/payment-history",
+    icon: TbJewishStarFilled,
+  },
+  {
+    name: "All Cars",
+    path: "/all-cars",
+    icon: FaCarSide,
+  },
+  {
+    name: "All Blogs",
+    path: "/blogs",
+    icon: TbLogs,
+  },
+  {
+    name: "All Brands",
+    path: "/all-brands",
+    icon: MdBrandingWatermark,
+  },
+  {
+    name: "All Categories",
+    path: "/all-category",
+    icon: TbCategoryFilled,
+  },
 ];
 
 export const commonSidebarLinks = [
@@ -65,22 +119,12 @@ export const commonSidebarLinks = [
   },
   {
     name: "Profile",
-    path: "/my-profile",
+    path: "/dashboard/my-profile",
     icon: FaUser,
   },
   {
     name: "Settings",
-    path: "/settings",
+    path: "/dashboard/settings",
     icon: IoMdSettings,
-  },
-  {
-    name: "About Us",
-    path: "/about-us",
-    icon: MdOutlineDescription,
-  },
-  {
-    name: "Contact Us",
-    path: "/contact",
-    icon: MdPermContactCalendar,
   },
 ];

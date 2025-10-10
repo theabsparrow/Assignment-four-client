@@ -54,12 +54,12 @@ const BasicInfoForm = ({
     }
   };
   return (
-    <section>
-      <h1 className="text-2xl font-bold mb-4 flex items-center justify-center">
+    <section className="space-y-4">
+      <h1 className="text-2xl font-bold flex items-center justify-center">
         Basic Information
       </h1>
-      <div className="space-y-5">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-5 ">
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-4 ">
           <InputSelect
             register={register}
             name="basicInfo.brand"

@@ -19,12 +19,14 @@ const Dropdown = () => {
     document.documentElement.classList.toggle("dark", enabled);
   };
   return (
-    <div>
+    <div className="relative lg:static">
       <button
         onClick={() => setDropdownOpen(!dropdownOpen)}
-        className="w-full flex justify-between items-center px-4 py-3 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+        className="w-full flex justify-between items-center px-2 py-1 lg:px-4 lg:py-3 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
       >
-        <span className="font-semibold">Display & Theme</span>
+        <span className="lg:font-semibold text-sm lg:text-base">
+          Display & Theme
+        </span>
         <IoIosArrowForward
           className={`transform transition-transform ${
             dropdownOpen ? "rotate-90" : ""
@@ -34,10 +36,10 @@ const Dropdown = () => {
 
       {/* Dropdown Content */}
       {dropdownOpen && (
-        <div className=" p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-x border-gray-300 shadow-md">
-          <h3 className="font-semibold mb-2">Theme</h3>
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 cursor-pointer">
+        <div className="p-2 lg:p-4 w-full bg-gray-50 dark:bg-gray-800 rounded-lg border-x border-gray-300 shadow-md lg:space-y-2 absolute lg:static">
+          <h3 className="lg:font-semibold text-sm lg:text-base">Theme</h3>
+          <div className="space-y-2 ">
+            <label className="flex items-center gap-2 cursor-pointer text-sm lg:text-base">
               <input
                 type="radio"
                 name="darkMode"
@@ -46,14 +48,14 @@ const Dropdown = () => {
                 onChange={() => toggleDarkMode(true)}
               />
               <div
-                className={`w-5 h-5 border-2 rounded-full ${
+                className={`w-4 h-4 lg:w-5 lg:h-5 border-2 rounded-full ${
                   darkMode ? "border-blue-500 bg-blue-500" : "border-gray-400"
                 }`}
               ></div>
               <span>On</span>
             </label>
 
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-sm lg:text-base">
               <input
                 type="radio"
                 name="darkMode"
@@ -62,7 +64,7 @@ const Dropdown = () => {
                 onChange={() => toggleDarkMode(false)}
               />
               <div
-                className={`w-5 h-5 border-2 rounded-full ${
+                className={`w-4 h-4 lg:w-5 lg:h-5 border-2 rounded-full ${
                   !darkMode ? "border-blue-500 bg-blue-500" : "border-gray-400"
                 }`}
               ></div>

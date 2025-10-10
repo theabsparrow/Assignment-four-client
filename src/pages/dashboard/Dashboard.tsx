@@ -15,7 +15,7 @@ const Dashboard = () => {
     ) {
       navigate("/dashboard/admin/manage-users");
     } else {
-      navigate("/dashboard/admin/my-orders");
+      navigate("/dashboard/my-profile");
     }
   }, [navigate]);
 

@@ -1,5 +1,5 @@
 import {
-  TDeliveryMethod,
+  TDeliveryOptions,
   TEstimatedTime,
   TPaymentMethod,
   TPaymentOptions,
@@ -15,7 +15,7 @@ export const paymentOptions: TPaymentOptions[] = [
   "SurjoPay",
 ] as const;
 
-export const deliveryMethods: TDeliveryMethod[] = [
+export const deliveryMethods: TDeliveryOptions[] = [
   "Home Delivery",
   "Pickup",
   "Express Delivery",

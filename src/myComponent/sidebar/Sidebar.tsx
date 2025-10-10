@@ -1,12 +1,17 @@
-import logo from "../../../assets/logo.png";
+import logo from "../../assets/logo.png";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { USER_ROLE } from "@/config/role.const";
 import { LogoutFunc } from "@/utills/logout";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { currentUser } from "@/redux/features/auth/authSlice";
-import { adminSidebarLinks, commonSidebarLinks } from "./sidebar.const";
+import {
+  adminSidebarLinks,
+  commonSidebarLinks,
+  userSidebarlinks,
+} from "./sidebar.const";
 import { RiLogoutBoxRFill } from "react-icons/ri";
+import ResponsiveSidebar from "./ResponsiveSidebar";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -25,7 +30,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <section className="hidden lg:flex flex-col justify-between after:dark:bg-gray-900 bg-white dark:text-gray-200 transition-all duration-500 w-64 shadow-lg min-h-screen py-6 space-y-6 sticky top-0 z-20">
+      <section className="hidden lg:flex flex-col justify-between after:dark:bg-gray-900 bg-white dark:text-gray-200 transition-all duration-500 w-64 shadow-lg h-screen py-6 space-y-6 sticky top-0 z-20">
         <div className="cursor-pointer flex justify-center">
           <Link to="/">
             <img className="w-44" src={logo} alt=" Lambo car logo" />
@@ -52,6 +57,23 @@ const Sidebar = () => {
                     <span>{link.name}</span>
                   </NavLink>
                 )))}
+            {user?.userRole === USER_ROLE.user &&
+              userSidebarlinks.map((link, i) => (
+                <NavLink
+                  key={i}
+                  to={link.path}
+                  className={({ isActive }) =>
+                    ` flex items-center gap-3 font-inter font-medium px-4 py-1 rounded-md ${
+                      isActive
+                        ? "bg-secondary hover:bg-deepRed dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-[#f0f3f8] duration-500 "
+                        : "hover:bg-secondary dark:hover:bg-[#f0f3f8] duration-500"
+                    }  `
+                  }
+                >
+                  <span>{<link.icon />}</span>
+                  <span>{link.name}</span>
+                </NavLink>
+              ))}
           </div>
         </nav>
         <nav>
@@ -84,6 +106,14 @@ const Sidebar = () => {
             </button>
           </div>
         </nav>
+      </section>
+      <section className="lg:hidden w-full dark:bg-gray-800 bg-white shadow-md sticky top-0 z-50 flex items-center justify-between">
+        <div>
+          <Link to="/">
+            <img className="w-36 lg:w-56 " src={logo} alt=" Lambo car logo" />
+          </Link>
+        </div>
+        <ResponsiveSidebar />
       </section>
     </>
   );

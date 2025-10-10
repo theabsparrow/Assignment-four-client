@@ -63,7 +63,7 @@ const AddCar = () => {
   };
 
   return (
-    <section className="px-5 lg:px-10 py-4 -600 font-inter space-y-2">
+    <section className="px-5 lg:px-10 py-4 bg-gray-500 font-inter space-y-2 min-h-screen">
       <h1 className="text-3xl font-bold">Add a New Car</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {step === 1 && (

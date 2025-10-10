@@ -10,6 +10,8 @@ import Dashboard from "@/pages/dashboard/Dashboard";
 import MyOrders from "@/pages/dashboard/user/myOrders/MyOrders";
 import PaymentHistory from "@/pages/dashboard/user/PaymentHistory";
 import Wishlist from "@/pages/dashboard/user/Wishlist";
+import MyProfile from "@/pages/myProfile/MyProfile";
+import Settings from "@/pages/settings/Settings";
 
 export const dashboardRoutes = [
   {
@@ -29,6 +31,26 @@ export const dashboardRoutes = [
             roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
           >
             <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-profile",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <MyProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/settings",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <Settings />
           </ProtectedRoute>
         ),
       },
@@ -60,7 +82,9 @@ export const dashboardRoutes = [
       {
         path: "/dashboard/add-car",
         element: (
-          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
             <AddCar />
           </ProtectedRoute>
         ),
@@ -83,7 +107,7 @@ export const dashboardRoutes = [
       // },
       // // user dashboard
       // {
-      //   path: "/dashboard/my-orders",
+      //   path: "/dashboard/user/my-orders",
       //   element: (
       //     <ProtectedRoute roles={[USER_ROLE.user]}>
       //       <MyOrders />
@@ -91,7 +115,7 @@ export const dashboardRoutes = [
       //   ),
       // },
       // {
-      //   path: "/dashboard/my-wishlist",
+      //   path: "/dashboard/user/my-wishlist",
       //   element: (
       //     <ProtectedRoute roles={[USER_ROLE.user]}>
       //       <Wishlist />
@@ -99,7 +123,7 @@ export const dashboardRoutes = [
       //   ),
       // },
       // {
-      //   path: "/dashboard/payment-history",
+      //   path: "/dashboard/user/payment-history",
       //   element: (
       //     <ProtectedRoute roles={[USER_ROLE.user]}>
       //       <PaymentHistory />

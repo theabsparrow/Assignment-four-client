@@ -19,7 +19,7 @@ const InputCheckboxArray = ({
 }: TCheckboxGroupProps) => {
   return (
     <section className=" font-inter">
-      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+      <label className="block text-sm font-semibold text-gray-200 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
@@ -32,7 +32,7 @@ const InputCheckboxArray = ({
               type="checkbox"
               value={allergy}
               {...register(name, {
-                ...(required && { required: `${name} are required` }),
+                ...(required && { required: `${label} are required` }),
               })}
               className="accent-green-700 w-4 h-4"
             />

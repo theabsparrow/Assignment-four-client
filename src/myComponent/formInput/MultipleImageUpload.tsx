@@ -53,9 +53,7 @@ const MultipleImageUpload = ({
 
   return (
     <section className="relative">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-300">{label}</label>
 
       <input
         type="file"
@@ -74,7 +72,7 @@ const MultipleImageUpload = ({
         onClick={() => fileInputRef.current?.click()}
       >
         {imagePreviews.length > 0 ? (
-          <div className="flex items-center  gap-1">
+          <div className="flex items-center gap-1">
             {imagePreviews.map((preview, index) => (
               <div key={index} className="relative group">
                 <img
