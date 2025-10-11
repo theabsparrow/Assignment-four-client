@@ -15,7 +15,7 @@ export const paymentOptions: TPaymentOptions[] = [
   "SurjoPay",
 ] as const;
 
-export const deliveryMethods: TDeliveryOptions[] = [
+export const deliveryoptions: TDeliveryOptions[] = [
   "Home Delivery",
   "Pickup",
   "Express Delivery",

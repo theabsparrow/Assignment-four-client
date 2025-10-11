@@ -1,11 +1,7 @@
 import {
-  accelaration,
   driveTrain,
   engine,
   fuelType,
-  horsePower,
-  topSpeed,
-  torque,
   transmission,
 } from "@/const/carEngine.const";
 import { TcarInfoPayload } from "@/interface/carInterface/car.interface";
@@ -99,36 +95,36 @@ const EngineInfoForm = ({
             options={driveTrain}
             required={true}
           />
-          <InputSelect
-            register={register}
-            name="engineInfo.horsePower"
+          <InputType
             label="Horse Power"
+            name="engineInfo.horsePower"
+            register={register}
             error={errors.engineInfo?.horsePower}
-            options={horsePower}
+            type="number"
             required={true}
           />
-          <InputSelect
-            register={register}
-            name="engineInfo.torque"
+          <InputType
             label="Torque"
+            name="engineInfo.torque"
+            register={register}
             error={errors.engineInfo?.torque}
-            options={torque}
+            type="number"
             required={true}
           />
-          <InputSelect
-            register={register}
-            name="engineInfo.topSpeed"
+          <InputType
             label="Top Speed"
+            name="engineInfo.topSpeed"
+            register={register}
             error={errors.engineInfo?.topSpeed}
-            options={topSpeed}
+            type="number"
             required={true}
           />
-          <InputSelect
-            register={register}
-            name="engineInfo.acceleration"
+          <InputType
             label="Accelaration"
+            name="engineInfo.acceleration"
+            register={register}
             error={errors.engineInfo?.acceleration}
-            options={accelaration}
+            type="number"
             required={true}
           />
         </div>

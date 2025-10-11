@@ -18,7 +18,6 @@ const Sidebar = () => {
   const user = useAppSelector(currentUser);
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
-
   const handleLogout = (e: React.MouseEvent<HTMLElement>) => {
     return LogoutFunc({
       e,
@@ -39,24 +38,24 @@ const Sidebar = () => {
         <nav>
           <h1 className="px-4 text-sm">MENU</h1>
           <div className="flex flex-col gap-1">
-            {user?.userRole === USER_ROLE.admin ||
-              (user?.userRole === USER_ROLE.superAdmin &&
-                adminSidebarLinks.map((link, i) => (
-                  <NavLink
-                    key={i}
-                    to={link.path}
-                    className={({ isActive }) =>
-                      ` flex items-center gap-3 font-inter font-medium px-4 py-1 rounded-md ${
-                        isActive
-                          ? "bg-secondary hover:bg-deepRed dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-[#f0f3f8] duration-500 "
-                          : "hover:bg-secondary dark:hover:bg-[#f0f3f8] duration-500"
-                      }  `
-                    }
-                  >
-                    <span>{<link.icon />}</span>
-                    <span>{link.name}</span>
-                  </NavLink>
-                )))}
+            {(user?.userRole === USER_ROLE.admin ||
+              user?.userRole === USER_ROLE.superAdmin) &&
+              adminSidebarLinks.map((link, i) => (
+                <NavLink
+                  key={i}
+                  to={link.path}
+                  className={({ isActive }) =>
+                    ` flex items-center gap-3 font-inter font-medium px-4 py-1 rounded-md ${
+                      isActive
+                        ? "bg-secondary hover:bg-deepRed dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-[#f0f3f8] duration-500 "
+                        : "hover:bg-secondary dark:hover:bg-[#f0f3f8] duration-500"
+                    }  `
+                  }
+                >
+                  <span>{<link.icon />}</span>
+                  <span>{link.name}</span>
+                </NavLink>
+              ))}
             {user?.userRole === USER_ROLE.user &&
               userSidebarlinks.map((link, i) => (
                 <NavLink

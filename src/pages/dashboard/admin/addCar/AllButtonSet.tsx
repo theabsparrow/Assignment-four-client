@@ -21,7 +21,7 @@ const AllButtonSet = ({
       <button
         type="button"
         onClick={onBack}
-        className="bg-gray-500 text-white px-4 py-2 rounded"
+        className="bg-gray-300 px-4 py-2 rounded"
       >
         Back
       </button>

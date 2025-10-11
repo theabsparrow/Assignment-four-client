@@ -1,11 +1,12 @@
 import {
-  deliveryMethods,
+  deliveryoptions,
   estimatedTimes,
   paymentMethod,
   paymentOptions,
 } from "@/const/carDelivery.const";
 import { TcarInfoPayload } from "@/interface/carInterface/car.interface";
 import {
+  TDeliveryMethod,
   TDeliveryOptions,
   TEstimatedTime,
 } from "@/interface/carInterface/carDelivery.interface";
@@ -48,16 +49,21 @@ const DeliverAndPaymentForm = ({
     control,
     name: "deliveryAndPayment.deliveryMethod",
   });
-  const selectedDeliveryOptions: TDeliveryOptions[] =
+
+  const selectedDelivery: TDeliveryMethod[] =
     useWatch({
       control,
       name: "deliveryAndPayment.deliveryMethod",
-    })?.map((d) => d.deliveryOption) || [];
+    }) || [];
+
+  const selectedDeliveryOptions: TDeliveryOptions[] = selectedDelivery.map(
+    (d) => d.deliveryOption
+  );
 
   const selectedPaymentMethods =
     watch("deliveryAndPayment.paymentMethod") || [];
 
-  const availableDeliveryOptions = deliveryMethods.filter(
+  const availableDeliveryOptions = deliveryoptions.filter(
     (option) => !selectedDeliveryOptions.includes(option)
   );
 

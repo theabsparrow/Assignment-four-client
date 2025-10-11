@@ -18,6 +18,27 @@ const AddCar = () => {
   const [addCar] = useAddCarMutation();
 
   const onSubmit = async (data: TcarInfoPayload) => {
+    data.basicInfo.price = Number(data.basicInfo.price);
+    data.engineInfo.mileage = Number(data.engineInfo.mileage);
+    if (data?.serviceHistory) {
+      data.serviceHistory.mileageAtService = Number(
+        data.serviceHistory?.mileageAtService
+      );
+      data.serviceHistory.cost = Number(data.serviceHistory?.cost);
+    }
+    if (data?.registrationData) {
+      data.registrationData.roadTaxPaid =
+        data.registrationData.roadTaxPaid === "Yes";
+    }
+    if (data?.safetyFeature) {
+      if (!data.safetyFeature.airbags) {
+        delete data.safetyFeature.airbags;
+      }
+      if (!data.safetyFeature.warranty) {
+        delete data.safetyFeature.warranty;
+      }
+    }
+
     const toastId = toast.loading("car data uploading.....");
     try {
       const carImage = await imageUpload(data?.basicInfo?.image as File);
@@ -53,6 +74,7 @@ const AddCar = () => {
         setStep(1);
       }
     } catch (error: any) {
+      console.log(error);
       const errorInfo =
         error?.data?.errorSource[0].message ||
         error?.data?.message ||
