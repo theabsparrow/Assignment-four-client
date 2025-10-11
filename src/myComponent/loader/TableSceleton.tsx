@@ -6,7 +6,7 @@ const TableSceleton = ({
   columns: number;
 }) => {
   return (
-    <div className="overflow-x-auto md:w-[70vw] animate-pulse mt-10">
+    <div className="overflow-x-auto animate-pulse">
       <table className="border-collapse border border-gray-300 w-full">
         {/* Skeleton Table Head */}
         <thead className="bg-gray-200">

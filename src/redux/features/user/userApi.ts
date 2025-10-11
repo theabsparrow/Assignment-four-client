@@ -44,13 +44,6 @@ const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
-    deleteUser: builder.mutation({
-      query: (password) => ({
-        url: "/user//delete-account",
-        method: "DELETE",
-        body: password,
-      }),
-    }),
     getAllUsers: builder.query({
       query: (args) => {
         const params = new URLSearchParams();
@@ -98,7 +91,14 @@ const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["users"],
     }),
-    deleteUserAccount: builder.mutation({
+    deleteAcount: builder.mutation({
+      query: (password) => ({
+        url: "/user/delete-account",
+        method: "DELETE",
+        body: password,
+      }),
+    }),
+    deleteUser: builder.mutation({
       query: (id) => ({
         url: `/user/${id}`,
         method: "DELETE",
@@ -118,9 +118,9 @@ export const { useResendOTPMutation } = userApi;
 export const { useVerifyEmailMutation } = userApi;
 export const { useClearCookieMutation } = userApi;
 export const { useUpdateUserInfoMutation } = userApi;
-export const { useDeleteUserMutation } = userApi;
 export const { useGetAllUsersQuery } = userApi;
 export const { useUpdateUserRoleMutation } = userApi;
 export const { useUpdateUserStatusMutation } = userApi;
-export const { useDeleteUserAccountMutation } = userApi;
+export const { useDeleteAcountMutation } = userApi;
+export const { useDeleteUserMutation } = userApi;
 export const { useGetASingleUSerQuery } = userApi;

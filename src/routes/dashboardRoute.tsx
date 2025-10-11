@@ -2,11 +2,13 @@ import { USER_ROLE } from "@/config/role.const";
 import DashboardLayout from "@/layout/DashboardLayout";
 import ProtectedRoute from "@/layout/ProtectedRoute";
 import AddCar from "@/pages/dashboard/admin/addCar/AddCar";
+import CarDetails from "@/pages/dashboard/admin/carDetails/CarDetails";
 import CarListing from "@/pages/dashboard/admin/carListing/CarListing";
 import OrderHistory from "@/pages/dashboard/admin/orderHistory/OrderHistory";
 import SalesReport from "@/pages/dashboard/admin/salesReport/SalesReport";
 import Statictics from "@/pages/dashboard/admin/statistic/Statictics";
 import UserManagement from "@/pages/dashboard/admin/userManagement/UserManagement";
+import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import MyOrders from "@/pages/dashboard/user/myOrders/MyOrders";
 import PaymentHistory from "@/pages/dashboard/user/PaymentHistory";
@@ -65,6 +67,14 @@ export const dashboardRoutes = [
         ),
       },
       {
+        path: "/dashboard/admin/manage-cars/:id",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <CarDetails />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/dashboard/admin/statistic",
         element: (
           <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
@@ -77,6 +87,14 @@ export const dashboardRoutes = [
         element: (
           <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
             <UserManagement />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/admin/manage-users/:id",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <UserProfile />
           </ProtectedRoute>
         ),
       },

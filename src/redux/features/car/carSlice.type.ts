@@ -7,6 +7,8 @@ export type TFilterState = {
   category: string;
   condition: string;
   inStock: string;
+  negotiable: string;
+  madeIn: string;
 };
 
 export interface TInitialState extends TFilterState {

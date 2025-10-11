@@ -3,6 +3,7 @@ import authReducer from "./features/auth/authSlice";
 import { baseApi } from "./api/baseApi";
 import carFilterReducer from "./features/car/carSlice";
 import settingReducer from "./features/setting/settingSlice";
+import userFilterReducer from "./features/user/userSlice";
 import {
   persistReducer,
   persistStore,
@@ -27,6 +28,7 @@ export const store = configureStore({
     auth: persistAuthReducer,
     carFilter: carFilterReducer,
     settingSlice: settingReducer,
+    userFilter: userFilterReducer,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({

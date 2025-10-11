@@ -26,7 +26,7 @@ const Table = <T,>({ data, columns }: TableProps<T>) => {
                 <th
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
-                  className="p-2 border text-left cursor-pointer"
+                  className="p-1 border text-left"
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -41,7 +41,7 @@ const Table = <T,>({ data, columns }: TableProps<T>) => {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id} className="border-b hover:bg-gray-100">
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-2 border">
+                <td key={cell.id} className="px-2 border">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

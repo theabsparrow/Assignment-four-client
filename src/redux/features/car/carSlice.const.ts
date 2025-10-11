@@ -9,6 +9,8 @@ export const initalFilter: TFilterState = {
   category: "",
   condition: "",
   inStock: "",
+  negotiable: "",
+  madeIn: "",
 };
 
 export const initialState: TInitialState = {
