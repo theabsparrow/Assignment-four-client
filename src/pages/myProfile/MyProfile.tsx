@@ -209,7 +209,8 @@ const MyProfile = () => {
           </h1>
         </div>
         <h1 className="font-semibold">
-          Since {formatedDate(new Date(profileInfo?.createdAt))}
+          Since {formatedDate(new Date(profileInfo?.createdAt)).creationDate}{" "}
+          {formatedDate(new Date(profileInfo?.createdAt)).creationTime}
         </h1>
         <div className="flex flex-col lg:flex-row lg:justify-between gap-6 ">
           <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full ">

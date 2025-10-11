@@ -138,6 +138,7 @@ export interface TCarInfo extends TCar {
   inStock: boolean;
   carBrandLogo: string;
   createdAt: string;
+  negotiable: boolean;
 }
 
 export type TcarInfoPayload = {

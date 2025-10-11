@@ -5,6 +5,7 @@ import AddCar from "@/pages/dashboard/admin/addCar/AddCar";
 import CarListing from "@/pages/dashboard/admin/carListing/CarListing";
 import OrderHistory from "@/pages/dashboard/admin/orderHistory/OrderHistory";
 import SalesReport from "@/pages/dashboard/admin/salesReport/SalesReport";
+import Statictics from "@/pages/dashboard/admin/statistic/Statictics";
 import UserManagement from "@/pages/dashboard/admin/userManagement/UserManagement";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import MyOrders from "@/pages/dashboard/user/myOrders/MyOrders";
@@ -55,22 +56,22 @@ export const dashboardRoutes = [
         ),
       },
 
-      // {
-      //   path: "/dashboard/adminc/manage-cars",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-      //       <CarListing />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: "/dashboard/admin/statistic",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-      //       <CarListing />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "/dashboard/admin/manage-cars",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <CarListing />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/admin/statistic",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <Statictics />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "/dashboard/admin/manage-users",
         element: (

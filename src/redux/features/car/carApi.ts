@@ -23,6 +23,26 @@ const carApi = baseApi.injectEndpoints({
       providesTags: ["car"],
     }),
 
+    getAllcarList: builder.query({
+      query: (args?: TInitialState) => {
+        const params = new URLSearchParams();
+        if (args) {
+          const entries = Object.entries(args);
+          for (const [key, value] of entries) {
+            if (value) {
+              params.append(key, value.toString());
+            }
+          }
+        }
+        return {
+          url: "/cars/all-carsList",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["car"],
+    }),
+
     getCarModel: builder.query({
       query: (args?: { [key: string]: string }) => {
         const params = new URLSearchParams();
@@ -120,6 +140,7 @@ const carApi = baseApi.injectEndpoints({
 export const { useGetCarQuery } = carApi;
 export const { useGetCarModelQuery } = carApi;
 export const { useGetcarCategoryQuery } = carApi;
+export const { useGetAllcarListQuery } = carApi;
 export const { useGetcarBrandQuery } = carApi;
 export const { useAddCarMutation } = carApi;
 export const { useGetSingleCarQuery } = carApi;

@@ -2,13 +2,13 @@ import { TCarInfo } from "@/interface/carInterface/car.interface";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { Link } from "react-router-dom";
 
-const CarCard = (car: Partial<TCarInfo>) => {
+const CarCard = (car: TCarInfo) => {
   const { brand, model, year, price, image, _id, category, condition } = car;
   return (
     <section className="bg-[#f0f3f8] dark:bg-gray-900 font-inter rounded-2xl shadow-lg overflow-hidden transition transform hover:scale-105 hover:shadow-2xl duration-500 p-3 flex flex-col justify-between">
       <div className=" overflow-hidden rounded-lg">
         <img
-          src={image}
+          src={image as string}
           alt={`${brand} ${model}`}
           className="w-full h-full object-cover"
         />
@@ -22,7 +22,7 @@ const CarCard = (car: Partial<TCarInfo>) => {
             {year} ({condition})
           </p>
           <p className="text-xl flex items-center font-semibold text-deepRed dark:text-indigo-400 mt-2">
-            <TbCurrencyTaka /> {price!.toLocaleString()}
+            <TbCurrencyTaka /> {price}
           </p>
         </div>
         <div className="mt-4">
