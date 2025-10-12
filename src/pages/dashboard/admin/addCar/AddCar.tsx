@@ -26,9 +26,9 @@ const AddCar = () => {
       );
       data.serviceHistory.cost = Number(data.serviceHistory?.cost);
     }
-    if (data?.registrationData) {
+    if (data?.registrationData?.roadTaxPaid) {
       data.registrationData.roadTaxPaid =
-        data.registrationData.roadTaxPaid === "Yes";
+        data.registrationData.roadTaxPaid === "Yes" ? true : false;
     }
     if (data?.safetyFeature) {
       if (!data.safetyFeature.airbags) {

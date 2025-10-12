@@ -145,7 +145,7 @@ export type TcarInfoPayload = {
   basicInfo: TCar;
   engineInfo: TCarEngine;
   deliveryAndPayment: TDeliveryAndPayment;
-  registrationData?: TRegistrationdata;
+  registrationData: TRegistrationdata;
   safetyFeature?: TSafetyFeature;
   serviceHistory?: TserviceHistory;
 };

@@ -24,7 +24,6 @@ const CheckOut = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetSingleCarQuery(id);
   const car = data?.data;
-  const myprofile = useMyProfile() || {};
   const navigate = useNavigate();
 
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<
