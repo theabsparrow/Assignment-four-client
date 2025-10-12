@@ -27,7 +27,7 @@ const CarCard = (car: TCarInfo) => {
         </div>
         <div className="mt-4">
           <Link
-            to={`/details/${_id}`}
+            to={`/all-cars/${_id}`}
             className="w-full bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary duration-500 text-white font-bold p-2 rounded-md"
           >
             View Details

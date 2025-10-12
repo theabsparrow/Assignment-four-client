@@ -1,6 +1,7 @@
 import {
   carBrands,
   carCategories,
+  carSortingOrder,
   conditions,
   years,
 } from "@/const/carInfo.const";
@@ -10,7 +11,7 @@ import {
   TCategory,
   TCondition,
 } from "@/interface/carInterface/car.interface";
-import { sortingOrders, TValue } from "@/myComponent/formInput/formInput.const";
+import { TValue } from "@/myComponent/formInput/formInput.const";
 import CarListingSelect from "@/myComponent/selectComponent/CarListingSelect";
 import { TFilterProps } from "@/pages/allCars/allCars.types";
 import {
@@ -132,7 +133,7 @@ const CarListFiltering = ({
                 className="rounded-lg outline-none font-medium bg-transparent border-2 p-2"
               >
                 <option value="">Sort by</option>
-                {sortingOrders.map((sortingOrder: TValue) => (
+                {carSortingOrder.map((sortingOrder: TValue) => (
                   <option
                     key={sortingOrder.value as string}
                     value={sortingOrder.value as string}
@@ -315,7 +316,7 @@ const CarListFiltering = ({
                     className="rounded-lg outline-none font-medium bg-transparent border-2 p-2"
                   >
                     <option value="">Sort by</option>
-                    {sortingOrders.map((sortingOrder: TValue) => (
+                    {carSortingOrder.map((sortingOrder: TValue) => (
                       <option
                         key={sortingOrder.value as string}
                         value={sortingOrder.value as string}

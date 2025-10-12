@@ -6,6 +6,7 @@ import { userTableColumns } from "./userTableColoumn";
 import { TExtendedUser } from "@/interface/userInterface/userInfo";
 import Table from "@/myComponent/table/Table";
 import Pagination from "@/myComponent/pagination/Pagination";
+import UserManagementFIltering from "./UserManagementFIltering";
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +30,8 @@ const UserManagement = () => {
         </div>
       )}
       <section className=" px-2 font-inter space-y-6 ">
-        <div className=" w-full ">
+        <UserManagementFIltering total={totalUser} />
+        <div className="w-full ">
           <Table data={result} columns={column} />
           {result?.length > 0 && (
             <div className="mt-8 md:mt-10">

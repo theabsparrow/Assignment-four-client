@@ -41,7 +41,7 @@ export const carTableColumns = (): ColumnDef<TCarInfo>[] => [
     cell: ({ row }) => {
       const category: string = row.original.category;
       const trimmedcategory =
-        category.length > 10 ? category.slice(0, 10) + "..." : category;
+        category.length > 13 ? category.slice(0, 13) + "..." : category;
       return (
         <div className="relative group inline-block">
           <h1>{trimmedcategory}</h1>
@@ -58,7 +58,7 @@ export const carTableColumns = (): ColumnDef<TCarInfo>[] => [
     cell: ({ row }) => {
       const condition: string = row.original.condition;
       const trimmedCondition =
-        condition.length > 10 ? condition.slice(0, 10) + "..." : condition;
+        condition.length > 15 ? condition.slice(0, 15) + "..." : condition;
       return (
         <div className="relative group inline-block">
           <h1>{trimmedCondition}</h1>
@@ -76,7 +76,7 @@ export const carTableColumns = (): ColumnDef<TCarInfo>[] => [
     cell: ({ row }) => {
       const country: string = row.original.madeIn;
       const trimmedCountry =
-        country.length > 10 ? country.slice(0, 10) + "..." : country;
+        country.length > 15 ? country.slice(0, 15) + "..." : country;
       return (
         <div className="relative group inline-block">
           <h1>{trimmedCountry}</h1>

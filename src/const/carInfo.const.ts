@@ -104,3 +104,15 @@ export const seatingCapacies: TSeatingCapacity[] = [
 ] as const;
 
 export const years = getYears();
+
+export type TValue = {
+  value: string;
+  label: string;
+};
+export const carSortingOrder: TValue[] = [
+  { value: "-price", label: "Price (desc)" },
+  { value: "-year", label: "Year (desc)" },
+  { value: "price", label: "Price" },
+  { value: "year", label: "Year" },
+  { value: "brand", label: "Brand" },
+];

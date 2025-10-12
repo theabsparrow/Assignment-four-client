@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import DeleteModal from "@/myComponent/modal/DeleteModal";
 import { useDeleteUserMutation } from "@/redux/features/user/userApi";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "@/redux/hooks";
+import { currentUser } from "@/redux/features/auth/authSlice";
 
 export const userTableColumns = (): ColumnDef<TExtendedUser>[] => [
   {
@@ -146,12 +148,20 @@ export const userTableColumns = (): ColumnDef<TExtendedUser>[] => [
   {
     header: "Action",
     cell: ({ row }) => {
+      const user = useAppSelector(currentUser);
+      const role = row.original.role;
       const [deleteUser] = useDeleteUserMutation();
+
       const confirmDelete = async (
         setOpen: React.Dispatch<React.SetStateAction<boolean>>,
         setLoading: React.Dispatch<React.SetStateAction<boolean>>
       ) => {
         setLoading(true);
+        if (user?.userRole === USER_ROLE.admin && role === USER_ROLE.admin) {
+          toast.error("you can`t delete an admin", { duration: 3000 });
+          setLoading(false);
+          return;
+        }
         const toastId = toast.loading("user is deleting.....");
         try {
           const id = row.original._id;

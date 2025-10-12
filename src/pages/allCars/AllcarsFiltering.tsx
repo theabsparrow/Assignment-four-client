@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { sortingOrders, TValue } from "@/myComponent/formInput/formInput.const";
+import { TValue } from "@/myComponent/formInput/formInput.const";
 import { TbCurrencyTaka } from "react-icons/tb";
 import ReactRangeSliderInput from "react-range-slider-input";
 import { TFilterProps } from "./allCars.types";
@@ -25,6 +25,7 @@ import {
 import {
   carBrands,
   carCategories,
+  carSortingOrder,
   conditions,
   years,
 } from "@/const/carInfo.const";
@@ -184,7 +185,7 @@ const AllcarsFiltering = ({
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
                 <option value="select category">Select an option</option>
-                {sortingOrders.map((sortingOrder: TValue) => (
+                {carSortingOrder.map((sortingOrder: TValue) => (
                   <option
                     key={sortingOrder.value as string}
                     value={sortingOrder.value as string}
@@ -313,7 +314,7 @@ const AllcarsFiltering = ({
                 className="px-5 rounded outline-none bg-transparent font-bold"
               >
                 <option value="">Select an option</option>
-                {sortingOrders.map((sortingOrder: TValue) => (
+                {carSortingOrder.map((sortingOrder: TValue) => (
                   <option
                     key={sortingOrder.value as string}
                     value={sortingOrder.value as string}

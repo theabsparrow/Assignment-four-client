@@ -61,13 +61,24 @@ export const router = createBrowserRouter([
         path: "sign-up",
         element: <SignUp />,
       },
-      // {
-      //   path: "details/:id",
-      //   element: <CarDetails />,
-      // },
+
       {
         path: "all-cars",
         element: <AllCars />,
+      },
+      {
+        path: "all-cars/:id",
+        element: <CarDetails />,
+      },
+      {
+        path: "all-cars/checkout/:id",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+          >
+            <CheckOut />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "about-us",
@@ -93,24 +104,7 @@ export const router = createBrowserRouter([
         path: "all-category",
         element: <AllCategories />,
       },
-      // {
-      //   path: "profile/:id",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-      //       <UserProfile />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: "checkout/:id",
-      //   element: (
-      //     <ProtectedRoute
-      //       roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
-      //     >
-      //       <CheckOut />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+
       // {
       //   path: "order/verify",
       //   element: (

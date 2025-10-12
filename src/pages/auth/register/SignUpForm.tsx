@@ -1,3 +1,4 @@
+import { gender } from "@/const/user.const";
 import { TUserInfo } from "@/interface/userInterface/userInfo";
 import AcceptTermsInput from "@/myComponent/formInput/AcceptTermsInput";
 import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
@@ -67,7 +68,7 @@ const SignUpForm = ({ methods, onSubmit }: TSignUpFormProps) => {
             name="gender"
             label="Gender"
             error={errors.gender}
-            options={["male", "female", "others"]}
+            options={gender}
             required={true}
           />
           <InputType

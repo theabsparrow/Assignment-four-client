@@ -1,11 +1,9 @@
-import useMyProfile from "@/hook/useMyProfile";
 import { useGetSingleCarQuery } from "@/redux/features/car/carApi";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaTruckFront } from "react-icons/fa6";
 import { SiCashapp } from "react-icons/si";
 import { FaCcAmazonPay } from "react-icons/fa";
-import { TDeliveryMethod } from "../dashboard/admin/addCar/addcar.interface";
 import CheckOutCar from "./CheckOutCar";
 import CheckOutUser from "./CheckOutUser";
 import OrderSummery from "./OrderSummery";

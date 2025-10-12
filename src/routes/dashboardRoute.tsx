@@ -4,6 +4,8 @@ import ProtectedRoute from "@/layout/ProtectedRoute";
 import AddCar from "@/pages/dashboard/admin/addCar/AddCar";
 import CarDetails from "@/pages/dashboard/admin/carDetails/CarDetails";
 import CarListing from "@/pages/dashboard/admin/carListing/CarListing";
+import ManageBlogs from "@/pages/dashboard/admin/manageBlogs/ManageBlogs";
+import OrderDetails from "@/pages/dashboard/admin/orderDetails/OrderDetails";
 import OrderHistory from "@/pages/dashboard/admin/orderHistory/OrderHistory";
 import SalesReport from "@/pages/dashboard/admin/salesReport/SalesReport";
 import Statictics from "@/pages/dashboard/admin/statistic/Statictics";
@@ -108,22 +110,51 @@ export const dashboardRoutes = [
           </ProtectedRoute>
         ),
       },
-      // {
-      //   path: "/dashboard/admin/order-history",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-      //       <OrderHistory />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: "/dashboard/admin/sales-report",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-      //       <SalesReport />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "/dashboard/admin/manage-blogs",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <ManageBlogs />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/admin/manage-blogs/:id",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <ManageBlogs />
+          </ProtectedRoute>
+        ),
+      },
+
+      {
+        path: "/dashboard/admin/order-history",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <OrderHistory />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/admin/order-history/:id",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <OrderDetails />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/admin/sales-report",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <SalesReport />
+          </ProtectedRoute>
+        ),
+      },
       // // user dashboard
       // {
       //   path: "/dashboard/user/my-orders",
