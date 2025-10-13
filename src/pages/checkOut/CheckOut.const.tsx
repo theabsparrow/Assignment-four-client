@@ -16,7 +16,7 @@ export const deliveryIconMap = {
 
 export const paymentIconMap = {
   "Cash on Delivery": <FaMoneyBillWave className="text-3xl text-green-500" />,
-  "Online Payment": <FaCreditCard className="text-3xl text-blue-500" />,
+  "Online Payment": <FaCreditCard className="text-2xl text-blue-500" />,
 };
 
 export const paymentOptionIconMap = {

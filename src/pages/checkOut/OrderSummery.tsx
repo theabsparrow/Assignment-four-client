@@ -1,128 +1,176 @@
 import { TbCurrencyTaka } from "react-icons/tb";
-import { OrderSummaryProps } from "./checkOutInterface";
-import PhoneInput from "react-phone-input-2";
-import { FaMapMarkerAlt, FaPhoneAlt, FaStore } from "react-icons/fa";
-import { TDeliveryMethod } from "../dashboard/admin/addCar/addcar.interface";
-import { AiFillWarning } from "react-icons/ai";
-
-const OrderSummery = ({
-  selectedDeliveryMethod,
-  selectedPaymentMethod,
-  selectedPaymentOption,
-  userPhoneNumber,
-  phoneNumber,
-  useExistingNumber,
-  car,
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  currentDeliveryAndPayment,
+  resetDeliveryAndPayment,
+} from "@/redux/features/checkout/checkoutSlice";
+import {
+  TDeliveryAndPayment,
+  TDeliveryMethod,
+  TDeliveryOptions,
+  TEstimatedTime,
+  TPaymentMethod,
+  TPaymentOptions,
+} from "@/interface/carInterface/carDelivery.interface";
+import {
   deliveryIconMap,
   paymentIconMap,
   paymentOptionIconMap,
-  location,
-  nearestDealer,
-  handleSubmit,
-  handleChange,
-  setPhoneNumber,
-  setUseExistingNumber,
-  errorMessage,
-}: OrderSummaryProps) => {
+} from "./CheckOut.const";
+import { Controller, useForm } from "react-hook-form";
+// import { useCreateOrderMutation } from "@/redux/features/order/orderApi";
+// import { useNavigate } from "react-router-dom";
+import InputType from "@/myComponent/formInput/InputType";
+import FormPhoneInput from "@/myComponent/formInput/FormPhoneInput";
+import { toast } from "sonner";
+
+export interface OrderSummaryProps {
+  car: {
+    price: number;
+    inStock: boolean;
+    delivery: TDeliveryAndPayment;
+  };
+  user: {
+    phoneNumber: string;
+    verifyWithEmail: boolean;
+  };
+}
+
+export type TOrderInfo = {
+  deliveryOption: TDeliveryOptions;
+  paymentMethod: TPaymentMethod;
+  paymentOption?: TPaymentOptions;
+  estimatedDeliveryTime: TEstimatedTime;
+  phoneNumber: string;
+  deliveryCost: number;
+  location: string;
+  existingPhone?: boolean;
+};
+
+const OrderSummery = ({ car, user }: OrderSummaryProps) => {
+  const { phoneNumber: phone, verifyWithEmail } = user || {};
+  const { price, inStock, delivery } = car || {};
+  const currentState = useAppSelector(currentDeliveryAndPayment);
+  const dispatch = useAppDispatch();
+  // const [createOrder] = useCreateOrderMutation();
+  // const navigate = useNavigate();
+
+  const {
+    handleSubmit,
+    register,
+    watch,
+    setValue,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<TOrderInfo>();
+  const existingPhone = watch("existingPhone");
+
+  const onSubmit = async (data: TOrderInfo) => {
+    if (!verifyWithEmail) {
+      return toast.error("please verify your email at first");
+    }
+    if (!inStock) {
+      return toast.error("this car is not available right now");
+    }
+    if (
+      currentState.paymentMethods === "Online Payment" &&
+      !currentState.paymentOptions
+    ) {
+      return toast.error("please select a payment option");
+    }
+    data.deliveryOption = currentState.deliveryOptions as TDeliveryOptions;
+    data.paymentMethod = currentState.paymentMethods as TPaymentMethod;
+    if (currentState.paymentOptions as TPaymentOptions) {
+      data.paymentOption = currentState.paymentOptions as TPaymentOptions;
+    }
+    data.deliveryCost = delivery?.deliveryMethod.find(
+      (method) => method.deliveryOption === currentState.deliveryOptions
+    )?.deliveryCost as number;
+    data.estimatedDeliveryTime = delivery?.deliveryMethod.find(
+      (method) => method.deliveryOption === currentState.deliveryOptions
+    )?.estimatedTime as TEstimatedTime;
+    delete data.existingPhone;
+  };
+
   return (
-    <section className="md:w-[40vw] font-inter">
-      {selectedDeliveryMethod && (
-        <div className="mb-6 bg-white dark:bg-gray-800 px-6 py-4 rounded-lg border-2 border-green-500">
-          <p className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-2xl flex items-center gap-4">
-            {selectedDeliveryMethod === "Home Delivery" ||
-            selectedDeliveryMethod === "Express Delivery" ? (
-              <>
-                <FaMapMarkerAlt className="text-primary text-2xl" />
-                Enter Your Delivery Address
-              </>
-            ) : (
-              <>
-                <FaStore className="text-primary text-2xl" />
-                Select Your Nearest Dealer
-              </>
-            )}
-          </p>
-          <form onSubmit={handleSubmit} id="myForm">
-            <input
-              type="text"
-              value={
-                selectedDeliveryMethod === "Home Delivery" ||
-                selectedDeliveryMethod === "Express Delivery"
-                  ? location
-                  : nearestDealer
-              }
-              onChange={(e) => {
-                const value = e.target.value;
-                if (
-                  selectedDeliveryMethod === "Home Delivery" ||
-                  selectedDeliveryMethod === "Express Delivery"
-                ) {
-                  handleChange("user", value);
-                } else {
-                  handleChange("dealer", value);
-                }
-              }}
-              placeholder={
-                selectedDeliveryMethod === "Home Delivery" ||
-                selectedDeliveryMethod === "Express Delivery"
-                  ? "Enter your address"
-                  : "Enter dealer location"
-              }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100 outline-green-300"
+    <section className="w-full lg:w-[40vw] font-inter space-y-4">
+      <h2 className="text-xl font-extrabold  text-gray-800 dark:text-gray-200">
+        Order Summery
+      </h2>
+      {currentState.deliveryOptions && (
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          id="orderForm"
+          className="space-y-4 bg-gray-500 dark:bg-gray-800 px-6 py-4 rounded-lg"
+        >
+          <InputType
+            label="Your Location"
+            name="location"
+            register={register}
+            error={errors.location}
+            required={true}
+          />
+          <div className="flex items-center gap-4">
+            <Controller
+              name="existingPhone"
+              control={control}
+              defaultValue={false}
+              render={({ field }) => (
+                <div className="flex items-center gap-4">
+                  <input
+                    type="checkbox"
+                    id="useExistingNumber"
+                    checked={field.value}
+                    onChange={() => {
+                      const newValue = !field.value;
+                      field.onChange(newValue);
+                      if (newValue) {
+                        setValue("phoneNumber", phone);
+                      } else {
+                        setValue("phoneNumber", "");
+                      }
+                    }}
+                    className="w-5 h-5 text-green-500 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="useExistingNumber"
+                    className="text-white/80 dark:text-gray-200 cursor-pointer font-semibold space-x-4"
+                  >
+                    <span>Use existing number</span>
+                    {field.value && (
+                      <span className="text-green-500">({phone})</span>
+                    )}
+                  </label>
+                </div>
+              )}
             />
-            <div className="mt-6">
-              <p className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-2xl flex items-center gap-4">
-                <FaPhoneAlt className="text-primary text-2xl" /> Phone Number
-              </p>
-              <div className="flex items-center gap-4 mb-4">
-                <input
-                  type="checkbox"
-                  id="useExistingNumber"
-                  checked={useExistingNumber}
-                  onChange={() => {
-                    setUseExistingNumber(!useExistingNumber);
-                    if (!useExistingNumber) {
-                      setPhoneNumber(userPhoneNumber);
-                    } else {
-                      setPhoneNumber("");
-                    }
-                  }}
-                  className="w-5 h-5 text-green-500 cursor-pointer"
-                />
-                <label
-                  htmlFor="useExistingNumber"
-                  className="text-gray-800 dark:text-gray-200 cursor-pointer font-semibold"
-                >
-                  Use existing number{" "}
-                  <span className="text-blue-600">({userPhoneNumber})</span>
-                </label>
-              </div>
-              <PhoneInput
-                country={"bd"}
-                value={phoneNumber}
-                onChange={(value) => setPhoneNumber(value)}
-                disabled={useExistingNumber}
-              />
-            </div>
-          </form>
-        </div>
+          </div>
+          <FormPhoneInput
+            label="Phone Number"
+            name="phoneNumber"
+            control={control}
+            required={!existingPhone}
+            useExistingNumber={existingPhone}
+          />
+        </form>
       )}
 
       {/* Display selected options */}
-      <div className="bg-blue-50 dark:bg-gray-800 rounded-lg shadow-md px-6 py-4 border-2 border-green-500 space-y-2">
+      <div className="bg-blue-50 dark:bg-gray-800 rounded-lg shadow-md px-6 py-4 space-y-2">
         <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-2xl">
           Selected Methods
         </h3>
-        <div className="space-y-2">
+        <div className="space-y-2 text-sm">
           <p className="text-gray-900 dark:text-gray-100 flex justify-between items-center">
             <span className="font-semibold">Delivery Method :</span>{" "}
             <span className="text-green-600 dark:text-green-400 font-semibold flex items-center gap-1">
               {
                 deliveryIconMap[
-                  selectedDeliveryMethod as keyof typeof deliveryIconMap
+                  currentState.deliveryOptions as keyof typeof deliveryIconMap
                 ]
               }{" "}
-              {selectedDeliveryMethod}{" "}
+              {currentState.deliveryOptions}{" "}
             </span>
           </p>
           <p className="text-gray-900 dark:text-gray-100 flex justify-between items-center">
@@ -130,36 +178,34 @@ const OrderSummery = ({
             <span className="text-green-600 dark:text-green-400 font-semibold flex items-center gap-1">
               {
                 paymentIconMap[
-                  selectedPaymentMethod as keyof typeof paymentIconMap
+                  currentState.paymentMethods as keyof typeof paymentIconMap
                 ]
               }{" "}
-              {selectedPaymentMethod || "Not Selected"}
+              {currentState.paymentMethods || "Not Selected"}
             </span>
           </p>
-          {selectedPaymentMethod === "Online Payment" && (
+          {currentState.paymentMethods === "Online Payment" && (
             <p className="text-gray-900 dark:text-gray-100 flex justify-between items-center">
               <span className="font-semibold">Online Payment Option :</span>{" "}
               <span className="text-green-600 dark:text-green-400 font-semibold flex items-center gap-1">
                 {
                   paymentOptionIconMap[
-                    selectedPaymentOption as keyof typeof paymentOptionIconMap
+                    currentState.paymentOptions as keyof typeof paymentOptionIconMap
                   ]
                 }{" "}
-                {selectedPaymentOption || "Not Selected"}
+                {currentState.paymentOptions || "Not Selected"}
               </span>
             </p>
           )}
-        </div>
-        <div className=" mb-4">
           <div className="flex justify-between items-center">
             <span className="text-gray-800 dark:text-gray-200 font-semibold">
               Estimated Delivery :
             </span>
             <span className="text-green-600 dark:text-green-400 font-semibold">
               {
-                car?.deliveryMethod.find(
+                delivery?.deliveryMethod.find(
                   (method: TDeliveryMethod) =>
-                    method?.method === selectedDeliveryMethod
+                    method?.deliveryOption === currentState.deliveryOptions
                 )?.estimatedTime
               }
             </span>
@@ -170,59 +216,51 @@ const OrderSummery = ({
             </span>
             <span className="text-green-600 dark:text-green-400 font-semibold flex items-center gap-1">
               <TbCurrencyTaka className="text-xl  font-bold" />{" "}
-              {car?.deliveryMethod
+              {delivery?.deliveryMethod
                 .find(
                   (method: TDeliveryMethod) =>
-                    method?.method === selectedDeliveryMethod
+                    method?.deliveryOption === currentState.deliveryOptions
                 )
-                ?.deliveryCost.toFixed(2)}
+                ?.deliveryCost?.toFixed(2)}
             </span>
           </div>
         </div>
-        <div>
-          <div className="flex justify-between items-center  ">
-            <span className="text-xl font-bold text-gray-800 dark:text-gray-200">
-              Total :
-            </span>
-            <span className="text-2xl font-bold text-green-600 dark:text-green-400 flex items-center gap-1">
-              <TbCurrencyTaka className="text-3xl  font-bold" />{" "}
-              {(
-                car?.price +
-                car?.deliveryMethod
-                  .find(
-                    (method: TDeliveryMethod) =>
-                      method?.method === selectedDeliveryMethod
-                  )
-                  ?.deliveryCost.toFixed(2)
-              ).toLocaleString()}
-            </span>
-          </div>
+
+        <div className="flex justify-between items-center text-lg font-bold">
+          <span className=" text-gray-800 dark:text-gray-200">Total :</span>
+          <span className=" text-green-600 dark:text-green-400 flex items-center gap-1">
+            <TbCurrencyTaka />
+            {price +
+              (
+                delivery?.deliveryMethod?.find(
+                  (method: TDeliveryMethod) =>
+                    method?.deliveryOption === currentState.deliveryOptions
+                )?.deliveryCost || 0
+              ).toFixed(2)}
+          </span>
         </div>
       </div>
 
-      {selectedPaymentMethod && (
-        <>
-          {errorMessage && (
-            <div className=" mt-2">
-              <h1 className="text-center text-red-500 font-semibold flex items-center justify-center gap-1">
-                {" "}
-                <span>
-                  <AiFillWarning />
-                </span>{" "}
-                {errorMessage}
-              </h1>
-            </div>
-          )}
-          <div className="mt-5 flex justify-end">
-            <button
-              className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center md:w-36 text-white font-bold py-2 px-1 rounded-md duration-500 transition"
-              type="submit"
-              form="myForm"
-            >
-              Place Order
-            </button>
-          </div>
-        </>
+      {currentState.paymentMethods && (
+        <div className="mt-5 flex justify-between">
+          <button
+            onClick={() => {
+              reset();
+              dispatch(resetDeliveryAndPayment());
+            }}
+            className="bg-gray-500 flex justify-center text-white font-bold py-2 px-3 rounded-md duration-500 transition"
+            type="button"
+          >
+            Reset
+          </button>
+          <button
+            className="bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary flex justify-center text-white font-bold py-2 px-3 rounded-md duration-500 transition"
+            type="submit"
+            form="orderForm"
+          >
+            Place Order
+          </button>
+        </div>
       )}
     </section>
   );

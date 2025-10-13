@@ -12,9 +12,10 @@ import Statictics from "@/pages/dashboard/admin/statistic/Statictics";
 import UserManagement from "@/pages/dashboard/admin/userManagement/UserManagement";
 import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import Dashboard from "@/pages/dashboard/Dashboard";
+import MyCars from "@/pages/dashboard/myCars/MyCars";
 import MyOrders from "@/pages/dashboard/user/myOrders/MyOrders";
-import PaymentHistory from "@/pages/dashboard/user/PaymentHistory";
-import Wishlist from "@/pages/dashboard/user/Wishlist";
+import PaymentHistory from "@/pages/dashboard/user/paymentHistory/PaymentHistory";
+import Wishlist from "@/pages/dashboard/user/wishList/Wishlist";
 import MyProfile from "@/pages/myProfile/MyProfile";
 import Settings from "@/pages/settings/Settings";
 
@@ -59,7 +60,7 @@ export const dashboardRoutes = [
           </ProtectedRoute>
         ),
       },
-
+      // admin routes starts
       {
         path: "/dashboard/admin/manage-cars",
         element: (
@@ -155,31 +156,41 @@ export const dashboardRoutes = [
           </ProtectedRoute>
         ),
       },
-      // // user dashboard
-      // {
-      //   path: "/dashboard/user/my-orders",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.user]}>
-      //       <MyOrders />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: "/dashboard/user/my-wishlist",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.user]}>
-      //       <Wishlist />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: "/dashboard/user/payment-history",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.user]}>
-      //       <PaymentHistory />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      // admin routes ends
+
+      // // user routes starts
+      {
+        path: "/dashboard/user/my-orders",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MyOrders />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/user/my-wishlist",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <Wishlist />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/user/payment-history",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <PaymentHistory />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/user/my-cars",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MyCars />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ];

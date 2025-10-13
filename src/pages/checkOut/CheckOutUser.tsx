@@ -9,8 +9,8 @@ type UserInfoProps = {
 
 const CheckOutUser = ({ user }: UserInfoProps) => {
   return (
-    <section className="font-inter">
-      <h2 className="text-3xl font-extrabold mb-4 md:mb-8 text-gray-800 dark:text-gray-200">
+    <section className="font-inter space-y-4">
+      <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 text-center">
         User Information
       </h2>
       <div className="flex flex-col md:flex-row gap-2 md:gap-8 md:items-center">

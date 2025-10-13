@@ -206,7 +206,10 @@ const PersonalInfoSettings = ({ profileInfo }: { profileInfo: TUserInfo }) => {
               </h1>
               <div className="flex lg:flex-col">
                 <p className="text-gray-600 ">
-                  {formatedDate(new Date(profileInfo?.dateOfBirth))}{" "}
+                  {
+                    formatedDate(new Date(profileInfo?.dateOfBirth))
+                      .creationDate
+                  }{" "}
                 </p>
                 <p className="text-gray-600">
                   ( {calculateAge(profileInfo?.dateOfBirth)} years old)

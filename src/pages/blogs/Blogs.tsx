@@ -1,6 +1,6 @@
-import { currentUser } from "@/redux/features/auth/authSlice";
-import { useAppSelector } from "@/redux/hooks";
-import CreateBlog from "./CreateBlog";
+// import { currentUser } from "@/redux/features/auth/authSlice";
+// import { useAppSelector } from "@/redux/hooks";
+// import CreateBlog from "./CreateBlog";
 // import { useState } from "react";
 // import { blogInitalState } from "./blog.const";
 import { useGetAllBlogsQuery } from "@/redux/features/blog/blogApi";
@@ -8,7 +8,7 @@ import BlogCard, { TBlog } from "./BlogCard";
 import BlogSceleton from "@/myComponent/loader/BlogSceleton";
 
 const Blogs = () => {
-  const user = useAppSelector(currentUser);
+  // const user = useAppSelector(currentUser);
 
   // const [searchTerm, setSearch] = useState("");
   // const [filter, setFilter] = useState(blogInitalState);

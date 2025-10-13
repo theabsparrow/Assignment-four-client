@@ -16,13 +16,13 @@ import AllCars from "@/pages/allCars/AllCars";
 import AboutUs from "@/pages/about us/AboutUs";
 import Blogs from "@/pages/blogs/Blogs";
 import Contacts from "@/pages/contact/Contacts";
-import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import CheckOut from "@/pages/checkOut/CheckOut";
 import AllBrands from "@/pages/allBrands/AllBrands";
 import VerifyOrder from "@/pages/verifyOrder/VerifyOrder";
 import OrderDetails from "@/pages/orderDetails/OrderDetails";
 import BlogDetails from "@/pages/blogDetails/BlogDetails";
 import AllCategories from "@/pages/allCategories/AllCategories";
+import MyCars from "@/pages/dashboard/myCars/MyCars";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -105,24 +105,24 @@ export const router = createBrowserRouter([
         element: <AllCategories />,
       },
 
-      // {
-      //   path: "order/verify",
-      //   element: (
-      //     <ProtectedRoute roles={[USER_ROLE.user]}>
-      //       <VerifyOrder />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: "order/:id",
-      //   element: (
-      //     <ProtectedRoute
-      //       roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
-      //     >
-      //       <OrderDetails />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "order/verify",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <VerifyOrder />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "order/:id",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+          >
+            <OrderDetails />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   ...dashboardRoutes,
@@ -134,5 +134,13 @@ export const router = createBrowserRouter([
   {
     path: "/set-newPassword",
     element: <SetNewPassword />,
+  },
+  {
+    path: "/my-cars",
+    element: (
+      <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+        <MyCars />
+      </ProtectedRoute>
+    ),
   },
 ]);

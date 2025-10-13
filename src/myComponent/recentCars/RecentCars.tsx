@@ -10,7 +10,7 @@ const RecentCars = () => {
   const reduxQuery = useAppSelector(currentFilter);
   const query = { ...reduxQuery, limit: "9" };
   const { data, isLoading } = useGetCarQuery(query as TInitialState);
-  const cars = data?.data;
+  const cars = data?.data || [];
   if (isLoading) {
     return <AllCarsSkeleton />;
   }
@@ -20,8 +20,8 @@ const RecentCars = () => {
         Recent cars
       </h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {cars.map((car: Partial<TCarInfo>) => (
-          <CarCard key={car._id} {...car} />
+        {cars.map((car: TCarInfo) => (
+          <CarCard key={car?._id} {...car} />
         ))}
       </div>
     </section>

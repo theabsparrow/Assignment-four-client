@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import FormInput from "@/myComponent/formInput/FormInput";
-import AddCarSelectInput from "../dashboard/admin/addCar/AddCarSelectInput";
-import {
-  carBrands,
-  carCategories,
-} from "../dashboard/admin/addCar/addcar.const";
-import TextArea from "../dashboard/admin/addCar/addCarTextArea";
 import { imageUpload } from "@/utills/uploadImage";
 import { toast } from "sonner";
 import { useAddBlogMutation } from "@/redux/features/blog/blogApi";
@@ -110,41 +104,6 @@ const CreateBlog = () => {
                   maxLength={50}
                   register={methods.register}
                   required={true}
-                />
-                <AddCarSelectInput
-                  name="brand"
-                  label="Brand"
-                  options={carBrands}
-                />
-                <AddCarSelectInput
-                  name="category"
-                  label="Category"
-                  options={carCategories}
-                />
-                <FormInput
-                  label="Model (Optional)"
-                  name="model"
-                  placeholder="Car model"
-                  type="text"
-                  maxLength={25}
-                  register={methods.register}
-                  clearErrors={methods.clearErrors}
-                />
-                <FormInput
-                  label="Image"
-                  name="image"
-                  type="file"
-                  register={methods.register}
-                  setValue={methods.setValue}
-                  clearErrors={methods.clearErrors}
-                />
-                <TextArea
-                  name="content"
-                  label="Your Blog Content"
-                  placeholder="Write your content..."
-                  register={methods.register}
-                  errors={methods.formState.errors}
-                  clearErrors={methods.clearErrors}
                 />
 
                 <div className="mb-4">

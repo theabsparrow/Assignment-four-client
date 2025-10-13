@@ -29,13 +29,16 @@ const CheckoutDelivery = ({
   const dispatch = useAppDispatch();
   const currentState = useAppSelector(currentDeliveryAndPayment);
   return (
-    <section className="lg:w-[40vw]">
+    <section className="w-full lg:w-[40vw] space-y-4">
+      <h2 className="text-xl font-extrabold  text-gray-800 dark:text-gray-200">
+        Order Methods
+      </h2>
       {/* Delivery Method Selection */}
-      <div className="mb-6 bg-white dark:bg-gray-800 px-6 py-4 rounded-lg  border-2 border-green-500">
-        <p className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-2xl flex items-center gap-4">
-          Delivery Method <FaTruckFront className="text-primary text-3xl" />
+      <div className="bg-white dark:bg-gray-800 px-6 py-4 rounded-lg  space-y-2">
+        <p className="font-bold text-gray-800 dark:text-gray-200 text-xl flex items-center gap-2">
+          Delivery Method <FaTruckFront className="text-primary text-xl" />
         </p>
-        <div className=" space-y-3">
+        <div className=" space-y-2">
           {deliveryAndPayment?.deliveryMethod.map((method: TDeliveryMethod) => (
             <div
               key={method?.deliveryOption}
@@ -44,7 +47,7 @@ const CheckoutDelivery = ({
                   setDeliveryOption(method?.deliveryOption as TDeliveryOptions)
                 )
               }
-              className={`p-6 rounded-lg shadow-md cursor-pointer transition flex items-center gap-3
+              className={`p-3 rounded-lg shadow-md cursor-pointer transition flex items-center gap-3
                       ${
                         currentState.deliveryOptions === method?.deliveryOption
                           ? "border-2 border-green-500 bg-green-100 dark:bg-green-900"
@@ -65,11 +68,11 @@ const CheckoutDelivery = ({
 
       {/* payment method section */}
       {currentState?.deliveryOptions && (
-        <div className="mb-6 bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-green-500">
-          <p className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-2xl flex items-center gap-4">
-            Payment Method <SiCashapp className="text-primary text-3xl" />
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg space-y-2">
+          <p className="font-bold text-gray-800 dark:text-gray-200 text-xl flex items-center gap-2">
+            Payment Method <SiCashapp className="text-primary text-xl" />
           </p>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {deliveryAndPayment?.paymentMethod.map(
               (method: TPaymentMethod, i: number) => (
                 <div
@@ -77,7 +80,7 @@ const CheckoutDelivery = ({
                   onClick={() =>
                     dispatch(setPaymentMethod(method as TPaymentMethod))
                   }
-                  className={`p-6 rounded-lg shadow-md cursor-pointer transition flex items-center gap-3 
+                  className={`p-3 rounded-lg shadow-md cursor-pointer transition flex items-center gap-3 
                 ${
                   currentState.paymentMethods === method
                     ? "border-2 border-blue-500 bg-blue-100 dark:bg-blue-900"
@@ -97,12 +100,11 @@ const CheckoutDelivery = ({
       {/* payment options section */}
       {currentState.paymentMethods &&
         currentState.paymentMethods === "Online Payment" && (
-          <div className="mb-6 bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-green-500">
-            <p className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-2xl flex items-center gap-4">
-              Payment Options{" "}
-              <FaCcAmazonPay className="text-primary text-3xl" />
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg  space-y-2">
+            <p className="font-bold text-gray-800 dark:text-gray-200 text-xl flex items-center gap-2">
+              Payment Options <FaCcAmazonPay className="text-primary text-xl" />
             </p>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {(deliveryAndPayment?.paymentOption as TPaymentOptions[])
                 .length &&
                 (deliveryAndPayment?.paymentOption as TPaymentOptions[]).map(
@@ -112,7 +114,7 @@ const CheckoutDelivery = ({
                       onClick={() =>
                         dispatch(setPaymentOption(method as TPaymentOptions))
                       }
-                      className={`p-6 rounded-lg shadow-md cursor-pointer transition flex items-center gap-3 
+                      className={`p-3 rounded-lg shadow-md cursor-pointer transition flex items-center gap-3 
                     ${
                       currentState.paymentOptions === method
                         ? "border-2 border-blue-500 bg-blue-100 dark:bg-blue-900"

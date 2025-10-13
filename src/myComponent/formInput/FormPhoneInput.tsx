@@ -1,13 +1,22 @@
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { TFormPhoneInputProps } from "./formInput.type";
 import { Controller } from "react-hook-form";
+
+export type TFormPhoneInputProps = {
+  label: string;
+  name: string;
+  control: any;
+  error?: string | undefined;
+  required?: boolean;
+  useExistingNumber?: boolean;
+};
 
 const FormPhoneInput = ({
   label,
   name,
   control,
   required = false,
+  useExistingNumber,
 }: TFormPhoneInputProps) => {
   return (
     <div className="flex flex-col">
@@ -18,7 +27,11 @@ const FormPhoneInput = ({
         name={name}
         control={control}
         defaultValue=""
-        rules={required ? { required: "Phone number is required" } : {}}
+        rules={
+          required && required === true
+            ? { required: "Phone number is required" }
+            : {}
+        }
         render={({ field: { value, onChange }, fieldState: { error } }) => (
           <div
             className={`rounded-md  ${
@@ -31,6 +44,7 @@ const FormPhoneInput = ({
               onChange={(phone) => {
                 onChange(phone);
               }}
+              disabled={useExistingNumber}
               inputStyle={{
                 backgroundColor: "transparent",
                 color: "white",

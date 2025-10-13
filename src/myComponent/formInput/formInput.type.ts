@@ -14,14 +14,6 @@ export type TFormInputProps = {
   error?: FieldError;
 };
 
-export type TFormPhoneInputProps = {
-  label: string;
-  name: string;
-  control: any;
-  error?: string | undefined;
-  required?: boolean;
-};
-
 export type TFormSelectProps = {
   label: string;
   name: string;

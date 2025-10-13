@@ -32,6 +32,7 @@ const InputImage = ({
       setImagePreview(preview);
       setValue(name, file, { shouldValidate: true });
     }
+    console.log(imageFile);
   };
 
   const handleRemove = () => {

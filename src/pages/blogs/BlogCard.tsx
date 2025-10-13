@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  TCarBrand,
-  TCategory,
-} from "../dashboard/admin/addCar/addcar.interface";
-import {
   useGetMyReactionQuery,
   useReactionCountMutation,
 } from "@/redux/features/blog/blogApi";
@@ -26,28 +22,14 @@ export type TBlog = {
   content: string;
   image?: string;
   tags?: string[];
-  brand: TCarBrand;
   model?: string;
-  category: TCategory;
   view: number;
   reaction: TBlogReaction;
   createdAt: string | Date;
 };
 
 const BlogCard = ({ blog }: { blog: TBlog }) => {
-  const {
-    _id,
-    name,
-    title,
-    content,
-    image,
-    brand,
-    model,
-    category,
-    view,
-    reaction,
-    createdAt,
-  } = blog;
+  const { _id, name, title, content, image, view, reaction, createdAt } = blog;
   const { data, isLoading } = useGetMyReactionQuery(_id);
   const reactionResult = data?.data?.reaction;
   const [showReactions, setShowReactions] = useState(false);
@@ -114,9 +96,7 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
         By <span className="text-xl font-semibold text-blue-600">{name}</span>{" "}
         {new Date(createdAt).toLocaleString()}
       </p>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-        Brand: {brand}, Model: {model}, Category: {category}
-      </p>
+
       <p className="text-gray-700 dark:text-gray-300 ">
         {content.slice(0, 200)}...{" "}
         <Link

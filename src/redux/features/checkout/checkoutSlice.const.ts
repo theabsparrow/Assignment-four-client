@@ -13,3 +13,9 @@ export const deliveryAndPaymentInitialState: TcheckoutInitialState = {
   paymentMethods: "",
   paymentOptions: "",
 };
+
+export const initialOrderSummery = {
+  location: "",
+  nearestDealer: "",
+  phoneNumber: "",
+};

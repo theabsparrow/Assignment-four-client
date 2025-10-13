@@ -1,11 +1,11 @@
-import { TUser } from "@/redux/features/auth/authSlice";
 import { TUSerInfo } from "./orderDetails.interface";
 import { USER_ROLE } from "@/config/role.const";
+import { TAuthUser } from "@/redux/features/auth/auth.type";
 import { Link } from "react-router-dom";
 
 type TUserSectionProps = {
   userInfo: TUSerInfo;
-  user: TUser;
+  user: TAuthUser;
 };
 
 const UserInfoSection = ({ userInfo, user }: TUserSectionProps) => {
