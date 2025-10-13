@@ -10,6 +10,8 @@ import { Link, useParams } from "react-router-dom";
 import { formatedDate } from "../myProfile/myProfile.utills";
 import { TFeature } from "@/interface/carInterface/safetyFeature.interface";
 import { Star } from "lucide-react";
+import { TCarInfo } from "@/interface/carInterface/car.interface";
+import CarCard from "@/myComponent/carCard/CarCard";
 
 const CarDetails = () => {
   const user = useAppSelector(currentUser);
@@ -29,7 +31,7 @@ const CarDetails = () => {
   if (isLoading) {
     return <CarDetailsSceleton />;
   }
-
+  console.log(carCategory);
   return (
     <section className=" bg-gray-100 dark:bg-gray-800 font-inter px-1 lg:px-16 pb-4 space-y-4">
       <div className="flex flex-col lg:flex-row gap-6 md:gap-3 lg:gap-0 lg:justify-between">
@@ -327,6 +329,7 @@ const CarDetails = () => {
           </div>
         )}
       </div>
+
       <div className="flex items-center justify-end ">
         {user && user.userId !== car?._id && car?.inStock && (
           <Link
@@ -337,8 +340,32 @@ const CarDetails = () => {
           </Link>
         )}
       </div>
-      <div>same brands car will show here</div>
-      <div>same category car will show here</div>
+
+      <div className="space-y-4">
+        <h1 className="text-center text-2xl font-semibold">
+          More cars from this brand
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
+          {carBrand &&
+            (carBrand as TCarInfo[]).length &&
+            (carBrand as TCarInfo[]).map((brand: TCarInfo) => (
+              <CarCard key={brand._id} {...brand} />
+            ))}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h1 className="text-center text-2xl font-semibold">
+          More cars from this Category
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
+          {carCategory &&
+            (carCategory as TCarInfo[]).length &&
+            (carCategory as TCarInfo[]).map((category: TCarInfo) => (
+              <CarCard key={category._id} {...category} />
+            ))}
+        </div>
+      </div>
     </section>
   );
 };

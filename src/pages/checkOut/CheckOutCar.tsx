@@ -1,11 +1,9 @@
+import { TCarInfo } from "@/interface/carInterface/car.interface";
+import { FaCheckCircle } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 import { TbCurrencyTaka } from "react-icons/tb";
-import { TCar } from "./checkOutInterface";
 
-type CarInfoProps = {
-  car: TCar;
-};
-
-const CheckOutCar = ({ car }: CarInfoProps) => {
+const CheckOutCar = ({ car }: { car: TCarInfo }) => {
   return (
     <section className="font-inter">
       <h2 className="text-3xl font-extrabold mb-4 md:mb-8 text-gray-800 dark:text-gray-200">
@@ -13,7 +11,7 @@ const CheckOutCar = ({ car }: CarInfoProps) => {
       </h2>
       <div className="flex flex-col md:flex-row gap-2 md:gap-8 md:items-center">
         <img
-          src={car?.image}
+          src={car?.image as string}
           alt={car?.brand}
           className="md:w-72 md:h-52 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 shadow-lg"
         />
@@ -21,18 +19,17 @@ const CheckOutCar = ({ car }: CarInfoProps) => {
           <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {car?.brand} - {car?.model}
           </h3>
-          <div className="space-y-3 text-gray-600 dark:text-gray-400">
-            <p className="text-gray-600 dark:text-gray-400 items-center flex gap-1">
-              Price:
-              <span className="font-semibold text-green-600 dark:text-gray-200 flex items-center gap-1">
-                <TbCurrencyTaka className="text-xl font-bold" />
-                {car?.price.toLocaleString()}
-              </span>
-            </p>
+          <div className="space-y-3 text-gray-600 dark:text-gray-400 text-sm">
             <p className="text-gray-600 dark:text-gray-400 flex gap-1">
               Category:
               <span className="font-semibold text-gray-800 dark:text-gray-200">
                 {car?.category}
+              </span>
+            </p>
+            <p className="text-gray-600 dark:text-gray-400 flex gap-1">
+              Condition:
+              <span className="font-medium text-gray-900 dark:text-gray-100">
+                {car?.condition}
               </span>
             </p>
             <p className="text-gray-600 dark:text-gray-400 flex gap-1">
@@ -41,17 +38,25 @@ const CheckOutCar = ({ car }: CarInfoProps) => {
                 {car?.year}
               </span>
             </p>
-            <p className="text-gray-600 dark:text-gray-400 flex gap-1">
-              Made In:
-              <span className="font-medium text-gray-900 dark:text-gray-100">
-                {car?.madeIn}
+            <p className="flex items-center gap-1">
+              <strong>In Stock:</strong>{" "}
+              <span
+                className={`flex items-center gap-1 ${
+                  car?.inStock ? "text-green-700" : "text-red-500"
+                }`}
+              >
+                {" "}
+                {car?.inStock ? "Available" : "Unavailable"}{" "}
+                {car?.inStock ? <FaCheckCircle /> : <RxCross2 />}
               </span>
             </p>
-            <p className="text-gray-600 dark:text-gray-400 flex gap-1">
-              Condition:
-              <span className="font-medium text-gray-900 dark:text-gray-100">
-                {car?.condition}
+
+            <p className=" font-semibold flex items-center gap-1 text-base">
+              <strong>Price:</strong>{" "}
+              <span className="text-green-700 flex items-center ">
+                <TbCurrencyTaka /> {car?.price.toLocaleString()}
               </span>
+              {car?.negotiable && <span>(Negotiable)</span>}
             </p>
           </div>
         </div>

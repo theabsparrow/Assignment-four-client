@@ -1,36 +1,7 @@
-export type TPaymentMethod = {
-  method: string;
-  isDeleted: boolean;
-  _id: string;
-};
 export type TPaymentOption = {
   option: string;
   isDeleted: boolean;
   _id: string;
-};
-
-export type TCar = {
-  image: string;
-  brand: string;
-  model: string;
-  price: number;
-  category: string;
-  year: string;
-  madeIn: string;
-  condition: string;
-};
-
-export type TUser = {
-  profileImage: string;
-  name: {
-    firstName: string;
-    lastName: string;
-  };
-  gender: string;
-  email: string;
-  phoneNumber: string;
-  homeTown: string;
-  currentAddress: string;
 };
 
 export interface OrderSummaryProps {

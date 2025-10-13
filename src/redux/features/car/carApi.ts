@@ -103,6 +103,13 @@ const carApi = baseApi.injectEndpoints({
       }),
       providesTags: ["car"],
     }),
+    getCheckoutInfo: builder.query({
+      query: (args) => ({
+        url: `/cars/checkout/${args}`,
+        method: "GET",
+      }),
+      providesTags: ["car"],
+    }),
     updateCar: builder.mutation({
       query: (carInfo) => ({
         url: `/cars/update-info/${carInfo?.id}`,
@@ -144,6 +151,7 @@ export const { useGetAllcarListQuery } = carApi;
 export const { useGetcarBrandQuery } = carApi;
 export const { useAddCarMutation } = carApi;
 export const { useGetSingleCarQuery } = carApi;
+export const { useGetCheckoutInfoQuery } = carApi;
 export const { useUpdateCarMutation } = carApi;
 export const { useUpdateGalleryImageMutation } = carApi;
 export const { useRemoveGalleryImageMutation } = carApi;

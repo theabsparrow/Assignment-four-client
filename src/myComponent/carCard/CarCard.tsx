@@ -13,19 +13,22 @@ const CarCard = (car: TCarInfo) => {
           className="w-full h-full object-cover"
         />
       </div>
-      <div>
-        <div className="mt-4">
+      <div className="space-y-4">
+        <div>
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">
             {brand} {model} ({category})
           </h2>
           <p className="text-gray-500 dark:text-gray-400 flex items-center justify-between">
             {year} ({condition})
           </p>
-          <p className="text-xl flex items-center font-semibold text-deepRed dark:text-indigo-400 mt-2">
-            <TbCurrencyTaka /> {price}
+          <p className="text-lg flex items-center font-semibold text-deepRed dark:text-indigo-400 mt-2">
+            <TbCurrencyTaka /> {price}{" "}
+            {car?.negotiable && (
+              <span className="text-sm text-gray-500">(Negotiable)</span>
+            )}
           </p>
         </div>
-        <div className="mt-4">
+        <div>
           <Link
             to={`/all-cars/${_id}`}
             className="w-full bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary duration-500 text-white font-bold p-2 rounded-md"
