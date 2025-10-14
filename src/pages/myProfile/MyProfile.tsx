@@ -213,11 +213,11 @@ const MyProfile = () => {
           {formatedDate(new Date(profileInfo?.createdAt)).creationTime}
         </h1>
         <div className="flex flex-col lg:flex-row lg:justify-between gap-6 ">
-          <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full ">
+          <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full space-y-2">
             <h3 className="text-lg font-semibold text-gray-400">
               Personal Information
             </h3>
-            <div className="mt-2">
+            <div>
               <div>
                 <label className="block text-sm font-medium ">Email</label>
                 <p className="mt-1 ">{profileInfo?.email}</p>
@@ -250,7 +250,7 @@ const MyProfile = () => {
             </h1>
           </div>
 
-          <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full">
+          <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full space-y-2">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-400">
                 Address Information

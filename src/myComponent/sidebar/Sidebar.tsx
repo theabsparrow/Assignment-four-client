@@ -29,7 +29,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <section className="hidden lg:flex flex-col justify-between after:dark:bg-gray-900 bg-white dark:text-gray-200 transition-all duration-500 w-64 shadow-lg h-screen py-6 space-y-6 sticky top-0 z-20">
+      <section className="hidden lg:flex flex-col justify-between after:dark:bg-gray-900 bg-white dark:text-gray-200 transition-all duration-500 w-64 shadow-lg h-screen py-4 space-y-6 sticky top-0 z-20">
         <div className="cursor-pointer flex justify-center">
           <Link to="/">
             <img className="w-44" src={logo} alt=" Lambo car logo" />

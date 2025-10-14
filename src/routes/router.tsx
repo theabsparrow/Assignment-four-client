@@ -1,5 +1,5 @@
 import Layout from "@/layout/Layout";
-import Home from "@/pages/Home";
+import Home from "@/pages/home/Home";
 import { createBrowserRouter } from "react-router-dom";
 import SignIn from "@/pages/auth/SignIn.js";
 import SignUp from "@/pages/auth/register/SignUp";
@@ -22,7 +22,12 @@ import VerifyOrder from "@/pages/verifyOrder/VerifyOrder";
 import OrderDetails from "@/pages/orderDetails/OrderDetails";
 import BlogDetails from "@/pages/blogDetails/BlogDetails";
 import AllCategories from "@/pages/allCategories/AllCategories";
-import MyCars from "@/pages/dashboard/myCars/MyCars";
+import MyCars from "@/pages/dashboard/user/myCars/MyCars";
+import MyPurchase from "@/pages/dashboard/user/myPurchase/MyPurchase";
+import MySelling from "@/pages/dashboard/user/mySellings/MySelling";
+import MyBlogs from "@/pages/dashboard/user/myBlogs/MyBlogs";
+import MyReaction from "@/pages/dashboard/myReactions/MyReaction";
+import MyComment from "@/pages/dashboard/myComment/MyComment";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -80,6 +85,7 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
       {
         path: "about-us",
         element: <AboutUs />,
@@ -123,6 +129,58 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "my-cars",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user, USER_ROLE.admin]}>
+            <MyCars />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-purchase",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user, USER_ROLE.admin]}>
+            <MyPurchase />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-selling",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user, USER_ROLE.admin]}>
+            <MySelling />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-blogs",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user, USER_ROLE.admin]}>
+            <MyBlogs />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-reactions",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+          >
+            <MyReaction />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-comments",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin]}
+          >
+            <MyComment />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   ...dashboardRoutes,
@@ -134,13 +192,5 @@ export const router = createBrowserRouter([
   {
     path: "/set-newPassword",
     element: <SetNewPassword />,
-  },
-  {
-    path: "/my-cars",
-    element: (
-      <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-        <MyCars />
-      </ProtectedRoute>
-    ),
   },
 ]);

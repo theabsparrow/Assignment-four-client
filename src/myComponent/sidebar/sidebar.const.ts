@@ -1,9 +1,21 @@
 import { AiFillHome } from "react-icons/ai";
-import { FaBorderAll, FaCarSide, FaUser, FaUserFriends } from "react-icons/fa";
+import {
+  FaBorderAll,
+  FaCarSide,
+  FaSellsy,
+  FaUser,
+  FaUserFriends,
+} from "react-icons/fa";
 import { IoIosStats, IoMdSettings } from "react-icons/io";
-import { MdBrandingWatermark, MdLibraryAdd } from "react-icons/md";
+import { IoNewspaperSharp } from "react-icons/io5";
+import { MdBrandingWatermark, MdLibraryAdd, MdSell } from "react-icons/md";
 import { RiMoneyDollarBoxFill } from "react-icons/ri";
-import { TbCategoryFilled, TbJewishStarFilled, TbLogs } from "react-icons/tb";
+import {
+  TbArticleFilled,
+  TbCategoryFilled,
+  TbJewishStarFilled,
+  TbLogs,
+} from "react-icons/tb";
 
 export const adminSidebarLinks = [
   {
@@ -65,29 +77,34 @@ export const adminSidebarLinks = [
 
 export const userSidebarlinks = [
   {
-    name: "My cars",
-    path: "/dashboard/user/my-cars",
-    icon: FaCarSide,
-  },
-  {
     name: "Add Car",
     path: "/dashboard/add-car",
     icon: MdLibraryAdd,
   },
   {
+    name: "My Cars",
+    path: "/dashboard/my-cars",
+    icon: FaCarSide,
+  },
+  {
+    name: "My Purchase",
+    path: "/dashboard/my-purchase",
+    icon: MdSell,
+  },
+  {
+    name: "My Selling",
+    path: "/dashboard/my-selling",
+    icon: FaSellsy,
+  },
+  {
     name: "My Wishlist",
-    path: "/dashboard/user/my-wishlist",
+    path: "/dashboard/my-wishlist",
     icon: TbJewishStarFilled,
   },
   {
-    name: "My Orders",
-    path: "/dashboard/user/my-orders",
-    icon: FaBorderAll,
-  },
-  {
-    name: "Payment History",
-    path: "/dashboard/user/payment-history",
-    icon: TbJewishStarFilled,
+    name: "My Blogs",
+    path: "/dashboard/my-blogs",
+    icon: IoNewspaperSharp,
   },
   {
     name: "All Cars",
@@ -97,7 +114,7 @@ export const userSidebarlinks = [
   {
     name: "All Blogs",
     path: "/blogs",
-    icon: TbLogs,
+    icon: TbArticleFilled,
   },
   {
     name: "All Brands",

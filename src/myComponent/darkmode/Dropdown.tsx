@@ -6,6 +6,7 @@ const Dropdown = () => {
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "enabled"
   );
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -18,6 +19,7 @@ const Dropdown = () => {
     localStorage.setItem("darkMode", enabled ? "enabled" : "disabled");
     document.documentElement.classList.toggle("dark", enabled);
   };
+
   return (
     <div className="relative lg:static">
       <button

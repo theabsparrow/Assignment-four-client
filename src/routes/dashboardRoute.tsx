@@ -12,14 +12,16 @@ import Statictics from "@/pages/dashboard/admin/statistic/Statictics";
 import UserManagement from "@/pages/dashboard/admin/userManagement/UserManagement";
 import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import Dashboard from "@/pages/dashboard/Dashboard";
-import MyCars from "@/pages/dashboard/myCars/MyCars";
-import MyOrders from "@/pages/dashboard/user/myOrders/MyOrders";
-import PaymentHistory from "@/pages/dashboard/user/paymentHistory/PaymentHistory";
+import MyBlogs from "@/pages/dashboard/user/myBlogs/MyBlogs";
+import MyCars from "@/pages/dashboard/user/myCars/MyCars";
+import MyPurchase from "@/pages/dashboard/user/myPurchase/MyPurchase";
+import MySelling from "@/pages/dashboard/user/mySellings/MySelling";
 import Wishlist from "@/pages/dashboard/user/wishList/Wishlist";
 import MyProfile from "@/pages/myProfile/MyProfile";
 import Settings from "@/pages/settings/Settings";
 
 export const dashboardRoutes = [
+  // common routes starts
   {
     path: "/dashboard",
     element: (
@@ -60,6 +62,18 @@ export const dashboardRoutes = [
           </ProtectedRoute>
         ),
       },
+      {
+        path: "/dashboard/add-car",
+        element: (
+          <ProtectedRoute
+            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
+          >
+            <AddCar />
+          </ProtectedRoute>
+        ),
+      },
+      // common routes ends
+
       // admin routes starts
       {
         path: "/dashboard/admin/manage-cars",
@@ -98,16 +112,6 @@ export const dashboardRoutes = [
         element: (
           <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
             <UserProfile />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/add-car",
-        element: (
-          <ProtectedRoute
-            roles={[USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.user]}
-          >
-            <AddCar />
           </ProtectedRoute>
         ),
       },
@@ -160,34 +164,42 @@ export const dashboardRoutes = [
 
       // // user routes starts
       {
-        path: "/dashboard/user/my-orders",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
-            <MyOrders />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/user/my-wishlist",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
-            <Wishlist />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/user/payment-history",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.user]}>
-            <PaymentHistory />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/user/my-cars",
+        path: "/dashboard/my-cars",
         element: (
           <ProtectedRoute roles={[USER_ROLE.user]}>
             <MyCars />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-purchase",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MyPurchase />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-selling",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MySelling />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-blogs",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MyBlogs />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-wishlist",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <Wishlist />
           </ProtectedRoute>
         ),
       },

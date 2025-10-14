@@ -18,7 +18,10 @@ const Banner = () => {
   const query = { brand };
   const { data } = useGetCarModelQuery(query);
   const { models, maxPrice, minPrice } = data?.data || {};
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    minPrice,
+    maxPrice,
+  ]);
 
   useEffect(() => {
     if (typeof minPrice === "number" && typeof maxPrice === "number") {
