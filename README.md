@@ -7,7 +7,7 @@ Welcome to **GoCar**, a modern, responsive, and user-friendly car selling platfo
 ## 🔗 Live Demo
 
 👉 [Live Website link](https://lambo-car-frontend.vercel.app/)  
-👉 [Server Live Link] https://lambo-car.vercel.app/ (https://lambo-car.vercel.app/api this is for checking api)
+👉 [Server Live Link] https://lambocar.vercel.app/ (https://lambocar.vercel.app/api this is for checking api)
 👉 [Server GitHub Repository](https://github.com/theabsparrow/Assignemnt-four-server.git)
 
 ---
@@ -63,8 +63,6 @@ git clone https://github.com/theabsparrow/Assignment-four-client.git
    ```env
    VITE_API_URL
    VITE_IMGBB_API
-   <!-- email js secret key -->
-
    VITE_SERVICE_ID
    VITE_TEMPLATE_ID
    VITE_PUBLIC_KEY
