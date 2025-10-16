@@ -6,24 +6,12 @@ const blogApi = baseApi.injectEndpoints({
       query: (args) => {
         const params = new URLSearchParams();
         if (args) {
-          Object.entries(args).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-              params.append(key, value.join(","));
-            } else if (typeof value === "object" && value !== null) {
-              Object.entries(value).forEach(([subKey, subValue]) => {
-                if (
-                  subValue !== "" &&
-                  subValue !== null &&
-                  subValue !== undefined &&
-                  subValue !== 0
-                ) {
-                  params.append(subKey, subValue);
-                }
-              });
-            } else if (value !== undefined && value !== "") {
-              params.append(key, value!.toString());
+          const entries = Object.entries(args);
+          for (const [key, value] of entries) {
+            if (value) {
+              params.append(key, value.toString());
             }
-          });
+          }
         }
         return {
           url: "/blog/all-blogs",
@@ -42,14 +30,6 @@ const blogApi = baseApi.injectEndpoints({
       providesTags: ["blog"],
     }),
 
-    getMyReaction: builder.query({
-      query: (args) => ({
-        url: `/reaction/my-reaction/${args}`,
-        method: "GET",
-      }),
-      providesTags: ["reaction"],
-    }),
-
     addBlog: builder.mutation({
       query: (blogInfo) => ({
         url: "/blog/create-blog",
@@ -58,20 +38,9 @@ const blogApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["blog"],
     }),
-
-    reactionCount: builder.mutation({
-      query: (reactionInfo) => ({
-        url: `/blog/count-reaction/${reactionInfo._id}`,
-        method: "PATCH",
-        body: reactionInfo.reactionData,
-      }),
-      invalidatesTags: ["blog"],
-    }),
   }),
 });
 
 export const { useAddBlogMutation } = blogApi;
 export const { useGetAllBlogsQuery } = blogApi;
-export const { useReactionCountMutation } = blogApi;
-export const { useGetMyReactionQuery } = blogApi;
 export const { useGetASingleBlogQuery } = blogApi;

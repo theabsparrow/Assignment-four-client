@@ -4,6 +4,7 @@ import { baseApi } from "./api/baseApi";
 import carFilterReducer from "./features/car/carSlice";
 import settingReducer from "./features/setting/settingSlice";
 import userFilterReducer from "./features/user/userSlice";
+import blogFilterReducer from "./features/blog/blogSlice";
 import deliveryAndPaymentOptions from "./features/checkout/checkoutSlice";
 import {
   persistReducer,
@@ -31,6 +32,7 @@ export const store = configureStore({
     settingSlice: settingReducer,
     userFilter: userFilterReducer,
     deliveryAndPayment: deliveryAndPaymentOptions,
+    blogFilter: blogFilterReducer,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({

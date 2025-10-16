@@ -6,7 +6,7 @@ Welcome to **GoCar**, a modern, responsive, and user-friendly car selling platfo
 
 ## 🔗 Live Demo
 
-👉 [Live Website link](https://lambo-car-frontend.vercel.app/)  
+👉 [Live Website link](https://lambo-car.vercel.app/)  
 👉 [Server Live Link] https://lambocar.vercel.app/ (https://lambocar.vercel.app/api this is for checking api)
 👉 [Server GitHub Repository](https://github.com/theabsparrow/Assignemnt-four-server.git)
 

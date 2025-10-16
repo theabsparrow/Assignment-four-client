@@ -82,6 +82,7 @@ const SignUp = () => {
         if (!profileImage) {
           setLoading(false);
           toast.error("faild to upload image", { duration: 3000 });
+          return;
         }
         data.profileImage = profileImage as string;
       }

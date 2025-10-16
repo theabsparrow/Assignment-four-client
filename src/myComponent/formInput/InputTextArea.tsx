@@ -9,6 +9,8 @@ interface TextAreaTypeProps {
   required?: boolean;
   rows?: number;
   watch?: UseFormWatch<any>;
+  max?: number;
+  min?: number;
 }
 
 const InputTextArea = ({
@@ -20,11 +22,13 @@ const InputTextArea = ({
   required = false,
   rows = 4,
   watch,
+  max = 500,
+  min = 10,
 }: TextAreaTypeProps) => {
   const value: string = watch ? watch(name) || "" : "";
   const length = value.length;
   return (
-    <section className="w-full font-inter space-y-1">
+    <section className="w-full font-inter space-y-1 ">
       <label className="block text-sm font-semibold text-gray-200 ">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
@@ -34,25 +38,25 @@ const InputTextArea = ({
           {...register(name, {
             ...(required && { required: `${name} is required` }),
             minLength: {
-              value: 10,
+              value: min,
               message: `${label} must be at least 10 characters`,
             },
             maxLength: {
-              value: 500,
+              value: max,
               message: `${label} must be at most 500 characters`,
             },
           })}
           placeholder={placeholder || `Enter your ${label.toLowerCase()}`}
-          className={`peer w-full px-4 py-2 rounded-xl border transition-all duration-300 outline-none resize-none
+          className={`peer w-full px-4 py-2 rounded-xl border-2 transition-all duration-300 outline-none resize-none
             bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100
             ${
               error
                 ? "border-red-500 focus:border-red-500 focus:ring-red-300"
-                : "border border-gray-300 dark:border-gray-600 "
+                : " border-gray-300 dark:border-gray-600 "
             }`}
         />
-        <div className="flex justify-end text-xs text-gray-500 dark:text-gray-400">
-          {length}/500
+        <div className="flex justify-end text-xs text-gray-200">
+          {length}/ {max}
         </div>
       </div>
     </section>

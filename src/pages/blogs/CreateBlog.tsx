@@ -1,52 +1,51 @@
 import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import FormInput from "@/myComponent/formInput/FormInput";
+import { useForm } from "react-hook-form";
+import { useAddBlogMutation } from "@/redux/features/blog/blogApi";
+import InputType from "@/myComponent/formInput/InputType";
+import { TBlog } from "@/interface/blogInterface/blog.interface";
+import InputTextArea from "@/myComponent/formInput/InputTextArea";
+import InputImage from "@/myComponent/formInput/InputImage";
 import { imageUpload } from "@/utills/uploadImage";
 import { toast } from "sonner";
-import { useAddBlogMutation } from "@/redux/features/blog/blogApi";
-
-export type TBlogStatus = "draft" | "published";
 
 const CreateBlog = () => {
   const [open, setOpen] = useState(false);
-  const methods = useForm();
+  const {
+    handleSubmit,
+    register,
+    watch,
+    setValue,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<TBlog>();
   const [addBlog] = useAddBlogMutation();
 
-  const onSubmit = async (data: any) => {
-    const filteredData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => {
-        if (value === undefined || value === null) return false;
-        if (typeof value === "string" && value.trim() === "") return false;
-        return true;
-      })
-    );
-
-    if (filteredData?.tags) {
-      const tags = filteredData?.tags as string;
+  const onSubmit = async (data: TBlog) => {
+    if (data?.tags) {
+      const tags = data?.tags as string;
       const tagsArray = tags
         .split(",")
-        .map((item) => `#${item.trim()}`)
-        .filter((item) => item);
-      filteredData.tags = tagsArray;
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0)
+        .map((item) => `#${item}`);
+      data.tags = tagsArray as string[];
     }
-    const toastId = toast.loading("blog data uploading.....");
     try {
-      if (data?.image) {
-        const imageUrl = await imageUpload(data.image);
-        if (!imageUrl) {
+      if (data?.image as File) {
+        const blogImage = await imageUpload(data?.image as File);
+        if (!blogImage) {
           toast.error("faild to upload image", { duration: 3000 });
           return;
         }
-        filteredData.image = imageUrl;
+        data.image = blogImage as string;
       }
-      const res = await addBlog(filteredData).unwrap();
-      if (res?.data) {
-        toast.success("blog posted successfully ", {
-          id: toastId,
+      const res = await addBlog(data).unwrap();
+      if (res?.success) {
+        toast.success("car info uploaded successfully ", {
           duration: 3000,
         });
+        reset();
         setOpen(false);
-        methods.reset();
       }
     } catch (error: any) {
       const errorInfo =
@@ -54,18 +53,8 @@ const CreateBlog = () => {
         error?.data?.message ||
         error?.error ||
         "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
+      toast.error(errorInfo, { duration: 3000 });
     }
-  };
-
-  const handlePublish = () => {
-    methods.setValue("status", "published");
-    methods.handleSubmit(onSubmit)();
-  };
-
-  const handleDraft = () => {
-    methods.setValue("status", "draft");
-    methods.handleSubmit(onSubmit)();
   };
 
   return (
@@ -80,76 +69,73 @@ const CreateBlog = () => {
       </div>
 
       {open && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl w-full max-w-2xl relative shadow-xl overflow-y-auto max-h-[90vh]">
-            <button
-              onClick={() => {
-                setOpen(false);
-                methods.reset();
-              }}
-              className="absolute top-3 right-3 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white text-2xl"
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-gray-500 p-4 rounded-2xl w-[90vw] lg:w-2xl shadow-xl">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col lg:space-y-2"
             >
-              ×
-            </button>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
-              Create Blog
-            </h2>
-            <FormProvider {...methods}>
-              <form className="flex flex-col space-y-4">
-                <FormInput
-                  label="Title"
-                  name="title"
-                  placeholder="Your blog title"
+              <InputType
+                label="Title"
+                name="title"
+                register={register}
+                error={errors.title}
+                required={true}
+              />
+              <InputTextArea
+                label="Content"
+                name="content"
+                placeholder="write your blog content"
+                register={register}
+                error={errors.content}
+                required={true}
+                watch={watch}
+                max={5000}
+                min={50}
+              />
+              <InputImage
+                name={"image"}
+                label={"Image"}
+                register={register}
+                error={errors.image}
+                setValue={setValue}
+              />
+              <div>
+                <label className="block text-sm font-semibold text-gray-200 mb-1">
+                  Tags
+                </label>
+                <input
+                  id="tags"
                   type="text"
-                  maxLength={50}
-                  register={methods.register}
-                  required={true}
+                  placeholder="e.g. sedan, suv, car"
+                  {...register("tags", {})}
+                  className="peer w-full px-4 py-2 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
                 />
-
-                <div className="mb-4">
-                  <label
-                    htmlFor="specialEquipments"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Tags (Optional)
-                  </label>
-                  <input
-                    id="specialEquipments"
-                    type="text"
-                    placeholder="e.g. car, model, best"
-                    {...methods.register("tags")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 text-sm placeholder-gray-400"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Separate items with commas ( , )
-                  </p>
-                  {methods.formState.errors.tags && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {
-                        methods.formState.errors.specialEquipments
-                          ?.message as string
-                      }
-                    </p>
-                  )}
-                </div>
-                <div className="flex justify-between gap-4 mt-4">
-                  <button
-                    type="button"
-                    onClick={handlePublish}
-                    className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-                  >
-                    Publish
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDraft}
-                    className="flex-1 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition"
-                  >
-                    Save as Draft
-                  </button>
-                </div>
-              </form>
-            </FormProvider>
+                <p className="text-xs text-gray-500 mt-1">
+                  Separate items with commas ( , )
+                </p>
+              </div>
+              <div className="flex items-center justify-between">
+                <button
+                  className="px-4 py-1 lg:py-2 rounded-xl bg-gray-700 hover:bg-gray-800 text-white/80 duration-500"
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => {
+                    setOpen(false);
+                    reset();
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={isSubmitting}
+                  type="submit"
+                  className="px-2 py-1 lg:px-4 lg:py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white duration-500"
+                >
+                  {isSubmitting ? "Posting" : "Post"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

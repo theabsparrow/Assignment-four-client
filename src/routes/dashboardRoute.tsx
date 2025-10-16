@@ -76,6 +76,14 @@ export const dashboardRoutes = [
 
       // admin routes starts
       {
+        path: "/dashboard/admin/statistic",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
+            <Statictics />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/dashboard/admin/manage-cars",
         element: (
           <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
@@ -88,14 +96,6 @@ export const dashboardRoutes = [
         element: (
           <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
             <CarDetails />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/dashboard/admin/statistic",
-        element: (
-          <ProtectedRoute roles={[USER_ROLE.admin, USER_ROLE.superAdmin]}>
-            <Statictics />
           </ProtectedRoute>
         ),
       },

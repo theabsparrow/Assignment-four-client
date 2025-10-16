@@ -1,51 +1,47 @@
 import BlogDetailsSceleton from "@/myComponent/loader/BlogDetailsSceleton";
 import { currentUser } from "@/redux/features/auth/authSlice";
-import {
-  useGetASingleBlogQuery,
-  useGetMyReactionQuery,
-  useReactionCountMutation,
-} from "@/redux/features/blog/blogApi";
+import { useGetASingleBlogQuery } from "@/redux/features/blog/blogApi";
 import { useAppSelector } from "@/redux/hooks";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { TReactionOptions } from "../blogs/BlogCard";
 import { toast } from "sonner";
+import {
+  useCreateReactionMutation,
+  useGetMyReactionQuery,
+} from "@/redux/features/reaction/reactionApi";
+import { formatedDate } from "../myProfile/myProfile.utills";
 
 const BlogDetails = () => {
-  const user = useAppSelector(currentUser);
   const { id } = useParams();
+  // redux state
+  const user = useAppSelector(currentUser);
+  const [createReaction] = useCreateReactionMutation();
   const { data, isLoading } = useGetASingleBlogQuery(id);
   const blog = data?.data;
-  const { data: reactionData, isLoading: reactionloading } =
-    useGetMyReactionQuery(id);
-  const reactionResult = reactionData?.data?.reaction;
-  const [showReactions, setShowReactions] = useState(false);
-  const [userReaction, setUserReaction] = useState<
-    null | "like" | "love" | "dislike"
-  >(null);
+  const { data: react, isLoading: loading } = useGetMyReactionQuery(blog?._id);
+  const myReaction = react?.data;
+  // local state
+  const [userReaction, setUserReaction] = useState(blog?.reaction ?? 0);
 
   useEffect(() => {
-    setUserReaction(reactionResult);
-  }, [reactionResult]);
+    setUserReaction(blog?.reaction);
+  }, [blog?.reaction]);
 
-  const [reactionCount] = useReactionCountMutation();
-  const handleReaction = async (reaction: TReactionOptions) => {
+  const handleReaction = async () => {
     if (!user) {
       toast.error("login first to react");
       return;
     }
-    const reactionData = {
-      reaction,
-    };
-    const toastId = toast.loading("reacting.....");
+    if (!myReaction) {
+      setUserReaction(blog?.reaction + 1);
+    } else {
+      setUserReaction(blog?.reaction - 1);
+    }
     try {
-      const res = await reactionCount({ reactionData, _id: id }).unwrap();
-      if (res?.data) {
-        setUserReaction(userReaction === reaction ? null : reaction);
-        toast.success(" successfully reacted", {
-          id: toastId,
-          duration: 3000,
-        });
+      const res = await createReaction(blog?._id).unwrap();
+      if (!res?.success) {
+        setUserReaction(blog?.reaction);
+        return;
       }
     } catch (error: any) {
       const errorInfo =
@@ -53,125 +49,109 @@ const BlogDetails = () => {
         error?.data?.message ||
         error?.error ||
         "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
+      if (errorInfo) {
+        setUserReaction(blog?.reaction);
+      }
     }
   };
-
-  const reactionColor =
-    userReaction === "like"
-      ? "bg-blue-500 text-white"
-      : userReaction === "love"
-      ? "bg-pink-500 text-white"
-      : userReaction === "dislike"
-      ? "bg-yellow-500 text-white"
-      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200";
 
   if (isLoading) {
     return <BlogDetailsSceleton />;
   }
   return (
-    <section className="md:px-32 mt-2">
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl transition-colors duration-300">
-        <div className="flex flex-col md:flex-row md:items-start md:gap-8 p-4 md:p-8">
-          <div className="md:w-[60%] w-full mb-4 md:mb-0 border">
-            {blog?.image && (
+    <section className="px-2 md:px-8 lg:px-16 min-h-[calc(100vh-75px)] bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors duration-300  pb-4 ">
+      <div className="w-[60vw] mx-auto space-y-4">
+        {blog?.image && (
+          <div className=" w-full">
+            <img
+              src={blog?.image}
+              alt={blog?.title}
+              className="w-full h-auto rounded-2xl object-cover border"
+            />
+          </div>
+        )}
+        <div className="space-y-2">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            {blog?.title}
+          </h2>
+          <div>
+            {blog?.authorId?.profileImage ? (
               <img
-                src={blog?.image}
-                alt={blog?.title}
-                className="w-full h-auto rounded-2xl object-cover border"
+                className="w-11 h-11 rounded-full "
+                src={blog?.authorId?.profileImage}
+              />
+            ) : (
+              <img
+                className="w-12 h-12 rounded-full "
+                src={blog?.profileIcon}
               />
             )}
-          </div>
-          <div className="flex-1 space-y-4">
-            <h1 className="text-2xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100">
-              {blog?.title}
-            </h1>
-            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
-              by <span className="font-semibold">{blog?.name}</span> •{" "}
-              {blog?.category} • {blog?.brand}{" "}
-              {blog?.model && `• ${blog?.model}`}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {blog?.tags?.map((tag: string) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs"
-                >
-                  {tag}
+            <div className="lg:flex items-center justify-between">
+              <p className="font-medium text-blue-600">
+                {blog?.authorId?.name.firstName} {blog?.authorId?.name.lastName}
+              </p>
+              <p className="flex items-center gap-2 text-sm">
+                {" "}
+                <span>
+                  {formatedDate(new Date(blog?.createdAt)).creationDate}
+                </span>{" "}
+                <span>
+                  {formatedDate(new Date(blog?.createdAt)).creationTime}
                 </span>
-              ))}
-            </div>
-            <div className="flex flex-wrap items-center justify-between mb-4 text-sm text-gray-600 dark:text-gray-300">
-              <div className="flex items-center space-x-2">
-                <span className="font-semibold text-gray-800 dark:text-gray-100">
-                  {reactionloading
-                    ? "loading..."
-                    : blog?.reaction?.like +
-                      blog?.reaction?.love +
-                      blog?.reaction?.dislike}
-                </span>
-                <span>people reacted</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span className="flex items-center space-x-1">
-                  <span className="font-semibold text-gray-800 dark:text-gray-100">
-                    👁️
-                  </span>
-                  <span>{blog?.view}</span>
-                </span>
-                <span className="flex items-center space-x-1">
-                  <span className="font-semibold text-gray-800 dark:text-gray-100">
-                    Comments:
-                  </span>
-                  <span>0</span>
-                </span>
-              </div>
-            </div>
-            <div className="border-t border-gray-300 dark:border-gray-600 mb-4"></div>
-            <div
-              className="relative inline-block"
-              onMouseEnter={() => setShowReactions(true)}
-              onMouseLeave={() => setShowReactions(false)}
-            >
-              <button
-                className={`px-4 py-2 rounded-full transition ${reactionColor}`}
-              >
-                {userReaction
-                  ? userReaction.charAt(0).toUpperCase() + userReaction.slice(1)
-                  : "React"}
-              </button>
-              <div
-                className={`absolute top-full left-0 flex space-x-2 bg-white dark:bg-gray-700 p-2 rounded shadow transition-opacity duration-200 ${
-                  showReactions
-                    ? "opacity-100"
-                    : "opacity-0 pointer-events-none"
-                }`}
-              >
-                {["like", "love", "dislike"].map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => handleReaction(type as any)}
-                    className={`px-3 py-1 rounded hover:bg-opacity-75 ${
-                      type === "like"
-                        ? "bg-blue-500 text-white"
-                        : type === "love"
-                        ? "bg-pink-500 text-white"
-                        : "bg-yellow-500 text-white"
-                    }`}
-                  >
-                    {type === "like" && "👍"}
-                    {type === "love" && "❤️"}
-                    {type === "dislike" && "👎"}
-                  </button>
-                ))}
-              </div>
+              </p>
             </div>
           </div>
+          <p className="text-gray-700 dark:text-gray-300 ">{blog?.content}</p>
         </div>
-        <div className="p-10">
-          <p className="text-gray-800 dark:text-gray-300 leading-relaxed mb-6">
-            {blog?.content}
+        {(blog?.tags as string[]).length && (
+          <div className="flex flex-wrap gap-2">
+            {blog?.tags?.map((tag: string) => (
+              <span
+                key={tag}
+                className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="flex flex-wrap items-center justify-between text-sm text-gray-600 dark:text-gray-300">
+          <p className="font-semibold text-gray-800 dark:text-gray-100">
+            {blog?.reaction} people reacted
           </p>
+          <p className="font-semibold text-gray-800 dark:text-gray-100">
+            Comments: {blog?.comments}
+          </p>
+        </div>
+        <div>
+          {user ? (
+            <>
+              {loading ? (
+                <span
+                  className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold `}
+                >
+                  {userReaction} Like
+                </span>
+              ) : (
+                <button
+                  onClick={handleReaction}
+                  className={`px-2 py-1 rounded-full transition  text-sm font-semibold ${
+                    userReaction || myReaction
+                      ? "bg-blue-300 text-blue-700"
+                      : "bg-gray-600 text-white"
+                  }`}
+                >
+                  {userReaction} {userReaction || myReaction ? "Liked" : "Like"}
+                </button>
+              )}
+            </>
+          ) : (
+            <span
+              className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold `}
+            >
+              Like
+            </span>
+          )}
         </div>
       </div>
     </section>

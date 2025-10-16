@@ -18,7 +18,7 @@ const CheckOut = () => {
     return <h1>loading ...</h1>;
   }
   return (
-    <section className="px-1 md:px-8 lg:px-16 pb-4 mx-auto bg-gray-50 dark:bg-gray-900 shadow-lg rounded-lg min-h-[calc(100vh-80px)] font-inter">
+    <section className="px-2 md:px-8 lg:px-16 pb-4 mx-auto bg-gray-50 dark:bg-gray-900 shadow-lg rounded-lg min-h-[calc(100vh-80px)] font-inter">
       {/* car and user information */}
       <div className="flex flex-col gap-8 lg:gap-0 lg:flex-row items-center justify-between py-4">
         <CheckOutCar car={car} />
@@ -29,8 +29,8 @@ const CheckOut = () => {
       <div className="flex flex-col lg:flex-row lg:justify-between">
         <CheckoutDelivery deliveryAndPayment={deliveryAndPayment} />
 
-        {(currentState.paymentMethods || currentState.paymentOptions) && (
-          <OrderSummery car={car} user={userInfo} />
+        {(currentState?.paymentMethods || currentState?.paymentOptions) && (
+          <OrderSummery car={car} userInfo={userInfo} />
         )}
       </div>
     </section>

@@ -20,23 +20,19 @@ const InputImage = ({
   required = false,
   setValue,
 }: IInputImageProps) => {
-  const [imageFile, setImageFile] = useState<File | "">("");
   const [imagePreview, setImagePreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImageFile(file);
       const preview = URL.createObjectURL(file);
       setImagePreview(preview);
       setValue(name, file, { shouldValidate: true });
     }
-    console.log(imageFile);
   };
 
   const handleRemove = () => {
-    setImageFile("");
     setImagePreview("");
     setValue(name, "", { shouldValidate: true });
   };
@@ -44,7 +40,7 @@ const InputImage = ({
   return (
     <section className="relative">
       <label className="block text-sm font-semibold text-gray-200 mb-1">
-        {label} <span className="text-red-500">*</span>
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
 
       <input
@@ -59,7 +55,7 @@ const InputImage = ({
       />
       {imagePreview ? (
         <div className="relative w-48 rounded-md overflow-hidden border border-dashed border-gray-300">
-          <img src={imagePreview} alt={`Car image`} />
+          <img src={imagePreview} alt={`Car image`} className="w-full h-32" />
           <button
             type="button"
             onClick={handleRemove}

@@ -74,7 +74,6 @@ const AddCar = () => {
         setStep(1);
       }
     } catch (error: any) {
-      console.log(error);
       const errorInfo =
         error?.data?.errorSource[0].message ||
         error?.data?.message ||

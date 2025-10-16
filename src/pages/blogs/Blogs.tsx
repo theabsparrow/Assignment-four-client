@@ -1,67 +1,35 @@
-// import { currentUser } from "@/redux/features/auth/authSlice";
-// import { useAppSelector } from "@/redux/hooks";
-// import CreateBlog from "./CreateBlog";
-// import { useState } from "react";
-// import { blogInitalState } from "./blog.const";
 import { useGetAllBlogsQuery } from "@/redux/features/blog/blogApi";
-import BlogCard, { TBlog } from "./BlogCard";
 import BlogSceleton from "@/myComponent/loader/BlogSceleton";
+import { useAppSelector } from "@/redux/hooks";
+import { currentUser } from "@/redux/features/auth/authSlice";
+import CreateBlog from "./CreateBlog";
+import { currentBlogFilter } from "@/redux/features/blog/blogSlice";
+import { TBlog } from "@/interface/blogInterface/blog.interface";
+import BlogCard from "./BlogCard";
 
 const Blogs = () => {
-  // const user = useAppSelector(currentUser);
-
-  // const [searchTerm, setSearch] = useState("");
-  // const [filter, setFilter] = useState(blogInitalState);
-  // const [page, setPage] = useState<number>(1);
-  // const [limit, setLimit] = useState<number>(10);
-
-  const queryParams = {
-    fields: [
-      "name",
-      "title",
-      "content",
-      "createdAt",
-      "image",
-      "category",
-      "brand",
-      "reaction",
-      "view",
-    ],
-    filter: {},
-    searchTerm: "",
-    page: 1,
-    limit: 10,
-  };
-  // const queryParams = {
-  //   fields: [
-  //     "name",
-  //     "title",
-  //     "content",
-  //     "createdAt",
-  //     "image",
-  //     "category",
-  //     "brand",
-  //     "reaction",
-  //     "view",
-  //   ],
-  //   filter: filter || {},
-  //   searchTerm: searchTerm || "",
-  //   page: page || 1,
-  //   limit: limit || 10,
-  // };
-
-  const { data, isLoading } = useGetAllBlogsQuery(queryParams);
+  const user = useAppSelector(currentUser);
+  const query = useAppSelector(currentBlogFilter);
+  const { data, isLoading } = useGetAllBlogsQuery(query);
   const blogs = data?.data?.result || [];
-
+  console.log(data);
   if (isLoading) {
     return <BlogSceleton />;
   }
   return (
-    <div className="md:px-32 mt-2">
-      {/* {user && <CreateBlog />} */}
-      {blogs.map((blog: TBlog) => (
-        <BlogCard key={blog?._id} blog={blog} />
-      ))}
+    <div className="px-2 md:px-8 lg:px-16 min-h-[calc(100vh-75px)] py-2 lg:flex justify-center flex-row-reverse bg-gray-200 dark:bg-gray-800">
+      {user && <CreateBlog />}
+      <div className="space-y-20 ">
+        {!(blogs as TBlog[]).length ? (
+          <h1>No blogs available right now</h1>
+        ) : (
+          <>
+            {(blogs as TBlog[]).map((blog: TBlog) => (
+              <BlogCard key={blog?._id} blog={blog} />
+            ))}
+          </>
+        )}
+      </div>
     </div>
   );
 };

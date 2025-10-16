@@ -26,11 +26,14 @@ import { toast } from "sonner";
 
 export interface OrderSummaryProps {
   car: {
+    _id: string;
+    user: string;
     price: number;
     inStock: boolean;
     delivery: TDeliveryAndPayment;
   };
-  user: {
+  userInfo: {
+    _id: string;
     phoneNumber: string;
     verifyWithEmail: boolean;
   };
@@ -47,9 +50,9 @@ export type TOrderInfo = {
   existingPhone?: boolean;
 };
 
-const OrderSummery = ({ car, user }: OrderSummaryProps) => {
-  const { phoneNumber: phone, verifyWithEmail } = user || {};
-  const { price, inStock, delivery } = car || {};
+const OrderSummery = ({ car, userInfo }: OrderSummaryProps) => {
+  const { phoneNumber: phone, verifyWithEmail, _id } = userInfo || {};
+  const { price, inStock, delivery, user: userId } = car || {};
   const currentState = useAppSelector(currentDeliveryAndPayment);
   const dispatch = useAppDispatch();
   // const [createOrder] = useCreateOrderMutation();
@@ -67,11 +70,23 @@ const OrderSummery = ({ car, user }: OrderSummaryProps) => {
   const existingPhone = watch("existingPhone");
 
   const onSubmit = async (data: TOrderInfo) => {
+    if (_id === userId) {
+      return toast.error("you can`t pruchase your own car");
+    }
     if (!verifyWithEmail) {
       return toast.error("please verify your email at first");
     }
     if (!inStock) {
       return toast.error("this car is not available right now");
+    }
+    if (currentState.paymentMethods === "Cash on Delivery") {
+      return toast.error("cash on delivery is not available right now");
+    }
+    if (
+      currentState.paymentOptions === "SSLCommerz" ||
+      currentState.paymentOptions === "Stripe"
+    ) {
+      return toast.error("only surjo pay is available right now");
     }
     if (
       currentState.paymentMethods === "Online Payment" &&
@@ -79,6 +94,7 @@ const OrderSummery = ({ car, user }: OrderSummaryProps) => {
     ) {
       return toast.error("please select a payment option");
     }
+
     data.deliveryOption = currentState.deliveryOptions as TDeliveryOptions;
     data.paymentMethod = currentState.paymentMethods as TPaymentMethod;
     if (currentState.paymentOptions as TPaymentOptions) {
