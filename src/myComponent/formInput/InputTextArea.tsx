@@ -1,7 +1,7 @@
 import { FieldError, UseFormRegister, UseFormWatch } from "react-hook-form";
 
 interface TextAreaTypeProps {
-  label: string;
+  label?: string;
   name: string;
   placeholder?: string;
   register: UseFormRegister<any>;
@@ -29,9 +29,12 @@ const InputTextArea = ({
   const length = value.length;
   return (
     <section className="w-full font-inter space-y-1 ">
-      <label className="block text-sm font-semibold text-gray-200 ">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
+      {label && (
+        <label className="block text-sm font-semibold text-gray-200 ">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
+
       <div>
         <textarea
           rows={rows}
@@ -46,7 +49,9 @@ const InputTextArea = ({
               message: `${label} must be at most 500 characters`,
             },
           })}
-          placeholder={placeholder || `Enter your ${label.toLowerCase()}`}
+          placeholder={
+            placeholder || `Enter your ${label ? label.toLowerCase() : "value"}`
+          }
           className={`peer w-full px-4 py-2 rounded-xl border-2 transition-all duration-300 outline-none resize-none
             bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100
             ${

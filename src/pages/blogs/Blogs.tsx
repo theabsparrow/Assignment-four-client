@@ -12,9 +12,14 @@ const Blogs = () => {
   const query = useAppSelector(currentBlogFilter);
   const { data, isLoading } = useGetAllBlogsQuery(query);
   const blogs = data?.data?.result || [];
-  console.log(data);
   if (isLoading) {
-    return <BlogSceleton />;
+    return (
+      <div className="space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <BlogSceleton key={i} />
+        ))}
+      </div>
+    );
   }
   return (
     <div className="px-2 md:px-8 lg:px-16 min-h-[calc(100vh-75px)] py-2 lg:flex justify-center flex-row-reverse bg-gray-200 dark:bg-gray-800">

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import { Link } from "react-router-dom";
 import { TBlog } from "@/interface/blogInterface/blog.interface";
@@ -10,6 +10,14 @@ import {
   useCreateReactionMutation,
   useGetMyReactionQuery,
 } from "@/redux/features/reaction/reactionApi";
+import { SlLike } from "react-icons/sl";
+import { FaRegComment } from "react-icons/fa";
+import { RxCross1 } from "react-icons/rx";
+import CommentModal from "./CommentModal";
+import {
+  currentState,
+  setOpen,
+} from "@/redux/features/comment/commentModalSlice";
 
 export type TReactionOptions = "like" | "love" | "dislike";
 
@@ -24,9 +32,10 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
     authorId,
     comments,
   } = blog || {};
-
   const [userReaction, setUserReaction] = useState(reaction ?? 0);
   const user = useAppSelector(currentUser);
+  const { open } = useAppSelector(currentState);
+  const dispatch = useAppDispatch();
   const { data, isLoading } = useGetMyReactionQuery(_id);
   const myReaction = data?.data;
   const [createReaction] = useCreateReactionMutation();
@@ -59,8 +68,19 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
     }
   };
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
-    <section className="max-w-3xl mx-auto bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors duration-300 space-y-2">
+    <section className="max-w-3xl mx-auto bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors duration-300 space-y-2 relative">
       <div>
         {image && (
           <img
@@ -109,41 +129,67 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
         <p className="font-semibold text-gray-800 dark:text-gray-100">
           {reaction} people reacted
         </p>
-        <p className="font-semibold text-gray-800 dark:text-gray-100">
+        <button
+          onClick={() => dispatch(setOpen(true))}
+          className="font-semibold text-gray-800 dark:text-gray-100 hover:text-blue-700 hover:underline duration-500"
+        >
           Comments: {comments}
-        </p>
+        </button>
       </div>
 
-      <div>
-        {user ? (
-          <>
-            {isLoading ? (
+      {user ? (
+        <div>
+          {isLoading ? (
+            <div className="flex items-center gap-48">
               <span
-                className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold `}
+                className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold flex items-center gap-2`}
               >
-                {userReaction} Like
+                <SlLike /> Like
               </span>
-            ) : (
+              <span
+                className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold flex items-center gap-2`}
+              >
+                <FaRegComment /> Comment
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-48">
               <button
                 onClick={handleReaction}
-                className={`px-2 py-1 rounded-full transition  text-sm font-semibold ${
+                className={`px-4 py-1 rounded-full transition text-sm font-semibold flex items-center gap-2 ${
                   userReaction || myReaction
                     ? "bg-blue-300 text-blue-700"
                     : "bg-gray-600 text-white"
                 }`}
               >
-                {userReaction} {userReaction || myReaction ? "Liked" : "Like"}
+                <SlLike /> {userReaction || myReaction ? "Liked" : "Like"}
               </button>
-            )}
-          </>
-        ) : (
-          <span
+              <button
+                onClick={() => dispatch(setOpen(true))}
+                className="px-4 py-1 rounded-full transition text-sm font-semibold flex items-center gap-2 bg-gray-600 text-white"
+              >
+                <FaRegComment /> Comment
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center gap-48">
+          <Link
+            to="/sign-in"
             className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold `}
           >
-            Like
-          </span>
-        )}
-      </div>
+            <SlLike /> Like
+          </Link>
+          <button
+            onClick={() => setOpen(true)}
+            className="px-4 py-1 rounded-full transition text-sm font-semibold flex items-center gap-2 bg-gray-600 text-white"
+          >
+            <FaRegComment /> Comment
+          </button>
+        </div>
+      )}
+      {open && <CommentModal id={_id} />}
     </section>
   );
 };

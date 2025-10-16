@@ -5,6 +5,7 @@ import carFilterReducer from "./features/car/carSlice";
 import settingReducer from "./features/setting/settingSlice";
 import userFilterReducer from "./features/user/userSlice";
 import blogFilterReducer from "./features/blog/blogSlice";
+import openCommentReducer from "./features/comment/commentModalSlice";
 import deliveryAndPaymentOptions from "./features/checkout/checkoutSlice";
 import {
   persistReducer,
@@ -33,6 +34,7 @@ export const store = configureStore({
     userFilter: userFilterReducer,
     deliveryAndPayment: deliveryAndPaymentOptions,
     blogFilter: blogFilterReducer,
+    openCommentL: openCommentReducer,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({
