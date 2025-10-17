@@ -60,9 +60,11 @@ const InputTextArea = ({
                 : " border-gray-300 dark:border-gray-600 "
             }`}
         />
-        <div className="flex justify-end text-xs text-gray-200">
-          {length}/ {max}
-        </div>
+        {watch && (
+          <div className="flex justify-end text-xs text-gray-200">
+            {length}/ {max}
+          </div>
+        )}
       </div>
     </section>
   );

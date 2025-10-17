@@ -1,14 +1,14 @@
 import { useGetcarBrandQuery } from "@/redux/features/car/carApi";
-import BodyTypeLoader from "../loader/BodyTypeLoader";
 import PopularBrandCards, { TBrandCardProps } from "./PopularBrandCards";
 import { Link } from "react-router-dom";
+import AllBrandSkeleton from "../loader/AllBrandSkeleton";
 
 const PopularBrands = () => {
   const query = { limit: "8" };
   const { data, isLoading } = useGetcarBrandQuery(query);
   const brands = data?.data || {};
   if (isLoading) {
-    return <BodyTypeLoader />;
+    return <AllBrandSkeleton value={8} />;
   }
   return (
     <div className="px-2 lg:px-16 space-y-5 font-inter">

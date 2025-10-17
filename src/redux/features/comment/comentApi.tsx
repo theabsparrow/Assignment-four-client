@@ -20,7 +20,7 @@ const commentApi = baseApi.injectEndpoints({
       query: (args) => ({
         url: `/comment/create-comment/${args.id}`,
         method: "POST",
-        body: args.commentInfo,
+        body: args.comment,
       }),
       invalidatesTags: ["blog", "comment"],
     }),

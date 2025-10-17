@@ -12,7 +12,6 @@ import {
 } from "@/redux/features/reaction/reactionApi";
 import { SlLike } from "react-icons/sl";
 import { FaRegComment } from "react-icons/fa";
-import { RxCross1 } from "react-icons/rx";
 import CommentModal from "./CommentModal";
 import {
   currentState,
@@ -105,7 +104,9 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
           )}
           <div className="lg:flex items-center justify-between">
             <p className="font-medium text-blue-600">
-              {authorId?.name.firstName} {authorId?.name.lastName}
+              {authorId?.name.firstName}{" "}
+              {authorId?.name.middleName && authorId?.name.middleName}{" "}
+              {authorId?.name.lastName}
             </p>
             <p className="flex items-center gap-2 text-sm">
               {" "}

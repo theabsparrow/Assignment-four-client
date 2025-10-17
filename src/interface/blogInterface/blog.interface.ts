@@ -3,6 +3,7 @@ type TBlogAuthor = {
   _id: string;
   name: {
     firstName: string;
+    middleName?: string;
     lastName: string;
   };
   profileImage?: string;
