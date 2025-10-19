@@ -3,7 +3,8 @@ import { currentUser } from "@/redux/features/auth/authSlice";
 import { useAppSelector } from "@/redux/hooks";
 import profileIcon from "../../assets/profile-photo.png";
 import { BiSolidLike } from "react-icons/bi";
-import { formatedDate } from "../myProfile/myProfile.utills";
+import { formatedDate } from "../../pages/myProfile/myProfile.utills";
+import { timeAgo } from "@/utills/timeAgo";
 
 const ReplyComponent = ({ comment }: { comment: TCommentInfo }) => {
   const user = useAppSelector(currentUser);
@@ -35,14 +36,11 @@ const ReplyComponent = ({ comment }: { comment: TCommentInfo }) => {
             )}
 
             <span className="flex items-center gap-1">
-              {comment?.recation}{" "}
+              {comment?.reaction}{" "}
               <BiSolidLike className="text-blue-700 bg-white p-1 rounded-full text-xl" />{" "}
             </span>
           </div>
-          <p className="text-xs lg:text-sm">
-            {formatedDate(new Date(comment?.createdAt)).creationDate},
-            {formatedDate(new Date(comment?.createdAt)).creationTime}
-          </p>
+          <p className="text-xs lg:text-sm">{timeAgo(comment?.createdAt)}</p>
         </div>
       </div>
     </div>

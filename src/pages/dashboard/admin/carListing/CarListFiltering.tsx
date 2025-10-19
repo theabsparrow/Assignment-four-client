@@ -250,6 +250,7 @@ const CarListFiltering = ({
           </div>
         </div>
       </section>
+      {/* filter for small device */}
       {open && (
         <section className="md:hidden font-inter">
           <Sheet open={open} onOpenChange={setOpen}>
@@ -306,7 +307,7 @@ const CarListFiltering = ({
                   name="negotiable"
                   label="Negotiate"
                 />
-                <div className=" md:hidden">
+                <div>
                   <select
                     value={query?.sort}
                     onChange={(e) => {

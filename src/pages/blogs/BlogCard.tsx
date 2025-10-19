@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import { Link } from "react-router-dom";
 import { TBlog } from "@/interface/blogInterface/blog.interface";
@@ -12,12 +12,7 @@ import {
 } from "@/redux/features/reaction/reactionApi";
 import { SlLike } from "react-icons/sl";
 import { FaRegComment } from "react-icons/fa";
-import CommentModal from "./CommentModal";
-import {
-  currentState,
-  setOpen,
-} from "@/redux/features/comment/commentModalSlice";
-
+import CommentModal from "../../myComponent/modal/CommentModal";
 export type TReactionOptions = "like" | "love" | "dislike";
 
 const BlogCard = ({ blog }: { blog: TBlog }) => {
@@ -31,10 +26,9 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
     authorId,
     comments,
   } = blog || {};
+
   const [userReaction, setUserReaction] = useState(reaction ?? 0);
   const user = useAppSelector(currentUser);
-  const { open } = useAppSelector(currentState);
-  const dispatch = useAppDispatch();
   const { data, isLoading } = useGetMyReactionQuery(_id);
   const myReaction = data?.data;
   const [createReaction] = useCreateReactionMutation();
@@ -66,17 +60,6 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
       }
     }
   };
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
 
   return (
     <section className="max-w-3xl mx-auto bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors duration-300 space-y-2 relative">
@@ -128,14 +111,13 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
 
       <div className="flex flex-wrap items-center justify-between text-sm text-gray-600 dark:text-gray-300">
         <p className="font-semibold text-gray-800 dark:text-gray-100">
-          {reaction} people reacted
+          {userReaction} people reacted
         </p>
-        <button
-          onClick={() => dispatch(setOpen(true))}
-          className="font-semibold text-gray-800 dark:text-gray-100 hover:text-blue-700 hover:underline duration-500"
-        >
-          Comments: {comments}
-        </button>
+        <CommentModal
+          id={_id}
+          totalComment={comments}
+          forComment="cmntButton"
+        />
       </div>
 
       {user ? (
@@ -158,19 +140,14 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
               <button
                 onClick={handleReaction}
                 className={`px-4 py-1 rounded-full transition text-sm font-semibold flex items-center gap-2 ${
-                  userReaction || myReaction
+                  myReaction
                     ? "bg-blue-300 text-blue-700"
                     : "bg-gray-600 text-white"
                 }`}
               >
-                <SlLike /> {userReaction || myReaction ? "Liked" : "Like"}
+                <SlLike /> {myReaction ? "Liked" : "Like"}
               </button>
-              <button
-                onClick={() => dispatch(setOpen(true))}
-                className="px-4 py-1 rounded-full transition text-sm font-semibold flex items-center gap-2 bg-gray-600 text-white"
-              >
-                <FaRegComment /> Comment
-              </button>
+              <CommentModal id={_id} totalComment={comments} />
             </div>
           )}
         </div>
@@ -178,19 +155,13 @@ const BlogCard = ({ blog }: { blog: TBlog }) => {
         <div className="flex items-center gap-48">
           <Link
             to="/sign-in"
-            className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold `}
+            className={`px-2 py-1 rounded-full transition bg-gray-600 text-white text-sm font-semibold flex items-center gap-2`}
           >
             <SlLike /> Like
           </Link>
-          <button
-            onClick={() => setOpen(true)}
-            className="px-4 py-1 rounded-full transition text-sm font-semibold flex items-center gap-2 bg-gray-600 text-white"
-          >
-            <FaRegComment /> Comment
-          </button>
+          <CommentModal id={_id} totalComment={comments} />
         </div>
       )}
-      {open && <CommentModal id={_id} />}
     </section>
   );
 };

@@ -20,7 +20,7 @@ export type TCommentInfo = {
     profileImage: string;
   };
   content: string;
-  recation: number;
+  reaction: number;
   createdAt: string;
   replies: number;
 };

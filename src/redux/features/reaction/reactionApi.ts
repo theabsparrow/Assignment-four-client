@@ -9,6 +9,14 @@ const reactionApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reaction"],
     }),
+    getMyCommentReaction: builder.query({
+      query: (args) => ({
+        url: `/reaction/get-myReaction/${args}`,
+        method: "GET",
+      }),
+      providesTags: ["reaction"],
+    }),
+
     createReaction: builder.mutation({
       query: (args) => ({
         url: `/reaction/create-reaction/${args}`,
@@ -16,8 +24,17 @@ const reactionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["blog", "reaction"],
     }),
+    createCommentReaction: builder.mutation({
+      query: (args) => ({
+        url: `/reaction/create-commentReaction/${args}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["comment", "reaction"],
+    }),
   }),
 });
 
 export const { useGetMyReactionQuery } = reactionApi;
+export const { useGetMyCommentReactionQuery } = reactionApi;
 export const { useCreateReactionMutation } = reactionApi;
+export const { useCreateCommentReactionMutation } = reactionApi;

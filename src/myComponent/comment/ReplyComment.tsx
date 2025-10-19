@@ -35,7 +35,6 @@ const ReplyComment = ({
   const [addComment] = useAddCommentMutation();
   const { data, isLoading } = useGetAllRepliesQuery(commentId);
   const repliedInfo = data?.data;
-  console.log(repliedInfo);
   const {
     handleSubmit,
     register,

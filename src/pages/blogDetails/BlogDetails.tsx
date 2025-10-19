@@ -136,12 +136,12 @@ const BlogDetails = () => {
                 <button
                   onClick={handleReaction}
                   className={`px-2 py-1 rounded-full transition  text-sm font-semibold ${
-                    userReaction || myReaction
+                    myReaction
                       ? "bg-blue-300 text-blue-700"
                       : "bg-gray-600 text-white"
                   }`}
                 >
-                  {userReaction} {userReaction || myReaction ? "Liked" : "Like"}
+                  {myReaction ? "Liked" : "Like"}
                 </button>
               )}
             </>

@@ -1,17 +1,32 @@
 import { useGetAllBlogsQuery } from "@/redux/features/blog/blogApi";
 import BlogSceleton from "@/myComponent/loader/BlogSceleton";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import CreateBlog from "./CreateBlog";
-import { currentBlogFilter } from "@/redux/features/blog/blogSlice";
+import {
+  currentBlogFilter,
+  setPage,
+  setSearchTerm,
+  setSort,
+} from "@/redux/features/blog/blogSlice";
 import { TBlog } from "@/interface/blogInterface/blog.interface";
 import BlogCard from "./BlogCard";
+import Pagination from "@/myComponent/pagination/Pagination";
+import { blogSorting } from "@/const/blog.const";
+import { TValue } from "@/const/carInfo.const";
+import BlogsFiltering from "./BlogsFiltering";
 
 const Blogs = () => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(currentUser);
   const query = useAppSelector(currentBlogFilter);
   const { data, isLoading } = useGetAllBlogsQuery(query);
-  const blogs = data?.data?.result || [];
+  const { result: blogs, meta } = data?.data || {};
+
+  const handlePageChange = (page: number) => {
+    dispatch(setPage(page));
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -22,20 +37,29 @@ const Blogs = () => {
     );
   }
   return (
-    <div className="px-2 md:px-8 lg:px-16 min-h-[calc(100vh-75px)] py-2 lg:flex justify-center flex-row-reverse bg-gray-200 dark:bg-gray-800">
-      {user && <CreateBlog />}
-      <div className="space-y-20 ">
-        {!(blogs as TBlog[]).length ? (
-          <h1>No blogs available right now</h1>
-        ) : (
-          <>
-            {(blogs as TBlog[]).map((blog: TBlog) => (
-              <BlogCard key={blog?._id} blog={blog} />
-            ))}
-          </>
-        )}
+    <section className="px-2 md:px-8 lg:px-16 min-h-[calc(100vh-75px)] py-2 bg-gray-200 dark:bg-gray-800 relative">
+      <div className="lg:flex justify-center flex-row-reverse lg:gap-10">
+        {user && <CreateBlog />}
+        <div className="space-y-20 ">
+          {!(blogs as TBlog[]).length ? (
+            <h1>No blogs available right now</h1>
+          ) : (
+            <div className="space-y-10">
+              <BlogsFiltering />
+              {(blogs as TBlog[]).map((blog: TBlog) => (
+                <BlogCard key={blog?._id} blog={blog} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {blogs?.length > 0 && (
+        <div className="mt-5">
+          <Pagination meta={meta} handlePageChange={handlePageChange} />
+        </div>
+      )}
+    </section>
   );
 };
 
