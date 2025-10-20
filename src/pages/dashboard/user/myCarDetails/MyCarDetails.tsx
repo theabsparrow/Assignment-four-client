@@ -1,10 +1,22 @@
 import { TFeature } from "@/interface/carInterface/safetyFeature.interface";
 import { formatedDate } from "@/pages/myProfile/myProfile.utills";
-import { useGetMySingleCarQuery } from "@/redux/features/car/carApi";
+import {
+  currentBasicInfo,
+  resetBasicInfo,
+} from "@/redux/features/car/basicInfoSlice";
+import {
+  useGetMySingleCarQuery,
+  useUpdateCarMutation,
+} from "@/redux/features/car/carApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { imageUpload } from "@/utills/uploadImage";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import { IoAdd } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const MyCarDetails = () => {
   const { id } = useParams();
@@ -12,6 +24,10 @@ const MyCarDetails = () => {
   const car = data?.data;
   const { carEngine, registrationData, serviceHistory, safetyFeature } =
     car || {};
+  const basicInfo = useAppSelector(currentBasicInfo);
+  const dispatch = useAppDispatch();
+  const [updateCar] = useUpdateCarMutation();
+  const [open, setOpen] = useState("");
   const [selectedImage, setSelectedImage] = useState<string>(car?.image);
 
   useEffect(() => {
@@ -19,11 +35,94 @@ const MyCarDetails = () => {
       setSelectedImage(car.image);
     }
   }, [car]);
+
+  const handleImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    gallery?: string
+  ) => {
+    const toastId = toast.loading(` photo uploading....`);
+    const file = e.target.files?.[0];
+    try {
+      const image = await imageUpload(file!);
+      if (!image) {
+        toast.error("faild to upload the image");
+        return;
+      }
+      const data: Partial<{ image: string; addGalleryImage: string[] }> = {};
+      if (gallery) {
+        data.addGalleryImage?.push(image);
+      } else {
+        data.image = image;
+      }
+      const payload = { id: car?._id, data };
+      const res = await updateCar(payload).unwrap();
+
+      if (res.data) {
+        toast.success(` photo uploaded successfully`, {
+          id: toastId,
+          duration: 3000,
+        });
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
+
+  const handleRemoveImage = async (photo: string) => {
+    const toastId = toast.loading(` photo removing....`);
+    try {
+      const data: { removeGalleryImage: string[] } = {
+        removeGalleryImage: [photo],
+      };
+      const payload = { id: car?._id, data };
+      const res = await updateCar(payload).unwrap();
+
+      if (res.data) {
+        toast.success(` photo removed successfully`, {
+          id: toastId,
+          duration: 3000,
+        });
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!basicInfo || Object.keys(basicInfo).length === 0) {
+      return toast.error("nothing to update", { duration: 3000 });
+    }
+    const toastId = toast.loading("updating basic info....");
+    const payload = { id: car?._id, basicInfo };
+    try {
+      const res = await updateCar(payload).unwrap();
+      if (res?.data) {
+        toast.success("successfully updated basic info", {
+          id: toastId,
+          duration: 3000,
+        });
+        setOpen("");
+        dispatch(resetBasicInfo());
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+      dispatch(resetBasicInfo());
+    }
+  };
+
   if (isLoading) {
     return <h1>loading....</h1>;
   }
+
   return (
     <section className=" bg-gray-100 dark:bg-gray-800 font-inter space-y-20 p-4">
+      {/* image section */}
       <div className="space-y-2">
         <div className="relative  w-[60vw] mx-auto">
           <img
@@ -36,6 +135,14 @@ const MyCarDetails = () => {
             alt={car?.brand}
             className="h-5 w-5 md:h-12 md:w-12 absolute top-2 right-2"
           />
+          <label className="absolute bottom-1 right-1 bg-gray-300 dark:bg-gray-700 p-1 md:p-2 rounded-full shadow-md cursor-pointer">
+            📷
+            <input
+              type="file"
+              className="hidden"
+              onChange={(e) => handleImageChange(e)}
+            />
+          </label>
         </div>
         <div className="flex items-center justify-center gap-1.5">
           <img
@@ -64,8 +171,26 @@ const MyCarDetails = () => {
                       : "border border-gray-500 z-0"
                   }`}
                 />
+                <button
+                  onClick={() => handleRemoveImage(image)}
+                  className="absolute top-0 right-0  text-secondary text-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+                >
+                  <MdDelete />
+                </button>
               </div>
             ))}
+          {car?.galleryImage.length < 5 && (
+            <div className="w-16 h-16 md:w-60 bg-gray-300 dark:bg-gray-700 shadow-md border-2 border-secondary border-dashed ">
+              <label className="cursor-pointer w-full flex justify-center items-center py-[14px]">
+                <IoAdd className="text-4xl text-red-500" />
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => handleImageChange(e, "galleryImage")}
+                />
+              </label>
+            </div>
+          )}
         </div>
       </div>
 
@@ -92,6 +217,7 @@ const MyCarDetails = () => {
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
               <li>
                 <strong>Brand:</strong> {car?.brand}
+                {!open && <button onClick={handleSubmit}>edit</button>}
               </li>
               <li>
                 <strong>Model:</strong> {car?.model}

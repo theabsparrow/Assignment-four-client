@@ -21,10 +21,36 @@ const blogApi = baseApi.injectEndpoints({
       },
       providesTags: ["blog"],
     }),
+    getMyBlogs: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+        if (args) {
+          const entries = Object.entries(args);
+          for (const [key, value] of entries) {
+            if (value) {
+              params.append(key, value.toString());
+            }
+          }
+        }
+        return {
+          url: "/blog/get-myBlogs",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["blog"],
+    }),
 
     getASingleBlog: builder.query({
       query: (id) => ({
         url: `/blog/single-blog/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["blog"],
+    }),
+    getMySingleBlog: builder.query({
+      query: (id) => ({
+        url: `/blog/my-blog/${id}`,
         method: "GET",
       }),
       providesTags: ["blog"],
@@ -42,5 +68,7 @@ const blogApi = baseApi.injectEndpoints({
 });
 
 export const { useAddBlogMutation } = blogApi;
+export const { useGetMyBlogsQuery } = blogApi;
 export const { useGetAllBlogsQuery } = blogApi;
 export const { useGetASingleBlogQuery } = blogApi;
+export const { useGetMySingleBlogQuery } = blogApi;

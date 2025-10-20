@@ -1,3 +1,9 @@
+import {
+  TCarBrand,
+  TCategory,
+  TCondition,
+  TSeatingCapacity,
+} from "@/interface/carInterface/car.interface";
 import { TFilterState, TInitialState } from "./carSlice.type";
 
 export const initalFilter: TFilterState = {
@@ -20,3 +26,20 @@ export const initialState: TInitialState = {
   page: 1,
   limit: "",
 };
+
+export type TCarBasicInfo = {
+  brand: TCarBrand;
+  model: string;
+  category: TCategory;
+  year: string;
+  price: number;
+  description: string;
+  color: string;
+  condition: TCondition;
+  seatingCapacity: TSeatingCapacity;
+  madeIn: string;
+  negotiable: boolean | string;
+  inStock: boolean | string;
+};
+
+export const basicInfoInitialState: Partial<TCarBasicInfo> = {};

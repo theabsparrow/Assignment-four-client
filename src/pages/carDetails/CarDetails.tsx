@@ -31,7 +31,6 @@ const CarDetails = () => {
   if (isLoading) {
     return <CarDetailsSceleton />;
   }
-  console.log(carCategory);
   return (
     <section className=" bg-gray-100 dark:bg-gray-800 font-inter px-1 lg:px-16 pb-4 space-y-4">
       <div className="flex flex-col lg:flex-row gap-6 md:gap-3 lg:gap-0 lg:justify-between">

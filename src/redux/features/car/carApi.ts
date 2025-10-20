@@ -123,6 +123,7 @@ const carApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["car"],
     }),
+
     getSingleCar: builder.query({
       query: (args) => ({
         url: `/cars/${args}`,
@@ -130,6 +131,7 @@ const carApi = baseApi.injectEndpoints({
       }),
       providesTags: ["car"],
     }),
+
     getCheckoutInfo: builder.query({
       query: (args) => ({
         url: `/cars/checkout/${args}`,
@@ -137,30 +139,16 @@ const carApi = baseApi.injectEndpoints({
       }),
       providesTags: ["car"],
     }),
+
     updateCar: builder.mutation({
-      query: (carInfo) => ({
-        url: `/cars/update-info/${carInfo?.id}`,
+      query: (args) => ({
+        url: `/cars/update-info/${args?.id}`,
         method: "PATCH",
-        body: carInfo.carInfo,
+        body: args.data,
       }),
       invalidatesTags: ["car"],
     }),
-    updateGalleryImage: builder.mutation({
-      query: (imageInfo) => ({
-        url: `/cars/update-image/${imageInfo?.id}`,
-        method: "PATCH",
-        body: imageInfo?.imageInfo,
-      }),
-      invalidatesTags: ["car"],
-    }),
-    removeGalleryImage: builder.mutation({
-      query: (imageInfo) => ({
-        url: `/cars/delete-image/${imageInfo?.id}`,
-        method: "DELETE",
-        body: imageInfo?.imageInfo,
-      }),
-      invalidatesTags: ["car"],
-    }),
+
     deleteCar: builder.mutation({
       query: (params) => ({
         url: `/cars/delete/${params?.id}`,
@@ -182,6 +170,4 @@ export const { useAddCarMutation } = carApi;
 export const { useGetSingleCarQuery } = carApi;
 export const { useGetCheckoutInfoQuery } = carApi;
 export const { useUpdateCarMutation } = carApi;
-export const { useUpdateGalleryImageMutation } = carApi;
-export const { useRemoveGalleryImageMutation } = carApi;
 export const { useDeleteCarMutation } = carApi;

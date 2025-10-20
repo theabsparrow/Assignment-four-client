@@ -12,6 +12,7 @@ import Statictics from "@/pages/dashboard/admin/statistic/Statictics";
 import UserManagement from "@/pages/dashboard/admin/userManagement/UserManagement";
 import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import Dashboard from "@/pages/dashboard/Dashboard";
+import MyBlogDetails from "@/pages/dashboard/user/myBlogDetails/MyBlogDetails";
 import MyBlogs from "@/pages/dashboard/user/myBlogs/MyBlogs";
 import MyCarDetails from "@/pages/dashboard/user/myCarDetails/MyCarDetails";
 import MyCars from "@/pages/dashboard/user/myCars/MyCars";
@@ -201,6 +202,14 @@ export const dashboardRoutes = [
         element: (
           <ProtectedRoute roles={[USER_ROLE.user]}>
             <MyBlogs />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-blogs/:id",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MyBlogDetails />
           </ProtectedRoute>
         ),
       },
