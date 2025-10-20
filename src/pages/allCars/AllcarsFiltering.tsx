@@ -39,6 +39,8 @@ const AllcarsFiltering = ({
   total,
   maxPrice,
   minPrice,
+  classProps = "top-20",
+  modalClassProps = "top-[77px]",
 }: TFilterProps) => {
   // local state
   const [open, setOpen] = useState<boolean>(false);
@@ -122,7 +124,7 @@ const AllcarsFiltering = ({
 
   return (
     <>
-      <section ref={filterRef} className="sticky top-20 z-30">
+      <section ref={filterRef} className={`sticky z-30 ${classProps}`}>
         <Button
           variant="outline"
           onClick={() => setIsOpen(true)}
@@ -136,7 +138,9 @@ const AllcarsFiltering = ({
         </button>
 
         {isOpen && (
-          <div className="hidden md:flex flex-col fixed top-[77px] left-0 bg-white dark:bg-gray-900 shadow-lg px-4 py-4 space-y-3 overflow-y-auto h-[625px] rounded-b-lg">
+          <div
+            className={`hidden md:flex flex-col fixed left-0 bg-white dark:bg-gray-900 shadow-lg px-4 py-4 space-y-3 overflow-y-auto h-[625px] rounded-b-lg ${modalClassProps}`}
+          >
             <h1 className="text-xl md:text-2xl font-semibold ">
               Total {total} cars for sale
             </h1>

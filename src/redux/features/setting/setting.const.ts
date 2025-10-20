@@ -12,5 +12,7 @@ export type TSettingUser = {
   gender: TGender;
   dateOfBirth: string;
   password: string;
+  homeTown: string;
+  currentAddress: string;
 };
 export const settingsInitialState: Partial<TSettingUser> = {};

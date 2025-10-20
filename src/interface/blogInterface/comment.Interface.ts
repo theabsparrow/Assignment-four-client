@@ -12,6 +12,7 @@ export type TCommentInfo = {
   blogId: string;
   commentId?: string;
   userId: {
+    _id: string;
     name: {
       firstName: string;
       middleName?: string;

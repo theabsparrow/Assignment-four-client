@@ -15,6 +15,7 @@ import {
 } from "@/redux/features/reaction/reactionApi";
 import { toast } from "sonner";
 import { timeAgo } from "@/utills/timeAgo";
+import CommentDropdown from "../modal/CommentDropdown";
 
 const CommentCard = ({ comment }: { comment: TCommentInfo }) => {
   const [userReaction, setUserReaction] = useState(comment?.reaction ?? 0);
@@ -65,14 +66,18 @@ const CommentCard = ({ comment }: { comment: TCommentInfo }) => {
           <img className="w-12 h-12 rounded-full " src={profileIcon} />
         )}
       </div>
-      <div className="w-full">
-        <p className="font-medium text-white">
-          {comment?.userId?.name.firstName}{" "}
-          {comment?.userId?.name.middleName && comment?.userId?.name.middleName}{" "}
-          {comment?.userId?.name.lastName}
-        </p>
-        <p className="font-medium text-white/70 ">{comment?.content}</p>
-        <div className="text-white font-semibold flex flex-col lg:flex-row lg:items-center lg:justify-between">
+      <div className="w-full space-y-1">
+        <div className="p-2 bg-gray-600 rounded-lg relative group transition-colors">
+          <p className="font-medium text-white">
+            {comment?.userId?.name.firstName}{" "}
+            {comment?.userId?.name.middleName &&
+              comment?.userId?.name.middleName}{" "}
+            {comment?.userId?.name.lastName}
+          </p>
+          <p className="font-medium text-white/70 ">{comment?.content}</p>
+          {user?.userId === comment?.userId?._id && <CommentDropdown />}
+        </div>
+        <div className="text-white font-semibold flex flex-col lg:flex-row lg:items-center lg:justify-between text-sm">
           <div className="flex items-center gap-10">
             {user ? (
               <div>
@@ -108,7 +113,7 @@ const CommentCard = ({ comment }: { comment: TCommentInfo }) => {
             </button>
             <span className="flex items-center gap-1">
               {userReaction}{" "}
-              <BiSolidLike className="text-blue-700 bg-white p-1 rounded-full text-xl" />{" "}
+              <BiSolidLike className="text-blue-700 bg-white p-1 rounded-full text-lg" />{" "}
             </span>
           </div>
           <p className="text-xs lg:text-sm">{timeAgo(comment?.createdAt)}</p>

@@ -43,6 +43,12 @@ const settingSlice = createSlice({
     setProfile: (state, action: PayloadAction<TUserInfo>) => {
       return { ...state, ...action.payload };
     },
+    setHome: (state, action: PayloadAction<string>) => {
+      state.homeTown = action.payload;
+    },
+    setCurrent: (state, action: PayloadAction<string>) => {
+      state.currentAddress = action.payload;
+    },
     resetProfile: () => settingsInitialState,
   },
 });
@@ -57,6 +63,8 @@ export const {
   setPhone,
   setPassword,
   setProfile,
+  setHome,
+  setCurrent,
   resetProfile,
 } = settingSlice.actions;
 export default settingSlice.reducer;

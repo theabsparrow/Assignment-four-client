@@ -13,6 +13,7 @@ import UserManagement from "@/pages/dashboard/admin/userManagement/UserManagemen
 import UserProfile from "@/pages/dashboard/admin/userProfile/UserProfile";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import MyBlogs from "@/pages/dashboard/user/myBlogs/MyBlogs";
+import MyCarDetails from "@/pages/dashboard/user/myCarDetails/MyCarDetails";
 import MyCars from "@/pages/dashboard/user/myCars/MyCars";
 import MyPurchase from "@/pages/dashboard/user/myPurchase/MyPurchase";
 import MySelling from "@/pages/dashboard/user/mySellings/MySelling";
@@ -168,6 +169,14 @@ export const dashboardRoutes = [
         element: (
           <ProtectedRoute roles={[USER_ROLE.user]}>
             <MyCars />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-cars/:id",
+        element: (
+          <ProtectedRoute roles={[USER_ROLE.user]}>
+            <MyCarDetails />
           </ProtectedRoute>
         ),
       },

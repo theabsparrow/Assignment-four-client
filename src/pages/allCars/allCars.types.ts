@@ -3,4 +3,6 @@ export type TFilterProps = {
   total: number;
   maxPrice: number;
   minPrice: number;
+  classProps?: string;
+  modalClassProps?: string;
 };

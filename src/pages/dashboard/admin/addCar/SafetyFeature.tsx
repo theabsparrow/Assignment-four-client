@@ -26,7 +26,7 @@ const SafetyFeature = ({
 
   const selectedFeature = watch("safetyFeature.features") || [];
   const selectedCondition = watch("basicInfo.condition") || "";
-  console.log(selectedCondition);
+
   const safetyFeatureFields = [
     "safetyFeature.safetyRating",
     "safetyFeature.airbags",

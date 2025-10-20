@@ -1,0 +1,44 @@
+import { TCarInfo } from "@/interface/carInterface/car.interface";
+import { TbCurrencyTaka } from "react-icons/tb";
+import { Link } from "react-router-dom";
+
+const MyCarCard = ({ car }: { car: TCarInfo }) => {
+  const { brand, model, year, price, image, _id, category, condition } = car;
+  return (
+    <section className="bg-[#f0f3f8] dark:bg-gray-900 font-inter rounded-2xl shadow-lg overflow-hidden transition transform hover:scale-105 hover:shadow-2xl duration-500 p-3 flex flex-col justify-between">
+      <div className=" overflow-hidden rounded-lg">
+        <img
+          src={image as string}
+          alt={`${brand} ${model}`}
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+            {brand} {model} ({category})
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 flex items-center justify-between">
+            {year} ({condition})
+          </p>
+          <p className="text-lg flex items-center font-semibold text-deepRed dark:text-indigo-400 mt-2">
+            <TbCurrencyTaka /> {price}{" "}
+            {car?.negotiable && (
+              <span className="text-sm text-gray-500">(Negotiable)</span>
+            )}
+          </p>
+        </div>
+        <div>
+          <Link
+            to={`/dashboard/my-cars/${_id}`}
+            className="w-full bg-secondary dark:bg-gray-500 dark:text-gray-200 dark:hover:bg-secondary duration-500 text-white font-bold p-2 rounded-md"
+          >
+            View Details
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default MyCarCard;

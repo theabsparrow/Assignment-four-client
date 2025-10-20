@@ -7,13 +7,20 @@ import profileIcon from "../../assets/profile-photo.png";
 import coverImageIcon from "../../assets/coverImage.png";
 import { imageUpload } from "@/utills/uploadImage";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { calculateAge, formatedDate } from "./myProfile.utills";
 import ProfileLoader from "@/myComponent/loader/ProfileLoader";
 import { TMyProfileQUery } from "@/interface/navbar.types";
 import { FaCheckCircle, FaClock } from "react-icons/fa";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  currentSettings,
+  resetProfile,
+  setCurrent,
+  setHome,
+} from "@/redux/features/setting/settingSlice";
+import { MdEdit } from "react-icons/md";
 
 const MyProfile = () => {
   // redux state
@@ -21,9 +28,11 @@ const MyProfile = () => {
   query.for = "profile";
   const { data, isLoading } = useMyProfileQuery(query);
   const profileInfo = data?.data;
+  const personalInfo = useAppSelector(currentSettings);
+  const dispatch = useAppDispatch();
   const [updatedInfo] = useUpdateUserInfoMutation();
   // local state
-  const [editing, setEditing] = useState(false);
+  const [open, setOpen] = useState<"home" | "current" | "">("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string | "">(
     profileInfo?.profileImage
@@ -37,19 +46,6 @@ const MyProfile = () => {
   const [currentAddress, setCurrentAddress] = useState<string | " ">(
     profileInfo?.currentAddress ?? "No current address"
   );
-  const [age, setAge] = useState(0);
-  const methods = useForm({
-    defaultValues: {
-      homeTown: homeTown || "",
-      currentAddress: currentAddress || "",
-    },
-  });
-  useEffect(() => {
-    if (profileInfo) {
-      const age = calculateAge(profileInfo?.dateOfBirth);
-      setAge(age);
-    }
-  }, [profileInfo?.dateOfBirth]);
 
   useEffect(() => {
     if (profileInfo) {
@@ -91,25 +87,26 @@ const MyProfile = () => {
     }
   };
 
-  const onSubmit = async (data: any) => {
-    const toastId = toast.loading(`address info updating....`);
+  const handleSubmit = async () => {
+    if (!personalInfo || Object.keys(personalInfo).length === 0) {
+      return toast.error("nothing to update", { duration: 3000 });
+    }
+    const toastId = toast.loading("updating personal info....");
     try {
-      const res = await updatedInfo(data).unwrap();
-      if (res.data.result?.homeTown) {
-        setHomeTown(res.data.result?.homeTown);
-        toast.success(res.message, {
+      const res = await updatedInfo(personalInfo).unwrap();
+      if (res?.data) {
+        toast.success("successfully updated personal info", {
           id: toastId,
           duration: 3000,
         });
-      }
-      if (res.data.result?.currentAddress) {
-        setCurrentAddress(res.data.result?.currentAddress);
-        setEditing(!editing);
+        setOpen("");
+        dispatch(resetProfile());
       }
     } catch (error: any) {
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });
+      dispatch(resetProfile());
     }
   };
 
@@ -234,7 +231,8 @@ const MyProfile = () => {
                   Date of Birth
                 </label>
                 <p className="mt-1 ">
-                  {profileInfo?.dateOfBirth} <span>(Age: {age})</span>
+                  {profileInfo?.dateOfBirth}{" "}
+                  <span>(Age: {calculateAge(profileInfo?.dateOfBirth)})</span>
                 </p>
               </div>
             </div>
@@ -251,63 +249,126 @@ const MyProfile = () => {
           </div>
 
           <div className="p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-full space-y-2">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-400">
-                Address Information
-              </h3>
+            <div className="flex items-end justify-between">
+              <div>
+                {open === "home" ? (
+                  <div className="space-y-2">
+                    <div className="flex flex-col ">
+                      <label>Home Town</label>
+                      <input
+                        type="text"
+                        value={homeTown}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          dispatch(setHome(value));
+                          setHomeTown(value);
+                        }}
+                        className="peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+                      />
+                    </div>
 
-              <button
-                onClick={() => setEditing(!editing)}
-                className="text-blue-500 font-semibold hover:underline"
-              >
-                {editing ? "cancel " : "Edit"}
-              </button>
-            </div>
-            {editing ? (
-              <form
-                onSubmit={methods.handleSubmit(onSubmit)}
-                className="space-y-2"
-              >
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium ">
-                    Home Town
-                  </label>
-                  <input
-                    type="text"
-                    {...methods.register("homeTown")}
-                    className="w-full p-2 border rounded-lg outline-none dark:bg-gray-700"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="block text-sm font-medium ">
-                    Current Address
-                  </label>
-                  <input
-                    type="text"
-                    {...methods.register("currentAddress")}
-                    className=" w-full p-2 border rounded-lg outline-none dark:bg-gray-700"
-                  />
-                </div>
-                <button className="bg-secondary dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-secondary text-white font-bold p-2 rounded-md duration-500 transition ">
-                  {" "}
-                  update{" "}
-                </button>
-              </form>
-            ) : (
-              <div className="space-y-2">
-                <div className="space-y-1">
-                  <h1 className="block text-sm font-medium ">Home Town</h1>
-                  <p>{homeTown || "Not set"}</p>
-                </div>
-                <div className="space-y-1">
-                  <h1 className="block text-sm font-medium ">
-                    {" "}
-                    Current Address
-                  </h1>
-                  <p>{currentAddress || "Not set"}</p>
-                </div>
+                    <div className="flex items-center gap-10">
+                      <button
+                        onClick={() => {
+                          setOpen("");
+                          dispatch(resetProfile());
+                          setHomeTown(profileInfo?.homeTown);
+                        }}
+                        className="text-secondary font-semibold"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSubmit}
+                        className="text-secondary font-semibold"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <h1 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Home Town
+                    </h1>
+                    <p className="text-gray-600">
+                      {profileInfo?.homeTown ?? "No home town"}{" "}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
+              {open !== "home" && (
+                <button
+                  onClick={() => {
+                    setOpen("home");
+                    dispatch(resetProfile());
+                  }}
+                  className="text-red-600 text-lg "
+                >
+                  <MdEdit />
+                </button>
+              )}
+            </div>
+            <div className="flex items-end justify-between">
+              <div>
+                {open === "current" ? (
+                  <div className="space-y-2">
+                    <div className="flex flex-col ">
+                      <label>Current Address</label>
+                      <input
+                        type="text"
+                        value={currentAddress}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          dispatch(setCurrent(value));
+                          setCurrentAddress(value);
+                        }}
+                        className="peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-10">
+                      <button
+                        onClick={() => {
+                          setOpen("");
+                          dispatch(resetProfile());
+                          setHomeTown(profileInfo?.currentAddress);
+                        }}
+                        className="text-secondary font-semibold"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSubmit}
+                        className="text-secondary font-semibold"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <h1 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Current Address
+                    </h1>
+                    <p className="text-gray-600">
+                      {profileInfo?.currentAddress ?? "No current address"}{" "}
+                    </p>
+                  </div>
+                )}
+              </div>
+              {open !== "current" && (
+                <button
+                  onClick={() => {
+                    setOpen("current");
+                    dispatch(resetProfile());
+                  }}
+                  className="text-red-600 text-lg "
+                >
+                  <MdEdit />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

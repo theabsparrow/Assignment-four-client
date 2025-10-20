@@ -26,10 +26,20 @@ const AddCar = () => {
       );
       data.serviceHistory.cost = Number(data.serviceHistory?.cost);
     }
-    if (data?.registrationData?.roadTaxPaid) {
-      data.registrationData.roadTaxPaid =
-        data.registrationData.roadTaxPaid === "Yes" ? true : false;
+
+    if (data?.registrationData) {
+      if (data?.registrationData?.roadTaxPaid) {
+        data.registrationData.roadTaxPaid =
+          data.registrationData.roadTaxPaid === "Yes" ? true : false;
+      }
+      if (!data?.registrationData?.roadTaxPaid) {
+        delete data.registrationData.roadTaxPaid;
+      }
+      if (!data?.registrationData?.registrationYear) {
+        delete data.registrationData.registrationYear;
+      }
     }
+
     if (data?.safetyFeature) {
       if (!data.safetyFeature.airbags) {
         delete data.safetyFeature.airbags;
@@ -79,6 +89,7 @@ const AddCar = () => {
         error?.data?.message ||
         error?.error ||
         "Something went wrong!";
+      console.log(error);
       toast.error(errorInfo, { id: toastId, duration: 3000 });
     }
   };

@@ -1,9 +1,4 @@
-import {
-  driveTrain,
-  engine,
-  fuelType,
-  transmission,
-} from "@/const/carEngine.const";
+import { driveTrain, fuelType, transmission } from "@/const/carEngine.const";
 import { TcarInfoPayload } from "@/interface/carInterface/car.interface";
 import InputSelect from "@/myComponent/formInput/InputSelect";
 import InputType from "@/myComponent/formInput/InputType";
@@ -55,12 +50,12 @@ const EngineInfoForm = ({
       </h1>
       <div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-5 ">
-          <InputSelect
-            register={register}
-            name="engineInfo.engine"
+          <InputType
             label="Engine Type"
+            name="engineInfo.engine"
+            register={register}
             error={errors.engineInfo?.engine}
-            options={engine}
+            type="text"
             required={true}
           />
           <InputSelect

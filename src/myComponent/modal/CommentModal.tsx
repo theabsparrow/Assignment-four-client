@@ -92,7 +92,7 @@ const CommentModal = ({ id, totalComment, forComment }: TCommentModalProps) => {
 
       {open && (
         <section className="fixed -top-2 inset-0 z-50 flex items-center justify-center bg-black/30 ">
-          <div className="bg-gray-500 dark:bg-gray-900 rounded-lg shadow-lg lg:w-[40vw] h-[70vh] lg:h-[85vh] flex flex-col p-2 lg:p-4 relative">
+          <div className="bg-gray-500 dark:bg-gray-900 rounded-lg shadow-lg lg:w-[40vw] h-[70vh] lg:h-[85vh] flex flex-col px-12 py-8 relative">
             <button
               disabled={isSubmitting}
               onClick={() => {

@@ -12,7 +12,7 @@ const BlogsFiltering = () => {
   const dispatch = useAppDispatch();
   const query = useAppSelector(currentBlogFilter);
   return (
-    <section className="space-y-2 lg:px-2 sticky top-[75px]  z-20 pt-1 lg:flex items-center justify-between bg-gray-200 dark:bg-gray-800 py-4">
+    <section className="space-y-2 lg:px-2 pt-1 lg:flex items-center justify-between bg-gray-200 dark:bg-gray-800 py-4">
       <input
         type="text"
         placeholder="Search items"

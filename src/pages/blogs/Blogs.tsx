@@ -3,17 +3,10 @@ import BlogSceleton from "@/myComponent/loader/BlogSceleton";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { currentUser } from "@/redux/features/auth/authSlice";
 import CreateBlog from "./CreateBlog";
-import {
-  currentBlogFilter,
-  setPage,
-  setSearchTerm,
-  setSort,
-} from "@/redux/features/blog/blogSlice";
+import { currentBlogFilter, setPage } from "@/redux/features/blog/blogSlice";
 import { TBlog } from "@/interface/blogInterface/blog.interface";
 import BlogCard from "./BlogCard";
 import Pagination from "@/myComponent/pagination/Pagination";
-import { blogSorting } from "@/const/blog.const";
-import { TValue } from "@/const/carInfo.const";
 import BlogsFiltering from "./BlogsFiltering";
 
 const Blogs = () => {
@@ -44,7 +37,7 @@ const Blogs = () => {
           {!(blogs as TBlog[]).length ? (
             <h1>No blogs available right now</h1>
           ) : (
-            <div className="space-y-10">
+            <div className="space-y-16">
               <BlogsFiltering />
               {(blogs as TBlog[]).map((blog: TBlog) => (
                 <BlogCard key={blog?._id} blog={blog} />
