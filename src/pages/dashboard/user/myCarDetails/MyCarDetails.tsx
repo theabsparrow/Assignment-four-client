@@ -1,14 +1,9 @@
 import { TFeature } from "@/interface/carInterface/safetyFeature.interface";
 import { formatedDate } from "@/pages/myProfile/myProfile.utills";
 import {
-  currentBasicInfo,
-  resetBasicInfo,
-} from "@/redux/features/car/basicInfoSlice";
-import {
   useGetMySingleCarQuery,
   useUpdateCarMutation,
 } from "@/redux/features/car/carApi";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { imageUpload } from "@/utills/uploadImage";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -17,17 +12,23 @@ import { MdDelete } from "react-icons/md";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import BasicInfo from "./BasicInfo";
+import EngineInfo from "./EngineInfo";
+import RegistrationInfo from "./RegistrationInfo";
 
 const MyCarDetails = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetMySingleCarQuery(id);
   const car = data?.data;
-  const { carEngine, registrationData, serviceHistory, safetyFeature } =
-    car || {};
-  const basicInfo = useAppSelector(currentBasicInfo);
-  const dispatch = useAppDispatch();
+  const {
+    carEngine,
+    registrationData,
+    serviceHistory,
+    safetyFeature,
+    deliveryAndPayment,
+    ...basicCar
+  } = car || {};
   const [updateCar] = useUpdateCarMutation();
-  const [open, setOpen] = useState("");
   const [selectedImage, setSelectedImage] = useState<string>(car?.image);
 
   useEffect(() => {
@@ -92,30 +93,6 @@ const MyCarDetails = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!basicInfo || Object.keys(basicInfo).length === 0) {
-      return toast.error("nothing to update", { duration: 3000 });
-    }
-    const toastId = toast.loading("updating basic info....");
-    const payload = { id: car?._id, basicInfo };
-    try {
-      const res = await updateCar(payload).unwrap();
-      if (res?.data) {
-        toast.success("successfully updated basic info", {
-          id: toastId,
-          duration: 3000,
-        });
-        setOpen("");
-        dispatch(resetBasicInfo());
-      }
-    } catch (error: any) {
-      const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
-      dispatch(resetBasicInfo());
-    }
-  };
-
   if (isLoading) {
     return <h1>loading....</h1>;
   }
@@ -124,11 +101,11 @@ const MyCarDetails = () => {
     <section className=" bg-gray-100 dark:bg-gray-800 font-inter space-y-20 p-4">
       {/* image section */}
       <div className="space-y-2">
-        <div className="relative  w-[60vw] mx-auto">
+        <div className="relative  md:w-[60vw] mx-auto">
           <img
             src={selectedImage}
             alt={car?.model}
-            className="w-full rounded-xl"
+            className="w-full rounded-xl md:w-[60vw] lg:h-[70vh]"
           />
           <img
             src={car?.carBrandLogo}
@@ -193,156 +170,10 @@ const MyCarDetails = () => {
           )}
         </div>
       </div>
-
-      <div className=" grid grid-cols-1 md:grid-cols-2 ">
-        {/* basic info */}
-        <div className="w-full p-4 space-y-4 ">
-          <div className="space-y-2">
-            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 text-center">
-              Car Information
-            </h2>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                <span>{car?.brand}</span> <span>{car?.model}</span>{" "}
-                <span className="text-xl">({car?.condition})</span>
-              </h2>
-              {car?.description && (
-                <p className="text-gray-600 dark:text-gray-300">
-                  {car?.description}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="text-gray-700 dark:text-gray-300 space-y-4">
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-              <li>
-                <strong>Brand:</strong> {car?.brand}
-                {!open && <button onClick={handleSubmit}>edit</button>}
-              </li>
-              <li>
-                <strong>Model:</strong> {car?.model}
-              </li>
-              <li>
-                <strong>Category:</strong> {car?.category}
-              </li>
-              <li>
-                <strong>Year:</strong> {car?.year}
-              </li>
-              <li>
-                <strong>Condition:</strong> {car?.condition}
-              </li>
-              <li>
-                <strong>Color:</strong> {car?.color}
-              </li>
-              <li>
-                <strong>Seating Capacity:</strong> {car?.seatingCapacity}
-              </li>
-              <li>
-                <strong>Made In:</strong> {car?.madeIn}
-              </li>
-              <li>
-                <strong>Negotiable:</strong> {car?.negotiable ? "Yes" : "No"}
-              </li>
-              <li>
-                <strong>In Stock:</strong> {car?.inStock ? "Yes" : "No"}
-              </li>
-              <li>
-                <strong>Price:</strong> {car?.price}
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* engine information */}
-        <div className="w-full p-4 space-y-2">
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 text-center">
-              Engine Information
-            </h2>
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-              {carEngine?.engine} Engine
-            </h2>
-          </div>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-gray-700 dark:text-gray-300 text-sm">
-            <li>
-              <strong>Transmission:</strong> {carEngine?.transmission}
-            </li>
-            <li>
-              <strong>Fuel:</strong> {carEngine?.fuelType}
-            </li>
-
-            <li>
-              <strong>Mileage:</strong> {carEngine?.mileage} km
-            </li>
-            <li>
-              <strong>Drive Train:</strong> {carEngine?.driveTrain}
-            </li>
-            <li>
-              <strong>Top Speed:</strong> {carEngine?.topSpeed} km/h
-            </li>
-            <li>
-              <strong>Horse Power:</strong> {carEngine?.horsePower} hp
-            </li>
-            <li>
-              <strong>Torque:</strong> {carEngine?.torque} N-m
-            </li>
-            <li>
-              <strong>Acceleration:</strong> {carEngine?.acceleration} sec
-            </li>
-          </ul>
-        </div>
-
-        {/* registration information */}
-        <div className="w-full p-4 space-y-4 ">
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 text-center">
-              Registration Information
-            </h2>
-            <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-              Vehicle Identification Number:{" "}
-              <span>{registrationData?.vin}</span>
-            </h2>
-          </div>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-gray-700 dark:text-gray-300 text-sm">
-            {registrationData?.licensePlate && (
-              <li>
-                <strong>License:</strong> {registrationData?.licensePlate}
-              </li>
-            )}
-            {registrationData?.registrationAuthority && (
-              <li>
-                <strong> Authority:</strong>{" "}
-                {registrationData?.registrationAuthority}
-              </li>
-            )}
-            {registrationData?.registrationCountry && (
-              <li>
-                <strong> Country:</strong>{" "}
-                {registrationData?.registrationCountry}
-              </li>
-            )}
-            {registrationData?.previousOwner && (
-              <li>
-                <strong> Pre Owner:</strong> {registrationData?.previousOwner}
-              </li>
-            )}
-            {registrationData?.previousOwnerAddress && (
-              <li>
-                <strong> Pre Address:</strong>{" "}
-                {registrationData?.previousOwnerAddress}
-              </li>
-            )}
-            {registrationData?.registrationYear && (
-              <li>
-                <strong> Year:</strong> {registrationData?.registrationYear}
-              </li>
-            )}
-            <li>
-              <strong> Tax Paid:</strong>{" "}
-              {registrationData?.roadTaxPaid ? "Yes" : "No"}
-            </li>
-          </ul>
-        </div>
+      <div className=" grid grid-cols-1 ">
+        <BasicInfo car={basicCar} />
+        <EngineInfo carEngine={carEngine} />
+        <RegistrationInfo registrationData={registrationData} />
 
         {/* service history */}
         {serviceHistory && (

@@ -45,10 +45,10 @@ const basicInfoSlice = createSlice({
     setMadeIn: (state, action: PayloadAction<Partial<string>>) => {
       state.madeIn = action.payload;
     },
-    setNegotiable: (state, action: PayloadAction<Partial<string>>) => {
+    setNegotiable: (state, action: PayloadAction<Partial<boolean>>) => {
       state.negotiable = action.payload;
     },
-    setInStock: (state, action: PayloadAction<Partial<string>>) => {
+    setInStock: (state, action: PayloadAction<Partial<boolean>>) => {
       state.inStock = action.payload;
     },
     resetBasicInfo: () => basicInfoInitialState,

@@ -140,6 +140,13 @@ export interface TCarInfo extends TCar {
   createdAt: string;
   negotiable: boolean;
 }
+export interface TCarDataInfo extends TCar {
+  _id: string;
+  inStock: boolean | string;
+  carBrandLogo: string;
+  createdAt: string;
+  negotiable: boolean | string;
+}
 
 export type TcarInfoPayload = {
   basicInfo: TCar;
