@@ -1,27 +1,23 @@
-import { TCarDataInfo } from "@/interface/carInterface/car.interface";
-import {
-  currentBasicInfo,
-  resetBasicInfo,
-} from "@/redux/features/car/basicInfoSlice";
-import { useUpdateCarMutation } from "@/redux/features/car/carApi";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { resetBasicInfo } from "@/redux/features/car/basicInfoSlice";
+import { resetEngineInfo } from "@/redux/features/car/engineInfoSlice";
+import { useAppDispatch } from "@/redux/hooks";
 import { ReactNode, useState } from "react";
 import { MdEdit } from "react-icons/md";
-import { toast } from "sonner";
 
-type EditComponentProps = {
+type EditComponentProps<T> = {
   label: string;
-  name: string;
-  carData: Partial<TCarDataInfo>;
-  car: TCarDataInfo;
-  setCardata: React.Dispatch<
-    React.SetStateAction<Partial<TCarDataInfo> | null>
-  >;
+  name: keyof T;
+  carData: Partial<T>;
+  car: T;
+  setCardata: React.Dispatch<React.SetStateAction<Partial<T> | null>>;
   handleChange: (value: string) => void;
   options: string[];
+  handleSubmit: (
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  ) => Promise<any>;
 };
 
-const EditComponent = ({
+const EditComponent = <T extends { _id?: string }>({
   label,
   name,
   setCardata,
@@ -29,36 +25,10 @@ const EditComponent = ({
   car,
   handleChange,
   options,
-}: EditComponentProps) => {
+  handleSubmit,
+}: EditComponentProps<T>) => {
   const [open, setOpen] = useState(false);
-  const basicInfo = useAppSelector(currentBasicInfo);
   const dispatch = useAppDispatch();
-  const [updateCar] = useUpdateCarMutation();
-
-  const handleSubmit = async () => {
-    if (!basicInfo || Object.keys(basicInfo).length === 0) {
-      return toast.error("nothing to update", { duration: 3000 });
-    }
-    const toastId = toast.loading("updating basic info....");
-    const payload = { id: car?._id, basicInfo };
-    try {
-      const res = await updateCar(payload).unwrap();
-      if (res?.data) {
-        toast.success("successfully updated basic info", {
-          id: toastId,
-          duration: 3000,
-        });
-        setOpen(false);
-        dispatch(resetBasicInfo());
-      }
-    } catch (error: any) {
-      const errorInfo =
-        error?.data?.message || error?.error || "Something went wrong!";
-      toast.error(errorInfo, { id: toastId, duration: 3000 });
-      dispatch(resetBasicInfo());
-    }
-  };
-
   return (
     <li className="flex items-end justify-between bg-gray-200 px-4 py-2 rounded-xl">
       <div>
@@ -68,11 +38,9 @@ const EditComponent = ({
               <label>{label}</label>
               <select
                 value={
-                  name === "negotiable" || name === "inStock"
-                    ? carData?.[name as keyof TCarDataInfo]
-                      ? "Yes"
-                      : "No"
-                    : (carData?.[name as keyof TCarDataInfo] as string) ?? ""
+                  (carData?.[name] as any) === true
+                    ? "Yes"
+                    : (carData?.[name] as any) ?? ""
                 }
                 onChange={(e) => {
                   const value = e.target.value;
@@ -97,13 +65,14 @@ const EditComponent = ({
                   setOpen(false);
                   setCardata(car);
                   dispatch(resetBasicInfo());
+                  dispatch(resetEngineInfo());
                 }}
                 className="text-secondary font-semibold"
               >
                 Cancel
               </button>
               <button
-                onClick={handleSubmit}
+                onClick={() => handleSubmit(setOpen)}
                 className="text-secondary font-semibold"
               >
                 Save
@@ -113,7 +82,9 @@ const EditComponent = ({
         ) : (
           <p>
             <strong>{label}:</strong>{" "}
-            {car[name as keyof TCarDataInfo] as ReactNode}
+            {(carData?.[name] as ReactNode) === true
+              ? "Yes"
+              : (carData?.[name] as ReactNode) ?? ""}
           </p>
         )}
       </div>
@@ -122,6 +93,7 @@ const EditComponent = ({
           onClick={() => {
             setOpen(true);
             dispatch(resetBasicInfo());
+            dispatch(resetEngineInfo());
           }}
           className="text-red-600 text-lg "
         >

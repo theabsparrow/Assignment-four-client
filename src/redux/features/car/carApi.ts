@@ -148,6 +148,14 @@ const carApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["car"],
     }),
+    updateCarEngine: builder.mutation({
+      query: (args) => ({
+        url: `/cars/update-carEngine/${args?.id}`,
+        method: "PATCH",
+        body: args.data,
+      }),
+      invalidatesTags: ["car"],
+    }),
 
     deleteCar: builder.mutation({
       query: (params) => ({
@@ -170,4 +178,5 @@ export const { useAddCarMutation } = carApi;
 export const { useGetSingleCarQuery } = carApi;
 export const { useGetCheckoutInfoQuery } = carApi;
 export const { useUpdateCarMutation } = carApi;
+export const { useUpdateCarEngineMutation } = carApi;
 export const { useDeleteCarMutation } = carApi;

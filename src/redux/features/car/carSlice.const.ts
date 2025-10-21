@@ -5,6 +5,7 @@ import {
   TSeatingCapacity,
 } from "@/interface/carInterface/car.interface";
 import { TFilterState, TInitialState } from "./carSlice.type";
+import { TCarEngine } from "@/interface/carInterface/carEngine.interface";
 
 export const initalFilter: TFilterState = {
   brand: "",
@@ -43,3 +44,4 @@ export type TCarBasicInfo = {
 };
 
 export const basicInfoInitialState: Partial<TCarBasicInfo> = {};
+export const engineInfoInitialState: Partial<TCarEngine> = {};

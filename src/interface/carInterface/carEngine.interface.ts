@@ -189,9 +189,9 @@ export type TAccelaration =
   | "10+";
 
 export type TCarEngine = {
-  engine: TEngineType;
+  engine: string;
   transmission: TTransmission;
-  mileage: number;
+  mileage: string;
   fuelType: TFuelType;
   driveTrain: TDriveTrain;
   horsePower: string;
@@ -199,3 +199,7 @@ export type TCarEngine = {
   topSpeed: string;
   acceleration: string;
 };
+
+export interface TcarEngineInfo extends TCarEngine {
+  _id: string;
+}

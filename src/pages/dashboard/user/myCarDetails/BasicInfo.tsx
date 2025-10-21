@@ -33,28 +33,14 @@ import {
 import { useUpdateCarMutation } from "@/redux/features/car/carApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useEffect, useState } from "react";
-import { MdEdit } from "react-icons/md";
 import { toast } from "sonner";
 import EditComponent from "../../../../myComponent/carEditingComponent/EditComponent";
 import EditInput from "../../../../myComponent/carEditingComponent/EditInput";
-type TOpen =
-  | "brand"
-  | "model"
-  | "category"
-  | "year"
-  | "condition"
-  | "color"
-  | "seating"
-  | "madeIn"
-  | "negotiable"
-  | "inStock"
-  | "price"
-  | "description";
+import EditDescription from "@/myComponent/carEditingComponent/EditDescription";
 const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
   const [carData, setCardata] = useState<Partial<TCarDataInfo> | null>(
     car ?? null
   );
-  const [open, setOpen] = useState<TOpen | "">("");
   const basicInfo = useAppSelector(currentBasicInfo);
   const dispatch = useAppDispatch();
   const [updateCar] = useUpdateCarMutation();
@@ -63,7 +49,9 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
     if (car) setCardata(car);
   }, [car]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     if (!basicInfo || Object.keys(basicInfo).length === 0) {
       return toast.error("nothing to update", { duration: 3000 });
     }
@@ -76,78 +64,24 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
           id: toastId,
           duration: 3000,
         });
-        setOpen("");
+        setOpen(false);
         dispatch(resetBasicInfo());
       }
     } catch (error: any) {
+      console.log(error);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });
       dispatch(resetBasicInfo());
     }
   };
+
   return (
     <div className="w-full p-4 space-y-4 ">
       <div className="space-y-2">
         <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 text-center">
           Car Information
         </h2>
-        <div className="flex gap-6">
-          <div>
-            {open === "description" ? (
-              <div className="space-y-2">
-                <div className="flex flex-col ">
-                  <label>Description</label>
-                  <textarea
-                    value={carData?.description || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      dispatch(setDescription(value));
-                      setCardata({ ...carData, description: value });
-                    }}
-                    rows={4}
-                    cols={50}
-                    className="peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 resize-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-10">
-                  <button
-                    onClick={() => {
-                      setOpen("");
-                      setCardata(car);
-                      dispatch(resetBasicInfo());
-                    }}
-                    className="text-secondary font-semibold"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSubmit}
-                    className="text-secondary font-semibold"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-600 dark:text-gray-300">
-                {car?.description ?? "No Description"}
-              </p>
-            )}
-          </div>
-          {open !== "description" && (
-            <button
-              onClick={() => {
-                setOpen("description");
-                dispatch(resetBasicInfo());
-              }}
-              className="text-red-600 text-lg "
-            >
-              <MdEdit />
-            </button>
-          )}
-        </div>
       </div>
       <div className="text-gray-700 dark:text-gray-300 space-y-4">
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-1 text-sm">
@@ -155,7 +89,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
             label="Brand"
             name="brand"
             carData={carData as TCarDataInfo}
-            car={car}
+            car={car as TCarDataInfo}
             setCardata={setCardata}
             handleChange={(value) => {
               const newValue = value as TCarBrand;
@@ -163,18 +97,20 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setBrand(newValue));
             }}
             options={carBrands}
+            handleSubmit={handleSubmit}
           />
           <EditInput
             label="Model"
             name="model"
             carData={carData as TCarDataInfo}
-            car={car}
+            car={car as TCarDataInfo}
             setCardata={setCardata}
             handleChange={(value) => {
               const newValue = value as string;
               setCardata({ ...carData, model: newValue });
               dispatch(setModel(newValue));
             }}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="Category"
@@ -188,6 +124,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setCategory(newValue));
             }}
             options={carCategories}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="Year"
@@ -201,6 +138,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setYear(newValue));
             }}
             options={years}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="Condition"
@@ -214,6 +152,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setCondition(newValue));
             }}
             options={conditions}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="Color"
@@ -227,10 +166,11 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setColor(newValue));
             }}
             options={carColors}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="Seating Capacity"
-            name="seatingcapacity"
+            name="seatingCapacity"
             carData={carData as TCarDataInfo}
             car={car}
             setCardata={setCardata}
@@ -240,6 +180,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setSeatingCapacity(newValue));
             }}
             options={seatingCapacies}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="Made In"
@@ -253,6 +194,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setMadeIn(newValue));
             }}
             options={countries}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="Negotiable"
@@ -266,6 +208,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setNegotiable(newValue));
             }}
             options={["Yes", "No"]}
+            handleSubmit={handleSubmit}
           />
           <EditComponent
             label="In Stock"
@@ -279,6 +222,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setInStock(newValue));
             }}
             options={["Yes", "No"]}
+            handleSubmit={handleSubmit}
           />
           <EditInput
             label="Price"
@@ -292,6 +236,20 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
               dispatch(setPrice(newValue));
             }}
             type="number"
+            handleSubmit={handleSubmit}
+          />
+          <EditDescription
+            label="Description"
+            name="description"
+            carData={carData as TCarDataInfo}
+            car={car as TCarDataInfo}
+            setCardata={setCardata}
+            handleChange={(value) => {
+              const newValue = value;
+              setCardata({ ...carData, description: newValue });
+              dispatch(setDescription(newValue));
+            }}
+            handleSubmit={handleSubmit}
           />
         </ul>
       </div>

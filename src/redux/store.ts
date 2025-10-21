@@ -8,6 +8,7 @@ import blogFilterReducer from "./features/blog/blogSlice";
 import openCommentReducer from "./features/comment/commentModalSlice";
 import deliveryAndPaymentOptions from "./features/checkout/checkoutSlice";
 import basicInfo from "./features/car/basicInfoSlice";
+import engineInfo from "./features/car/engineInfoSlice";
 import {
   persistReducer,
   persistStore,
@@ -37,6 +38,7 @@ export const store = configureStore({
     blogFilter: blogFilterReducer,
     openCommentL: openCommentReducer,
     basicInfo: basicInfo,
+    engineInfo: engineInfo,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({
