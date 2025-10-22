@@ -172,6 +172,14 @@ const carApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["car"],
     }),
+    updateSafetyFeature: builder.mutation({
+      query: (args) => ({
+        url: `/cars/update-safety-feature/${args?.id}`,
+        method: "PATCH",
+        body: args.data,
+      }),
+      invalidatesTags: ["car"],
+    }),
 
     deleteCar: builder.mutation({
       query: (params) => ({
@@ -197,4 +205,5 @@ export const { useUpdateCarMutation } = carApi;
 export const { useUpdateCarEngineMutation } = carApi;
 export const { useUpdateRegistrationDataMutation } = carApi;
 export const { useUpdateServiceHistoryMutation } = carApi;
+export const { useUpdateSafetyFeatureMutation } = carApi;
 export const { useDeleteCarMutation } = carApi;

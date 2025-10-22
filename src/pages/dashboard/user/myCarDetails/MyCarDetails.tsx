@@ -172,8 +172,10 @@ const MyCarDetails = () => {
         <BasicInfo car={basicCar} />
         <EngineInfo carEngine={carEngine} />
         <RegistrationInfo registrationData={registrationData} />
-        <ServiceHistory serviceHistory={serviceHistory} />
-        <SafetyFeature safetyFeature={safetyFeature} />
+        <div className="grid grid-cols-2 gap-x-20">
+          <ServiceHistory serviceHistory={serviceHistory} />
+          <SafetyFeature safetyFeature={safetyFeature} />
+        </div>
       </div>
     </section>
   );

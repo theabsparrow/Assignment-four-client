@@ -11,6 +11,7 @@ import basicInfo from "./features/car/basicInfoSlice";
 import engineInfo from "./features/car/engineInfoSlice";
 import registrationData from "./features/car/registrationDataSlice";
 import serviceHistory from "./features/car/serviceHistorySlice";
+import safetyFeature from "./features/car/safetyFeatureSlice";
 import {
   persistReducer,
   persistStore,
@@ -43,6 +44,7 @@ export const store = configureStore({
     engineInfo: engineInfo,
     registrationData: registrationData,
     serviceHistory: serviceHistory,
+    safetyFeature: safetyFeature,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({

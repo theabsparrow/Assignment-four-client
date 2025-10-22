@@ -8,7 +8,10 @@ import { TFilterState, TInitialState } from "./carSlice.type";
 import { TCarEngine } from "@/interface/carInterface/carEngine.interface";
 import { TRegistrationdata } from "@/interface/carInterface/registrationData.interface";
 import { TserviceHistory } from "@/interface/carInterface/serviceHistory.interface";
-import { TSafetyFeature } from "@/interface/carInterface/safetyFeature.interface";
+import {
+  TFeature,
+  TSafetyFeature,
+} from "@/interface/carInterface/safetyFeature.interface";
 
 export const initalFilter: TFilterState = {
   brand: "",
@@ -56,9 +59,14 @@ export interface TServiceHistoryInfo extends TserviceHistory {
 }
 export interface TSafetyFeatureInfo extends TSafetyFeature {
   _id: string;
+  addFeatures: TFeature[];
+  removeFeatures: TFeature[];
 }
 export const basicInfoInitialState: Partial<TCarBasicInfo> = {};
 export const engineInfoInitialState: Partial<TcarEngineInfo> = {};
 export const registrationDataInitialState: Partial<TRegistration> = {};
 export const serviceHistoryInitialState: Partial<TServiceHistoryInfo> = {};
-export const safetyFeatureInitialState: Partial<TSafetyFeatureInfo> = {};
+export const safetyFeatureInitialState: Partial<TSafetyFeatureInfo> = {
+  addFeatures: [],
+  removeFeatures: [],
+};

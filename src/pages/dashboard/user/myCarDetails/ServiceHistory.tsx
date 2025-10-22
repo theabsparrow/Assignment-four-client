@@ -64,7 +64,7 @@ const ServiceHistory = ({
         </h2>
       </div>
       <div className="text-gray-700 dark:text-gray-300 space-y-4">
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-1 text-sm">
+        <ul className="grid grid-cols-1 gap-y-1 text-sm">
           <EditInput
             label="Service Center"
             name="serviceCenter"
