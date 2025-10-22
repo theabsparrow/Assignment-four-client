@@ -1,6 +1,5 @@
 import { fuelType, transmission } from "@/const/carEngine.const";
 import {
-  TcarEngineInfo,
   TDriveTrain,
   TFuelType,
   TTransmission,
@@ -8,6 +7,7 @@ import {
 import EditComponent from "@/myComponent/carEditingComponent/EditComponent";
 import EditInput from "@/myComponent/carEditingComponent/EditInput";
 import { useUpdateCarEngineMutation } from "@/redux/features/car/carApi";
+import { TcarEngineInfo } from "@/redux/features/car/carSlice.const";
 import {
   currentEngineInfo,
   resetEngineInfo,

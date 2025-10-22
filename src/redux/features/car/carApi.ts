@@ -156,6 +156,22 @@ const carApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["car"],
     }),
+    updateRegistrationData: builder.mutation({
+      query: (args) => ({
+        url: `/cars/update-registrationData/${args?.id}`,
+        method: "PATCH",
+        body: args.data,
+      }),
+      invalidatesTags: ["car"],
+    }),
+    updateServiceHistory: builder.mutation({
+      query: (args) => ({
+        url: `/cars/update-service-history/${args?.id}`,
+        method: "PATCH",
+        body: args.data,
+      }),
+      invalidatesTags: ["car"],
+    }),
 
     deleteCar: builder.mutation({
       query: (params) => ({
@@ -179,4 +195,6 @@ export const { useGetSingleCarQuery } = carApi;
 export const { useGetCheckoutInfoQuery } = carApi;
 export const { useUpdateCarMutation } = carApi;
 export const { useUpdateCarEngineMutation } = carApi;
+export const { useUpdateRegistrationDataMutation } = carApi;
+export const { useUpdateServiceHistoryMutation } = carApi;
 export const { useDeleteCarMutation } = carApi;

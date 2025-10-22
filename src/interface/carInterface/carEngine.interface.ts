@@ -199,7 +199,3 @@ export type TCarEngine = {
   topSpeed: string;
   acceleration: string;
 };
-
-export interface TcarEngineInfo extends TCarEngine {
-  _id: string;
-}

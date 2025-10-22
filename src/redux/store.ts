@@ -9,6 +9,8 @@ import openCommentReducer from "./features/comment/commentModalSlice";
 import deliveryAndPaymentOptions from "./features/checkout/checkoutSlice";
 import basicInfo from "./features/car/basicInfoSlice";
 import engineInfo from "./features/car/engineInfoSlice";
+import registrationData from "./features/car/registrationDataSlice";
+import serviceHistory from "./features/car/serviceHistorySlice";
 import {
   persistReducer,
   persistStore,
@@ -39,6 +41,8 @@ export const store = configureStore({
     openCommentL: openCommentReducer,
     basicInfo: basicInfo,
     engineInfo: engineInfo,
+    registrationData: registrationData,
+    serviceHistory: serviceHistory,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({

@@ -1,20 +1,20 @@
-import { TFeature } from "@/interface/carInterface/safetyFeature.interface";
-import { formatedDate } from "@/pages/myProfile/myProfile.utills";
 import {
   useGetMySingleCarQuery,
   useUpdateCarMutation,
 } from "@/redux/features/car/carApi";
 import { imageUpload } from "@/utills/uploadImage";
-import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
-import { TbCurrencyTaka } from "react-icons/tb";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import BasicInfo from "./BasicInfo";
 import EngineInfo from "./EngineInfo";
 import RegistrationInfo from "./RegistrationInfo";
+import { TCarInfo } from "@/interface/carInterface/car.interface";
+import MyCarDetailSkeleton from "@/myComponent/loader/MyCarDetailSkeleton";
+import ServiceHistory from "./ServiceHistory";
+import SafetyFeature from "./SafetyFeature";
 
 const MyCarDetails = () => {
   const { id } = useParams();
@@ -43,21 +43,19 @@ const MyCarDetails = () => {
   ) => {
     const toastId = toast.loading(` photo uploading....`);
     const file = e.target.files?.[0];
+    if (!file) return;
     try {
+      e.target.value = "";
       const image = await imageUpload(file!);
       if (!image) {
         toast.error("faild to upload the image");
         return;
       }
-      const data: Partial<{ image: string; addGalleryImage: string[] }> = {};
-      if (gallery) {
-        data.addGalleryImage?.push(image);
-      } else {
-        data.image = image;
-      }
+      const data: Partial<TCarInfo> = gallery
+        ? { addGalleryImage: [image] }
+        : { image };
       const payload = { id: car?._id, data };
       const res = await updateCar(payload).unwrap();
-
       if (res.data) {
         toast.success(` photo uploaded successfully`, {
           id: toastId,
@@ -94,7 +92,7 @@ const MyCarDetails = () => {
   };
 
   if (isLoading) {
-    return <h1>loading....</h1>;
+    return <MyCarDetailSkeleton />;
   }
 
   return (
@@ -105,7 +103,7 @@ const MyCarDetails = () => {
           <img
             src={selectedImage}
             alt={car?.model}
-            className="w-full rounded-xl md:w-[60vw] lg:h-[70vh]"
+            className="w-full rounded-xl md:w-[60vw] lg:h-[80vh]"
           />
           <img
             src={car?.carBrandLogo}
@@ -157,8 +155,8 @@ const MyCarDetails = () => {
               </div>
             ))}
           {car?.galleryImage.length < 5 && (
-            <div className="w-16 h-16 md:w-60 bg-gray-300 dark:bg-gray-700 shadow-md border-2 border-secondary border-dashed ">
-              <label className="cursor-pointer w-full flex justify-center items-center py-[14px]">
+            <div className="w-[60px] md:w-[16vw] lg:w-[9.5vw] bg-gray-300 dark:bg-gray-700 shadow-md border-2 border-secondary border-dashed ">
+              <label className="cursor-pointer w-full h-10 md:h-28 lg:h-24 flex justify-center items-center py-[14px]">
                 <IoAdd className="text-4xl text-red-500" />
                 <input
                   type="file"
@@ -174,90 +172,8 @@ const MyCarDetails = () => {
         <BasicInfo car={basicCar} />
         <EngineInfo carEngine={carEngine} />
         <RegistrationInfo registrationData={registrationData} />
-
-        {/* service history */}
-        {serviceHistory && (
-          <div className="w-full p-4 space-y-4 ">
-            <div className="space-y-4">
-              <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 text-center">
-                Service History
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                {serviceHistory?.serviceDetails}
-              </p>
-            </div>
-            <ul className="grid grid-cols-1 gap-2 text-gray-700 dark:text-gray-300 text-sm">
-              <li>
-                <strong>Service Center:</strong> {serviceHistory?.serviceCenter}
-              </li>
-              <li>
-                <strong>Service Date:</strong>{" "}
-                {
-                  formatedDate(new Date(serviceHistory?.serviceDate))
-                    .creationDate as string
-                }
-              </li>
-              <li className="flex items-center gap-1">
-                <strong>Service Cost:</strong> {serviceHistory?.cost}{" "}
-                <TbCurrencyTaka className="text-xl" />
-              </li>
-              <li className="flex items-center gap-1">
-                <strong>Mileage at Service:</strong>{" "}
-                {serviceHistory?.mileageAtService} km
-              </li>
-            </ul>
-          </div>
-        )}
-
-        {/* safety feature */}
-        {safetyFeature && (
-          <div className="w-full p-4 space-y-4 ">
-            <div className="space-y-4">
-              <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 text-center">
-                Safety Feature
-              </h2>
-              {(safetyFeature?.features as TFeature[]).length > 0 && (
-                <p className="flex flex-wrap items-center text-sm text-gray-600 dark:text-gray-300 gap-1">
-                  {(safetyFeature?.features as TFeature[]).map((feature, i) => (
-                    <span key={i}>{feature},</span>
-                  ))}
-                </p>
-              )}
-            </div>
-            <ul className="grid grid-cols-1 gap-2 text-gray-700 dark:text-gray-300 text-sm">
-              <li className="flex items-center gap-1">
-                {
-                  <div className="flex items-center gap-3">
-                    <strong>Safety Rating:</strong>
-                    {Array.from({ length: 5 }).map((_, idx) => {
-                      const starValue = idx + 1;
-                      return (
-                        <Star
-                          key={idx}
-                          className={`w-5 h-5 ${
-                            safetyFeature?.safetyRating >= starValue
-                              ? "fill-yellow-500 "
-                              : "fill-gray-600"
-                          }`}
-                        />
-                      );
-                    })}
-                  </div>
-                }
-              </li>
-              {safetyFeature?.airbags && (
-                <li className="flex items-center gap-1">
-                  <strong>Air bags:</strong> {safetyFeature?.airbags} air bags
-                </li>
-              )}
-              {safetyFeature?.warranty && (
-                <li className="flex items-center gap-1">
-                  <strong>Warrenty:</strong> {safetyFeature?.warranty}
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
+        <ServiceHistory serviceHistory={serviceHistory} />
+        <SafetyFeature safetyFeature={safetyFeature} />
       </div>
     </section>
   );

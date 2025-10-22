@@ -1,5 +1,6 @@
 import { resetBasicInfo } from "@/redux/features/car/basicInfoSlice";
 import { resetEngineInfo } from "@/redux/features/car/engineInfoSlice";
+import { resetRegistrationData } from "@/redux/features/car/registrationDataSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { ReactNode, useState } from "react";
 import { MdEdit } from "react-icons/md";
@@ -66,6 +67,7 @@ const EditComponent = <T extends { _id?: string }>({
                   setCardata(car);
                   dispatch(resetBasicInfo());
                   dispatch(resetEngineInfo());
+                  dispatch(resetRegistrationData());
                 }}
                 className="text-secondary font-semibold"
               >
@@ -94,6 +96,7 @@ const EditComponent = <T extends { _id?: string }>({
             setOpen(true);
             dispatch(resetBasicInfo());
             dispatch(resetEngineInfo());
+            dispatch(resetRegistrationData());
           }}
           className="text-red-600 text-lg "
         >

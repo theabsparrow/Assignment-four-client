@@ -3,5 +3,5 @@ export type TserviceHistory = {
   serviceCenter: string;
   serviceDetails: string;
   cost: number;
-  mileageAtService: number;
+  mileageAtService: string;
 };

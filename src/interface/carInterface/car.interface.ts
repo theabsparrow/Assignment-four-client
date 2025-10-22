@@ -139,6 +139,8 @@ export interface TCarInfo extends TCar {
   carBrandLogo: string;
   createdAt: string;
   negotiable: boolean;
+  addGalleryImage: string[];
+  removeGalleryImage: string[];
 }
 export interface TCarDataInfo extends TCar {
   _id: string;

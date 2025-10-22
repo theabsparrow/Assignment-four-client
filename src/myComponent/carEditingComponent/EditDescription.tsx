@@ -27,7 +27,7 @@ const EditDescription = <T extends { _id?: string }>({
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
   return (
-    <li className="flex gap-6 bg-gray-200 px-4 py-2 rounded-xl">
+    <li className="flex items-center justify-between bg-gray-200 px-4 py-2 rounded-xl">
       <div>
         {open ? (
           <div className="space-y-2">
@@ -73,7 +73,7 @@ const EditDescription = <T extends { _id?: string }>({
       {!open && (
         <button
           onClick={() => {
-            setOpen(false);
+            setOpen(true);
             dispatch(resetBasicInfo());
           }}
           className="text-red-600 text-lg "

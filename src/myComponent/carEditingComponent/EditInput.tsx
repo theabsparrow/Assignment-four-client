@@ -1,7 +1,11 @@
+import { formatedDate } from "@/pages/myProfile/myProfile.utills";
 import { resetBasicInfo } from "@/redux/features/car/basicInfoSlice";
+import { resetEngineInfo } from "@/redux/features/car/engineInfoSlice";
+import { resetRegistrationData } from "@/redux/features/car/registrationDataSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { ReactNode, useState } from "react";
 import { MdEdit } from "react-icons/md";
+import { TbCurrencyTaka } from "react-icons/tb";
 
 type EditInputProps<T> = {
   label: string;
@@ -53,6 +57,8 @@ const EditInput = <T extends { _id?: string }>({
                   setOpen(false);
                   setCardata(car);
                   dispatch(resetBasicInfo());
+                  dispatch(resetEngineInfo());
+                  dispatch(resetRegistrationData());
                 }}
                 className="text-secondary font-semibold"
               >
@@ -67,11 +73,16 @@ const EditInput = <T extends { _id?: string }>({
             </div>
           </div>
         ) : (
-          <p>
+          <p className="flex items-center gap-1">
             <strong>{label}:</strong>{" "}
-            {(carData?.[name] as ReactNode) || "Not yet selected"}{" "}
-            {name === "topSpeed" && "km"} {name === "horsePower" && "hp"}{" "}
-            {name === "torque" && "N-m"} {name === "acceleration" && "sec"}
+            {name === "serviceDate"
+              ? (formatedDate(new Date(carData?.[name] as string))
+                  .creationDate as string)
+              : (carData?.[name] as ReactNode) || "Not yet selected"}
+            {name === "topSpeed" && "km/h"} {name === "horsePower" && "hp"}{" "}
+            {(name === "mileageAtService" || name === "mileage") && "km"}
+            {name === "torque" && "N-m"} {name === "acceleration" && "sec"}{" "}
+            {name === "cost" && <TbCurrencyTaka className="text-xl" />}
           </p>
         )}
       </div>
@@ -80,6 +91,8 @@ const EditInput = <T extends { _id?: string }>({
           onClick={() => {
             setOpen(true);
             dispatch(resetBasicInfo());
+            dispatch(resetEngineInfo());
+            dispatch(resetRegistrationData());
           }}
           className="text-red-600 text-lg "
         >

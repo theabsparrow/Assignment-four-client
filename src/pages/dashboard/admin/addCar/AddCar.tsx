@@ -20,9 +20,6 @@ const AddCar = () => {
   const onSubmit = async (data: TcarInfoPayload) => {
     data.basicInfo.price = Number(data.basicInfo.price);
     if (data?.serviceHistory) {
-      data.serviceHistory.mileageAtService = Number(
-        data.serviceHistory?.mileageAtService
-      );
       data.serviceHistory.cost = Number(data.serviceHistory?.cost);
     }
 
