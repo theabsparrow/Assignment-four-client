@@ -54,7 +54,6 @@ const RegistrationInfo = ({
         dispatch(resetRegistrationData());
       }
     } catch (error: any) {
-      console.log(error);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });

@@ -22,7 +22,6 @@ const safetyFeatureSlice = createSlice({
       state.safetyRating = action.payload;
     },
     setAirBags: (state, action: PayloadAction<Partial<TAirbags>>) => {
-      if (!state?.features?.includes("Air Bags")) return;
       state.airbags = action.payload;
     },
     setWarrenty: (state, action: PayloadAction<Partial<TWarranty>>) => {

@@ -17,8 +17,10 @@ import { toast } from "sonner";
 
 const ServiceHistory = ({
   serviceHistory,
+  id,
 }: {
   serviceHistory: TServiceHistoryInfo;
+  id: string;
 }) => {
   const [serviceHistoryInfo, setServiceHistoryInfo] =
     useState<Partial<TServiceHistoryInfo> | null>(serviceHistory ?? null);
@@ -37,7 +39,7 @@ const ServiceHistory = ({
       return toast.error("nothing to update", { duration: 3000 });
     }
     const toastId = toast.loading("updating service history....");
-    const payload = { id: serviceHistory?._id, data: service };
+    const payload = { id: id, data: service };
     try {
       const res = await updateCar(payload).unwrap();
       if (res?.data) {
@@ -49,7 +51,6 @@ const ServiceHistory = ({
         dispatch(resetServiceHistory());
       }
     } catch (error: any) {
-      console.log(error);
       const errorInfo =
         error?.data?.message || error?.error || "Something went wrong!";
       toast.error(errorInfo, { id: toastId, duration: 3000 });

@@ -1,6 +1,7 @@
 import { resetBasicInfo } from "@/redux/features/car/basicInfoSlice";
 import { resetEngineInfo } from "@/redux/features/car/engineInfoSlice";
 import { resetRegistrationData } from "@/redux/features/car/registrationDataSlice";
+import { resetSafetyFeature } from "@/redux/features/car/safetyFeatureSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { ReactNode, useState } from "react";
 import { MdEdit } from "react-icons/md";
@@ -49,6 +50,9 @@ const EditComponent = <T extends { _id?: string }>({
                 }}
                 className="peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
               >
+                <option value="" disabled hidden>
+                  Select
+                </option>
                 {options
                   .slice()
                   .sort((a, b) => a.localeCompare(b))
@@ -97,6 +101,7 @@ const EditComponent = <T extends { _id?: string }>({
             dispatch(resetBasicInfo());
             dispatch(resetEngineInfo());
             dispatch(resetRegistrationData());
+            dispatch(resetSafetyFeature());
           }}
           className="text-red-600 text-lg "
         >
