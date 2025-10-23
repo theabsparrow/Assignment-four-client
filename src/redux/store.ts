@@ -5,6 +5,7 @@ import carFilterReducer from "./features/car/carSlice";
 import settingReducer from "./features/setting/settingSlice";
 import userFilterReducer from "./features/user/userSlice";
 import blogFilterReducer from "./features/blog/blogSlice";
+import blogInfoSlice from "./features/blog/blogInfoSlice";
 import openCommentReducer from "./features/comment/commentModalSlice";
 import deliveryAndPaymentOptions from "./features/checkout/checkoutSlice";
 import basicInfo from "./features/car/basicInfoSlice";
@@ -39,6 +40,7 @@ export const store = configureStore({
     userFilter: userFilterReducer,
     deliveryAndPayment: deliveryAndPaymentOptions,
     blogFilter: blogFilterReducer,
+    blogInfoSlice: blogInfoSlice,
     openCommentL: openCommentReducer,
     basicInfo: basicInfo,
     engineInfo: engineInfo,

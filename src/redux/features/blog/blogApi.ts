@@ -64,6 +64,14 @@ const blogApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["blog"],
     }),
+    updateBlog: builder.mutation({
+      query: (args) => ({
+        url: `/blog/update-myBlog/${args.id}`,
+        method: "PATCH",
+        body: args.data,
+      }),
+      invalidatesTags: ["blog"],
+    }),
   }),
 });
 
@@ -72,3 +80,4 @@ export const { useGetMyBlogsQuery } = blogApi;
 export const { useGetAllBlogsQuery } = blogApi;
 export const { useGetASingleBlogQuery } = blogApi;
 export const { useGetMySingleBlogQuery } = blogApi;
+export const { useUpdateBlogMutation } = blogApi;

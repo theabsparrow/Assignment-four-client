@@ -6,6 +6,7 @@ import CreateBlog from "@/pages/blogs/CreateBlog";
 import MyBlogCard from "@/pages/blogs/MyBlogCard";
 import { useGetAllBlogsQuery } from "@/redux/features/blog/blogApi";
 import { currentBlogFilter, setPage } from "@/redux/features/blog/blogSlice";
+import { TBlogInfo } from "@/redux/features/blog/blogSlice.const";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const MyBlogs = () => {
@@ -37,7 +38,7 @@ const MyBlogs = () => {
             <div className="space-y-16">
               <BlogsFiltering />
               {(result as TBlog[]).map((blog: TBlog) => (
-                <MyBlogCard key={blog?._id} blog={blog} />
+                <MyBlogCard key={blog?._id} blog={blog as TBlogInfo} />
               ))}
             </div>
           )}

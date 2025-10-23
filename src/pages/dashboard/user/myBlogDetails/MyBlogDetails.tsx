@@ -1,15 +1,27 @@
+import BlogEditingInput from "@/myComponent/blogEditingComponent/BlogEditingInput";
 import BlogDetailsSceleton from "@/myComponent/loader/BlogDetailsSceleton";
 // import CommentModal from "@/myComponent/modal/CommentModal";
 import { formatedDate } from "@/pages/myProfile/myProfile.utills";
-import { useGetMySingleBlogQuery } from "@/redux/features/blog/blogApi";
+import {
+  useGetMySingleBlogQuery,
+  useUpdateBlogMutation,
+} from "@/redux/features/blog/blogApi";
+import {
+  currentBlogInfo,
+  resetBlogInfo,
+  setTitle,
+} from "@/redux/features/blog/blogInfoSlice";
+import { TBlogInfo } from "@/redux/features/blog/blogSlice.const";
 import {
   useCreateReactionMutation,
   useGetMyReactionQuery,
 } from "@/redux/features/reaction/reactionApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useEffect, useState } from "react";
 import { FaRegComment } from "react-icons/fa";
 import { SlLike } from "react-icons/sl";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const MyBlogDetails = () => {
   const { id } = useParams();
@@ -20,6 +32,16 @@ const MyBlogDetails = () => {
   const myReaction = react?.data;
   // local state
   const [userReaction, setUserReaction] = useState(blog?.reaction ?? 0);
+  const [blogInfo, setBlogInfo] = useState<Partial<TBlogInfo> | null>(
+    blog ?? null
+  );
+  const currentBlog = useAppSelector(currentBlogInfo);
+  const dispatch = useAppDispatch();
+  const [updateBlog] = useUpdateBlogMutation();
+
+  useEffect(() => {
+    if (blog) setBlogInfo(blog);
+  }, [blog]);
 
   useEffect(() => {
     setUserReaction(blog?.reaction);
@@ -49,6 +71,32 @@ const MyBlogDetails = () => {
     }
   };
 
+  const handleSubmit = async (
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    if (!currentBlog || Object.keys(currentBlog).length === 0) {
+      return toast.error("nothing to update", { duration: 3000 });
+    }
+    const toastId = toast.loading("updating basic info....");
+    const payload = { id: blogInfo?._id, data: currentBlog };
+    try {
+      const res = await updateBlog(payload).unwrap();
+      if (res?.data) {
+        toast.success("successfully updated engine info", {
+          id: toastId,
+          duration: 3000,
+        });
+        setOpen(false);
+        dispatch(resetBlogInfo());
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.message || error?.error || "Something went wrong!";
+      toast.error(errorInfo, { id: toastId, duration: 3000 });
+      dispatch(resetBlogInfo());
+    }
+  };
+
   if (isLoading) {
     return <BlogDetailsSceleton />;
   }
@@ -65,9 +113,19 @@ const MyBlogDetails = () => {
           </div>
         )}
         <div className="space-y-2">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            {blog?.title}
-          </h2>
+          <BlogEditingInput
+            label="Title"
+            name="title"
+            blogInfo={blogInfo as TBlogInfo}
+            setBlogInfo={setBlogInfo}
+            blog={blog}
+            handleChange={(value) => {
+              const newValue = value as string;
+              setBlogInfo({ ...blogInfo, title: newValue });
+              dispatch(setTitle(newValue));
+            }}
+            handleSubmit={handleSubmit}
+          />
           <div>
             {blog?.authorId?.profileImage ? (
               <img

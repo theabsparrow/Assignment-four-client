@@ -1,4 +1,3 @@
-import { TBlog } from "@/interface/blogInterface/blog.interface";
 import {
   useCreateReactionMutation,
   useGetMyReactionQuery,
@@ -10,18 +9,11 @@ import { Link } from "react-router-dom";
 import CommentModal from "@/myComponent/modal/CommentModal";
 import { SlLike } from "react-icons/sl";
 import { FaRegComment } from "react-icons/fa";
+import { TBlogInfo } from "@/redux/features/blog/blogSlice.const";
 
-const MyBlogCard = ({ blog }: { blog: TBlog }) => {
-  const {
-    _id,
-    title,
-    content,
-    image,
-    reaction,
-    createdAt,
-    authorId,
-    comments,
-  } = blog || {};
+const MyBlogCard = ({ blog }: { blog: TBlogInfo }) => {
+  const { _id, content, image, reaction, createdAt, authorId, comments } =
+    blog || {};
   const [userReaction, setUserReaction] = useState(reaction ?? 0);
   const { data, isLoading } = useGetMyReactionQuery(_id);
   const myReaction = data?.data;
@@ -50,6 +42,7 @@ const MyBlogCard = ({ blog }: { blog: TBlog }) => {
       }
     }
   };
+
   return (
     <section className="max-w-3xl mx-auto bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors duration-300 space-y-2 relative">
       <div>
@@ -63,7 +56,7 @@ const MyBlogCard = ({ blog }: { blog: TBlog }) => {
       </div>
       <div className="space-y-2">
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-          {title}
+          {blog?.title}
         </h2>
         <div>
           {authorId?.profileImage ? (
