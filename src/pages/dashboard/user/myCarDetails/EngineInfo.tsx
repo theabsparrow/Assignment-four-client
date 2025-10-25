@@ -71,131 +71,135 @@ const EngineInfo = ({ carEngine }: { carEngine: TcarEngineInfo }) => {
       </div>
       <div className="text-gray-700 dark:text-gray-300 space-y-4">
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-1 text-sm">
-          <EditInput
-            label="Engine Type"
-            name="engine"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value as string;
-              setEngineData({ ...engineData, engine: newValue });
-              dispatch(setcarEngine(newValue));
-            }}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Transmission"
-            name="transmission"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value as TTransmission;
-              setEngineData({ ...engineData, transmission: newValue });
-              dispatch(setTransmission(newValue));
-            }}
-            options={transmission}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Fuel"
-            name="fuelType"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value as TFuelType;
-              setEngineData({ ...engineData, fuelType: newValue });
-              dispatch(setFuelType(newValue));
-            }}
-            options={fuelType}
-            handleSubmit={handleSubmit}
-          />
-          <EditInput
-            label="Mileage"
-            name="mileage"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value;
-              setEngineData({ ...engineData, mileage: newValue });
-              dispatch(setMilage(newValue));
-            }}
-            type="number"
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Drive Train"
-            name="driveTrain"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value as TDriveTrain;
-              setEngineData({ ...engineData, driveTrain: newValue });
-              dispatch(setDriveTrain(newValue));
-            }}
-            options={fuelType}
-            handleSubmit={handleSubmit}
-          />
-          <EditInput
-            label="Top Speed"
-            name="topSpeed"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value;
-              setEngineData({ ...engineData, topSpeed: newValue });
-              dispatch(setTopSpeed(newValue));
-            }}
-            type="number"
-            handleSubmit={handleSubmit}
-          />
-          <EditInput
-            label="Horse Power"
-            name="horsePower"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value;
-              setEngineData({ ...engineData, horsePower: newValue });
-              dispatch(setHorsePower(newValue));
-            }}
-            type="number"
-            handleSubmit={handleSubmit}
-          />
-          <EditInput
-            label="Torque"
-            name="torque"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value;
-              setEngineData({ ...engineData, torque: newValue });
-              dispatch(setTorque(newValue));
-            }}
-            type="number"
-            handleSubmit={handleSubmit}
-          />
-          <EditInput
-            label="Acceleration"
-            name="acceleration"
-            carData={engineData as TcarEngineInfo}
-            car={carEngine as TcarEngineInfo}
-            setCardata={setEngineData}
-            handleChange={(value) => {
-              const newValue = value;
-              setEngineData({ ...engineData, acceleration: newValue });
-              dispatch(setAccelaration(newValue));
-            }}
-            type="number"
-            handleSubmit={handleSubmit}
-          />
+          <div className="space-y-1">
+            <EditInput
+              label="Engine Type"
+              name="engine"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value as string;
+                setEngineData({ ...engineData, engine: newValue });
+                dispatch(setcarEngine(newValue));
+              }}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Transmission"
+              name="transmission"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value as TTransmission;
+                setEngineData({ ...engineData, transmission: newValue });
+                dispatch(setTransmission(newValue));
+              }}
+              options={transmission}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Fuel"
+              name="fuelType"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value as TFuelType;
+                setEngineData({ ...engineData, fuelType: newValue });
+                dispatch(setFuelType(newValue));
+              }}
+              options={fuelType}
+              handleSubmit={handleSubmit}
+            />
+            <EditInput
+              label="Mileage"
+              name="mileage"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value;
+                setEngineData({ ...engineData, mileage: newValue });
+                dispatch(setMilage(newValue));
+              }}
+              type="number"
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Drive Train"
+              name="driveTrain"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value as TDriveTrain;
+                setEngineData({ ...engineData, driveTrain: newValue });
+                dispatch(setDriveTrain(newValue));
+              }}
+              options={fuelType}
+              handleSubmit={handleSubmit}
+            />
+          </div>
+          <div className="space-y-1">
+            <EditInput
+              label="Top Speed"
+              name="topSpeed"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value;
+                setEngineData({ ...engineData, topSpeed: newValue });
+                dispatch(setTopSpeed(newValue));
+              }}
+              type="number"
+              handleSubmit={handleSubmit}
+            />
+            <EditInput
+              label="Horse Power"
+              name="horsePower"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value;
+                setEngineData({ ...engineData, horsePower: newValue });
+                dispatch(setHorsePower(newValue));
+              }}
+              type="number"
+              handleSubmit={handleSubmit}
+            />
+            <EditInput
+              label="Torque"
+              name="torque"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value;
+                setEngineData({ ...engineData, torque: newValue });
+                dispatch(setTorque(newValue));
+              }}
+              type="number"
+              handleSubmit={handleSubmit}
+            />
+            <EditInput
+              label="Acceleration"
+              name="acceleration"
+              carData={engineData as TcarEngineInfo}
+              car={carEngine as TcarEngineInfo}
+              setCardata={setEngineData}
+              handleChange={(value) => {
+                const newValue = value;
+                setEngineData({ ...engineData, acceleration: newValue });
+                dispatch(setAccelaration(newValue));
+              }}
+              type="number"
+              handleSubmit={handleSubmit}
+            />
+          </div>
         </ul>
       </div>
     </div>

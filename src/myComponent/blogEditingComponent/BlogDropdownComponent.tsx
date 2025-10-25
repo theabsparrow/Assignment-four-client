@@ -1,48 +1,62 @@
+import { TBlogStatus } from "@/interface/blogInterface/blog.interface";
 import { resetBlogInfo } from "@/redux/features/blog/blogInfoSlice";
 import { TBlogInfo } from "@/redux/features/blog/blogSlice.const";
 import { useAppDispatch } from "@/redux/hooks";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { MdEdit } from "react-icons/md";
 
-type blogEditInputProps = {
+type TBlogDropownProps = {
   label: string;
   name: string;
   blogInfo: Partial<TBlogInfo>;
   setBlogInfo: React.Dispatch<React.SetStateAction<Partial<TBlogInfo> | null>>;
   blog: TBlogInfo;
   handleChange: (value: string) => void;
+  options: TBlogStatus[];
   handleSubmit: (
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => Promise<any>;
 };
 
-const BlogEditingInput = ({
+const BlogDropdownComponent = ({
   label,
   name,
   blogInfo,
   setBlogInfo,
   blog,
   handleChange,
+  options,
   handleSubmit,
-}: blogEditInputProps) => {
+}: TBlogDropownProps) => {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
   return (
-    <div className="flex items-end justify-between bg-gray-200 py-2 rounded-xl">
-      <div className=" w-full">
+    <div className="flex items-center justify-between gap-10 bg-gray-200  py-2 rounded-xl">
+      <div>
         {open ? (
-          <div className="space-y-2 w-full  px-4">
-            <div className="flex flex-col gap-2">
+          <div className="space-y-2">
+            <div className="flex flex-col ">
               <label>{label}</label>
-              <input
-                type="text"
+              <select
                 value={blogInfo?.[name as keyof TBlogInfo] as string}
                 onChange={(e) => {
                   const value = e.target.value;
                   handleChange(value);
                 }}
-                className="w-full peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
-              />
+                className="peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+              >
+                <option value="" disabled hidden>
+                  Select
+                </option>
+                {options
+                  .slice()
+                  .sort((a, b) => a.localeCompare(b))
+                  .map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
+              </select>
             </div>
 
             <div className="flex items-center gap-10">
@@ -65,9 +79,15 @@ const BlogEditingInput = ({
             </div>
           </div>
         ) : (
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            {blogInfo?.[name as keyof TBlogInfo] as ReactNode}
-          </h2>
+          <p
+            className={`px-2 py-1 ${
+              (blogInfo?.[name as keyof TBlogInfo] as string) === "published"
+                ? "bg-green-400 text-green-700 rounded-xl"
+                : "bg-blue-400 text-blue-700 rounded-xl"
+            }`}
+          >
+            {blogInfo?.[name as keyof TBlogInfo] as string}
+          </p>
         )}
       </div>
       {!open && (
@@ -85,4 +105,4 @@ const BlogEditingInput = ({
   );
 };
 
-export default BlogEditingInput;
+export default BlogDropdownComponent;

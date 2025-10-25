@@ -22,7 +22,6 @@ import {
   setColor,
   setCondition,
   setDescription,
-  setInStock,
   setMadeIn,
   setModel,
   setNegotiable,
@@ -41,6 +40,7 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
   const [carData, setCardata] = useState<Partial<TCarDataInfo> | null>(
     car ?? null
   );
+
   const basicInfo = useAppSelector(currentBasicInfo);
   const dispatch = useAppDispatch();
   const [updateCar] = useUpdateCarMutation();
@@ -84,172 +84,169 @@ const BasicInfo = ({ car }: { car: TCarDataInfo }) => {
       </div>
       <div className="text-gray-700 dark:text-gray-300 space-y-4">
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-1 text-sm">
-          <EditComponent
-            label="Brand"
-            name="brand"
-            carData={carData as TCarDataInfo}
-            car={car as TCarDataInfo}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as TCarBrand;
-              setCardata({ ...carData, brand: newValue });
-              dispatch(setBrand(newValue));
-            }}
-            options={carBrands}
-            handleSubmit={handleSubmit}
-          />
-          <EditInput
-            label="Model"
-            name="model"
-            carData={carData as TCarDataInfo}
-            car={car as TCarDataInfo}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as string;
-              setCardata({ ...carData, model: newValue });
-              dispatch(setModel(newValue));
-            }}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Category"
-            name="category"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as TCategory;
-              setCardata({ ...carData, category: newValue });
-              dispatch(setCategory(newValue));
-            }}
-            options={carCategories}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Year"
-            name="year"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as string;
-              setCardata({ ...carData, year: newValue });
-              dispatch(setYear(newValue));
-            }}
-            options={years}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Condition"
-            name="condition"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as TCondition;
-              setCardata({ ...carData, condition: newValue });
-              dispatch(setCondition(newValue));
-            }}
-            options={conditions}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Color"
-            name="color"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as string;
-              setCardata({ ...carData, color: newValue });
-              dispatch(setColor(newValue));
-            }}
-            options={carColors}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Seating Capacity"
-            name="seatingCapacity"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as TSeatingCapacity;
-              setCardata({ ...carData, seatingCapacity: newValue });
-              dispatch(setSeatingCapacity(newValue));
-            }}
-            options={seatingCapacies}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Made In"
-            name="madeIn"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value as string;
-              setCardata({ ...carData, madeIn: newValue });
-              dispatch(setMadeIn(newValue));
-            }}
-            options={countries}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="Negotiable"
-            name="negotiable"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value === "Yes";
-              setCardata({ ...carData, negotiable: newValue });
-              dispatch(setNegotiable(newValue));
-            }}
-            options={["Yes", "No"]}
-            handleSubmit={handleSubmit}
-          />
-          <EditComponent
-            label="In Stock"
-            name="inStock"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value === "Yes";
-              setCardata({ ...carData, inStock: newValue });
-              dispatch(setInStock(newValue));
-            }}
-            options={["Yes", "No"]}
-            handleSubmit={handleSubmit}
-          />
-          <EditInput
-            label="Price"
-            name="price"
-            carData={carData as TCarDataInfo}
-            car={car}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = Number(value);
-              setCardata({ ...carData, price: newValue });
-              dispatch(setPrice(newValue));
-            }}
-            type="number"
-            handleSubmit={handleSubmit}
-          />
-          <EditDescription
-            label="Description"
-            name="description"
-            carData={carData as TCarDataInfo}
-            car={car as TCarDataInfo}
-            setCardata={setCardata}
-            handleChange={(value) => {
-              const newValue = value;
-              setCardata({ ...carData, description: newValue });
-              dispatch(setDescription(newValue));
-            }}
-            handleSubmit={handleSubmit}
-          />
+          <div className="space-y-1">
+            <EditComponent
+              label="Brand"
+              name="brand"
+              carData={carData as TCarDataInfo}
+              car={car as TCarDataInfo}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as TCarBrand;
+                setCardata({ ...carData, brand: newValue });
+                dispatch(setBrand(newValue));
+              }}
+              options={carBrands}
+              handleSubmit={handleSubmit}
+            />
+            <EditInput
+              label="Model"
+              name="model"
+              carData={carData as TCarDataInfo}
+              car={car as TCarDataInfo}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as string;
+                setCardata({ ...carData, model: newValue });
+                dispatch(setModel(newValue));
+              }}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Category"
+              name="category"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as TCategory;
+                setCardata({ ...carData, category: newValue });
+                dispatch(setCategory(newValue));
+              }}
+              options={carCategories}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Year"
+              name="year"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as string;
+                setCardata({ ...carData, year: newValue });
+                dispatch(setYear(newValue));
+              }}
+              options={years}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Condition"
+              name="condition"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as TCondition;
+                setCardata({ ...carData, condition: newValue });
+                dispatch(setCondition(newValue));
+              }}
+              options={conditions}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Color"
+              name="color"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as string;
+                setCardata({ ...carData, color: newValue });
+                dispatch(setColor(newValue));
+              }}
+              options={carColors}
+              handleSubmit={handleSubmit}
+            />
+          </div>
+          <div className="space-y-1">
+            <EditComponent
+              label="Seating Capacity"
+              name="seatingCapacity"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as TSeatingCapacity;
+                setCardata({ ...carData, seatingCapacity: newValue });
+                dispatch(setSeatingCapacity(newValue));
+              }}
+              options={seatingCapacies}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Made In"
+              name="madeIn"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value as string;
+                setCardata({ ...carData, madeIn: newValue });
+                dispatch(setMadeIn(newValue));
+              }}
+              options={countries}
+              handleSubmit={handleSubmit}
+            />
+            <EditComponent
+              label="Negotiable"
+              name="negotiable"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value === "Yes";
+                setCardata({ ...carData, negotiable: newValue });
+                dispatch(setNegotiable(newValue));
+              }}
+              options={["Yes", "No"]}
+              handleSubmit={handleSubmit}
+            />
+
+            <li className="flex items-end justify-between bg-gray-200 px-4 py-2 rounded-xl">
+              <p>
+                <strong>In Stock:</strong>{" "}
+                {carData?.inStock === true ? "Yes" : "No"}
+              </p>
+            </li>
+            <EditInput
+              label="Price"
+              name="price"
+              carData={carData as TCarDataInfo}
+              car={car}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = Number(value);
+                setCardata({ ...carData, price: newValue });
+                dispatch(setPrice(newValue));
+              }}
+              type="number"
+              handleSubmit={handleSubmit}
+            />
+            <EditDescription
+              label="Description"
+              name="description"
+              carData={carData as TCarDataInfo}
+              car={car as TCarDataInfo}
+              setCardata={setCardata}
+              handleChange={(value) => {
+                const newValue = value;
+                setCardata({ ...carData, description: newValue });
+                dispatch(setDescription(newValue));
+              }}
+              handleSubmit={handleSubmit}
+            />
+          </div>
         </ul>
       </div>
     </div>

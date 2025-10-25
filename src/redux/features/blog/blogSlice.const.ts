@@ -12,4 +12,7 @@ export interface TBlogInfo extends TBlog {
   removeTags: string[];
 }
 
-export const blogInfoInitialState: Partial<TBlogInfo> = {};
+export const blogInfoInitialState: Partial<TBlogInfo> = {
+  addTags: [],
+  removeTags: [],
+};

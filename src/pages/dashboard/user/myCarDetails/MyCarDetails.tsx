@@ -1,4 +1,5 @@
 import {
+  useDeleteCarMutation,
   useGetMySingleCarQuery,
   useUpdateCarMutation,
 } from "@/redux/features/car/carApi";
@@ -6,7 +7,7 @@ import { imageUpload } from "@/utills/uploadImage";
 import { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import BasicInfo from "./BasicInfo";
 import EngineInfo from "./EngineInfo";
@@ -15,6 +16,7 @@ import { TCarInfo } from "@/interface/carInterface/car.interface";
 import MyCarDetailSkeleton from "@/myComponent/loader/MyCarDetailSkeleton";
 import ServiceHistory from "./ServiceHistory";
 import SafetyFeature from "./SafetyFeature";
+import DeleteModal from "@/myComponent/modal/DeleteModal";
 
 const MyCarDetails = () => {
   const { id } = useParams();
@@ -29,7 +31,9 @@ const MyCarDetails = () => {
     ...basicCar
   } = car || {};
   const [updateCar] = useUpdateCarMutation();
+  const [deleteCar] = useDeleteCarMutation();
   const [selectedImage, setSelectedImage] = useState<string>(car?.image);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (car?.image) {
@@ -91,12 +95,38 @@ const MyCarDetails = () => {
     }
   };
 
+  const confirmDelete = async (
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    setLoading(true);
+    try {
+      const res = await deleteCar(car?._id).unwrap();
+      if (res?.success) {
+        toast.success("car info uploaded successfully ", {
+          duration: 3000,
+        });
+        setOpen(false);
+        setLoading(false);
+      }
+    } catch (error: any) {
+      const errorInfo =
+        error?.data?.errorSource[0].message ||
+        error?.data?.message ||
+        error?.error ||
+        "Something went wrong!";
+      toast.error(errorInfo, { duration: 3000 });
+      setLoading(false);
+      navigate("/dashboard/my-cars");
+    }
+  };
+
   if (isLoading) {
     return <MyCarDetailSkeleton />;
   }
 
   return (
-    <section className=" bg-gray-100 dark:bg-gray-800 font-inter space-y-20 p-4">
+    <section className=" bg-gray-100 dark:bg-gray-800 font-inter space-y-10 lg:space-y-10 lg:px-20 py-4">
       {/* image section */}
       <div className="space-y-2">
         <div className="relative  md:w-[60vw] mx-auto">
@@ -172,10 +202,13 @@ const MyCarDetails = () => {
         <BasicInfo car={basicCar} />
         <EngineInfo carEngine={carEngine} />
         <RegistrationInfo registrationData={registrationData} />
-        <div className="grid grid-cols-2 gap-x-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20">
           <ServiceHistory serviceHistory={serviceHistory} id={car?._id} />
           <SafetyFeature safetyFeature={safetyFeature} id={car?._id} />
         </div>
+      </div>
+      <div className="flex items-center justify-end px-4 pb-10">
+        <DeleteModal confirmDelete={confirmDelete} label="Car" />
       </div>
     </section>
   );

@@ -28,9 +28,9 @@ const EditDescription = <T extends { _id?: string }>({
   const dispatch = useAppDispatch();
   return (
     <li className="flex items-center justify-between bg-gray-200 px-4 py-2 rounded-xl">
-      <div>
+      <div className=" w-full">
         {open ? (
-          <div className="space-y-2">
+          <div className="space-y-2 w-full ">
             <div className="flex flex-col ">
               <label>{label}</label>
               <textarea
@@ -40,8 +40,7 @@ const EditDescription = <T extends { _id?: string }>({
                   handleChange(value);
                 }}
                 rows={4}
-                cols={50}
-                className="peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 resize-none"
+                className="w-full peer px-2 py-1 rounded-xl border transition-all duration-300 outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 resize-none"
               />
             </div>
 

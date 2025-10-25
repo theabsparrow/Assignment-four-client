@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { RiDeleteBin7Line } from "react-icons/ri";
 
 const DeleteModal = ({
   confirmDelete,
@@ -16,15 +17,15 @@ const DeleteModal = ({
     <div>
       <button
         onClick={() => setOpen(true)}
-        className="px-2 py-1 bg-red-500 text-white rounded font-inter"
+        className="bg-red-600 p-2 rounded-xl text-white flex items-center gap-1"
       >
-        Delete
+        <RiDeleteBin7Line className="text-lg" /> Delete
       </button>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h3 className="text-lg font-semibold mb-4">
-              Are you sure you want to delete {label}
+              Are you sure you want to delete this {label}
             </h3>
 
             <div className="flex justify-end gap-4">
